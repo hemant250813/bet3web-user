@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Header, HumburgerHeader } from "../../../component/layout";
+import { useNavigate } from "react-router-dom";
+import { Header, HumburgerHeader, Footer } from "../../../component/layout";
 import GameTitle from "../GameTitle";
 import CardShuffledGrid from "./CardShuffledGrid";
 import CardShuffled from "./CardShuffled";
@@ -8,6 +9,7 @@ import validateAmount from "../../../validation/user/amount";
 import aClubs from "../../../assets/images/games/card/aClubs.png";
 import aHeart from "../../../assets/images/games/card/aHeart.png";
 import HeaderBackground from "../../../assets/images/headerBackground.jpg";
+import { getLocalStorageItem } from "../../../utils/helper";
 
 const CardFinding = () => {
   const [form, setForm] = useState({
@@ -24,8 +26,17 @@ const CardFinding = () => {
     { route: "card1", isActive: false },
     { route: `card2`, isActive: false },
   ]);
+  const isAuth = getLocalStorageItem("token");
+  const userData = JSON.parse(getLocalStorageItem("user"));
+  const navigate = useNavigate();
 
   useEffect(() => {
+    if (isAuth && userData) {
+      navigate("/number_pool");
+    } else {
+      navigate("/");
+    }
+
     // Function to update the window dimensions
     const updateWindowDimensions = () => {
       setWindowWidth(window.innerWidth);
@@ -105,7 +116,7 @@ const CardFinding = () => {
         }}
       >
         {/* Mobile Header with Hamburger Icon */}
-        {hideHeader ? <HumburgerHeader /> : <Header />}
+        {hideHeader ? <HumburgerHeader /> : <Header isVerifyMail={false}/>}
         <GameTitle title="Play Card Finding" route="rock_paper_scissors" />
       </section>
 
@@ -215,6 +226,7 @@ const CardFinding = () => {
           </div>
         </div>
       </section>
+      <Footer/>
     </>
   );
 };

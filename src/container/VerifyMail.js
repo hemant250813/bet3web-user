@@ -1,8 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { Header, HumburgerHeader } from "../component/layout";
 import GameTitle from "./Games/GameTitle";
 import validateAmount from "../validation/user/amount";
 import HeaderBackground from "../assets/images/headerBackground.jpg";
+import { resendOtp, otpVerify } from "../redux/action";
 
 const HeadTail = () => {
   const [form, setForm] = useState({
@@ -16,7 +20,11 @@ const HeadTail = () => {
     { route: "head", isActive: false },
     { route: `tail`, isActive: false },
   ]);
+  const location = useLocation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
+  console.log("location", location);
   useEffect(() => {
     // Function to update the window dimensions
     const updateWindowDimensions = () => {
@@ -82,23 +90,23 @@ const HeadTail = () => {
       const isOtpFilled = newOtp?.every((otp) => otp !== "");
       if (isOtpFilled) {
         let otp = newOtp?.join("");
+        console.log("otp", otp);
         // let mobile_no = JSON.parse(getLocalStorageItem("email"));
-        // const formPayload = {
-        //   mobile_no: mobile_no?.toString(),
-        //   otp: otp,
-        // };
+        const formPayload = {
+          email: location?.state,
+          otp: otp,
+        };
 
-        // dispatch(
-        //   otpVerify({
-        //     formPayload,
-        //     callback: (data) => {
-        //       if (data) {
-        //         removeLocalStorageItem("mobile");
-        //         navigate("/");
-        //       }
-        //     },
-        //   })
-        // );
+        dispatch(
+          otpVerify({
+            formPayload,
+            callback: (data) => {
+              if (data) {
+                navigate("/login");
+              }
+            },
+          })
+        );
       }
     };
 
@@ -107,14 +115,13 @@ const HeadTail = () => {
       if (e.key === "Backspace" && index > 0 && otp[index] === "") {
         inputRefs.current[index - 1].focus();
       }
-    
+
       // Allow only numeric input
       const isNumber = /^[0-9]$/;
       if (!isNumber.test(e.key)) {
         e.preventDefault();
       }
     };
-    
 
     return (
       <>
@@ -140,6 +147,16 @@ const HeadTail = () => {
     );
   };
 
+  const onClickResendOtp = () => {
+    const formPayload = {
+      email: location?.state,
+    };
+    dispatch(
+      resendOtp({
+        formPayload
+      })
+    );
+  };
   return (
     <>
       <section
@@ -156,21 +173,21 @@ const HeadTail = () => {
         }}
       >
         {/* Mobile Header with Hamburger Icon */}
-        {hideHeader ? <HumburgerHeader /> : <Header />}
+        {hideHeader ? <HumburgerHeader /> : <Header isVerifyMail={false} />}
         <GameTitle title="Verify Email" route="forgot_password" />
       </section>
 
-      <section class="justify-center items-center h-screen bg-black relative flex-grow p-6 md:p-8 lg:p-12 overflow-hidden">
-        <form class="bg-[#01162f] p-6 rounded shadow-md text-center max-w-md mx-auto border border-gray-400">
-          <h2 class="mb-4 text-white font-bold">Verify Email Address</h2>
+      <section className="justify-center items-center h-screen bg-black relative flex-grow p-6 md:p-8 lg:p-12 overflow-hidden">
+        <form className="bg-[#01162f] p-6 rounded shadow-md text-center max-w-md mx-auto border border-gray-400">
+          <h2 className="mb-4 text-white font-bold">Verify Email Address</h2>
           <hr className="my-3 text-gray-400" />
-          <h2 class="mb-4 text-left text-[#F2F3F4]">
+          <h2 className="mb-4 text-left text-[#F2F3F4]">
             A 6 digit verification code sent to your email address:[***]
           </h2>
 
-          <div class="mb-4 text-left">
+          <div className="mb-4 text-left">
             <div className="mt-4 flex relative items-center gap-1">
-              <label for="email" class="block text-[#BFC9CA] mb-2">
+              <label for="email" className="block text-[#BFC9CA] mb-2">
                 Verification Code
               </label>
               <span className="text-red-700">*</span>
@@ -180,19 +197,24 @@ const HeadTail = () => {
               type="email"
               id="email"
               name="email"
-              class="w-full px-3 py-2 border rounded-md input-border"
+              className="w-full px-3 py-2 border rounded-md input-border"
             /> */}
           </div>
 
-          <button
+          {/* <button
             type="submit"
-            class="w-full bg-[#E3BC3F] text-black py-2 px-4 rounded-md mb-4"
+            className="w-full bg-[#E3BC3F] text-black py-2 px-4 rounded-md mb-4"
           >
             Submit
-          </button>
-          <h2 class="mb-4 text-left text-[#F2F3F4]">
+          </button> */}
+          <h2 className="mb-4 text-left text-[#F2F3F4]">
             Please check including your Junk/Spam Folde, if not found, you can{" "}
-            <p className="text-[#E3BC3F]">Try to send again</p>
+            <p
+              onClick={() => onClickResendOtp()}
+              className="text-[#E3BC3F] cursor-pointer"
+            >
+              Try to send again
+            </p>
           </h2>
         </form>
       </section>

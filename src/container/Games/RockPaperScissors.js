@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { BsCheckCircleFill } from "react-icons/bs";
+import { Footer } from "../../component/layout";
 import { Header, HumburgerHeader } from "../../component/layout";
 import GameTitle from "./GameTitle";
 import Rock from "../../assets/images/games/rockPaperScissors/rock.png";
@@ -8,6 +8,7 @@ import Paper from "../../assets/images/games/rockPaperScissors/paper.png";
 import Scissors from "../../assets/images/games/rockPaperScissors/scissors.png";
 import validateAmount from "../../validation/user/amount";
 import HeaderBackground from "../../assets/images/headerBackground.jpg";
+import { getLocalStorageItem } from "../../utils/helper";
 
 const RockPaperScissors = () => {
   const images = [Rock, Paper, Scissors];
@@ -28,7 +29,17 @@ const RockPaperScissors = () => {
     { route: `scissor`, isActive: false },
   ]);
 
+  const isAuth = getLocalStorageItem("token");
+  const userData = JSON.parse(getLocalStorageItem("user"));
+  const navigate = useNavigate();
+
   useEffect(() => {
+    if (isAuth && userData) {
+      navigate("/rock_paper_scissors");
+    } else {
+      navigate("/");
+    }
+
     // Function to update the window dimensions
     const updateWindowDimensions = () => {
       setWindowWidth(window.innerWidth);
@@ -120,7 +131,7 @@ const RockPaperScissors = () => {
         }}
       >
         {/* Mobile Header with Hamburger Icon */}
-        {hideHeader ? <HumburgerHeader /> : <Header />}
+        {hideHeader ? <HumburgerHeader /> : <Header isVerifyMail={false} />}
         <GameTitle
           title="Play Rock Paper scissors"
           route="rock_paper_scissors"
@@ -239,6 +250,7 @@ const RockPaperScissors = () => {
           </div>
         </div>
       </section>
+      <Footer />
     </>
   );
 };

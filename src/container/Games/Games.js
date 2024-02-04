@@ -26,7 +26,7 @@ const Game = () => {
         }}
       >
         {/* Mobile Header with Hamburger Icon */}
-        {hideHeader ? <HumburgerHeader /> : <Header />}
+        {hideHeader ? <HumburgerHeader /> : <Header isVerifyMail={false}/>}
         {/* Centered div */}
         {/* Centered div */}
         <GameTitle title="Games" route="games" />

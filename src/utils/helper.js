@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { toast } from "react-toastify";
+import { toast, Bounce } from "react-toastify";
 export const url = process.env.REACT_APP_API_ENDPOINT || "";
 
 //GET LOCAL STORAGE ITEM
@@ -11,6 +11,9 @@ export const setLocalStorageItem = (key, value) =>
 
 //REMOVE ITEM FROM LOCALSTORAGE
 export const removeLocalStorageItem = (key) => localStorage.removeItem(key);
+
+//CLEAR LOCALSTORAGE
+export const clearLocalStorage = (key) => localStorage.clear(key);
 
 export const ErrorToast = ({ msg }) => (
   <div>
@@ -95,16 +98,15 @@ export const notifySuccess = (() => {
       hasToastBeenShown = true;
 
       const toastId = toast.success(message, {
-        className: "custom-toast-dark",
-        position: "top-center",
-        autoClose: 700,
-        hideProgressBar: true,
-        closeOnClick: false,
-        pauseOnHover: false,
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
         draggable: true,
         progress: undefined,
         theme: "light",
-
+        transition: Bounce,
         onClose: () => {
           hasToastBeenShown = false; // Reset the flag when the toast is closed.
         },
@@ -121,15 +123,40 @@ export const notifyWarning = (() => {
       hasToastBeenShown = true;
 
       const toastId = toast.error(message, {
-        className: "custom-toast-dark",
-        position: "top-center",
-        autoClose: 700,
-        hideProgressBar: true,
-        closeOnClick: false,
-        pauseOnHover: false,
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
         draggable: true,
         progress: undefined,
         theme: "light",
+        transition: Bounce,
+        onClose: () => {
+          hasToastBeenShown = false; // Reset the flag when the toast is closed.
+        },
+      });
+      return toastId;
+    }
+  };
+})();
+
+export const notifyError = (() => {
+  let hasToastBeenShown = false;
+  return (message) => {
+    if (!hasToastBeenShown) {
+      hasToastBeenShown = true;
+
+      const toastId = toast.error(message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
         onClose: () => {
           hasToastBeenShown = false; // Reset the flag when the toast is closed.
         },

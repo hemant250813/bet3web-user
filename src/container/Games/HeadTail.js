@@ -1,27 +1,43 @@
 import React, { useState, useEffect } from "react";
-import { Header, HumburgerHeader } from "../../component/layout";
+import { useNavigate } from "react-router-dom";
+import { Header, HumburgerHeader, Footer } from "../../component/layout";
 import GameTitle from "./GameTitle";
 import Head from "../../assets/images/games/headAndTail/head.png";
 import Tail from "../../assets/images/games/headAndTail/tail.png";
 import validateAmount from "../../validation/user/amount";
 import HeaderBackground from "../../assets/images/headerBackground.jpg";
+import { getLocalStorageItem } from "../../utils/helper";
 
 const HeadTail = () => {
   const [form, setForm] = useState({
     amount: "",
   });
   const [error, setError] = useState({});
+  const [loading, setLoading] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [hideHeader, setHideHeader] = useState(false);
+  const [clearRollingInterval, setClearRollingInterval] = useState(0);
+  const [clearRollingTimeout, setClearRollingTimeout] = useState(0);
   const [rotationAngle, setRotationAngle] = useState(0);
   const [isRotating, setIsRotating] = useState(true);
   const [tabViews, setTabViews] = useState([
     { route: "head", isActive: false },
     { route: `tail`, isActive: false },
   ]);
+  const [flipResult, setFlipResult] = useState(null);
 
+  const isAuth = getLocalStorageItem("token");
+  const userData = JSON.parse(getLocalStorageItem("user"));
+  const navigate = useNavigate();
+  console.log("flipResult", flipResult);
   useEffect(() => {
+    if (isAuth && userData) {
+      navigate("/head_tail");
+    } else {
+      navigate("/");
+    }
+
     // Function to update the window dimensions
     const updateWindowDimensions = () => {
       setWindowWidth(window.innerWidth);
@@ -34,6 +50,8 @@ const HeadTail = () => {
     // Clean up the event listener when the component unmounts
     return () => {
       window.removeEventListener("resize", updateWindowDimensions);
+      clearInterval(clearRollingInterval);
+      clearTimeout(clearRollingTimeout);
     };
   }, [windowWidth, windowHeight]);
 
@@ -100,6 +118,19 @@ const HeadTail = () => {
     }
   };
 
+  const handleCoinClick = () => {
+    setFlipResult(null);
+
+    let coinRotate = setInterval(() => {
+      const newFlipResult = Math.random();
+      setFlipResult(newFlipResult <= 0.5 ? "heads" : "tails");
+    }, 1000);
+
+    setTimeout(() => {
+      clearInterval(coinRotate);
+    }, 6000);
+  };
+
   return (
     <>
       <section
@@ -116,7 +147,15 @@ const HeadTail = () => {
         }}
       >
         {/* Mobile Header with Hamburger Icon */}
-        {hideHeader ? <HumburgerHeader /> : <Header />}
+        {hideHeader ? (
+          <HumburgerHeader />
+        ) : (
+          <Header
+            isVerifyMail={false}
+            loading={loading}
+            setLoading={setLoading}
+          />
+        )}
         <GameTitle title="Play Head & Tail" route="head_tail" />
       </section>
 
@@ -124,14 +163,46 @@ const HeadTail = () => {
         className={`bg-black relative flex-grow p-12 md:p-8 lg:p-12 overflow-hidden`}
       >
         <div
-          className={`grid justify-items-stretch grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-8`}
+          className={`grid justify-items-stretch grid-cols-1 gap-8 ${
+            windowWidth === 320
+              ? "grid-cols-1"
+              : windowWidth === 1440
+              ? "grid-cols-2"
+              : "grid-cols-2"
+          }`}
         >
           {/* Card 1 */}
           <div
             className="relative group mx-auto border border-gray-400 p-4"
             style={{
-              height: "700px",
-              width: "700px",
+              height:
+                windowWidth === 320
+                  ? "250px"
+                  : windowWidth === 375
+                  ? "300px"
+                  : windowWidth === 425
+                  ? "300px"
+                  : windowWidth === 768
+                  ? "650px"
+                  : windowWidth === 1024
+                  ? "650px"
+                  : windowWidth === 1440
+                  ? "700px"
+                  : "700px",
+              width:
+                windowWidth === 320
+                  ? "250px"
+                  : windowWidth === 375
+                  ? "300px"
+                  : windowWidth === 425
+                  ? "300px"
+                  : windowWidth === 768
+                  ? "650px"
+                  : windowWidth === 1024
+                  ? "850px"
+                  : windowWidth === 1440
+                  ? "640px"
+                  : "700px",
               overflow: "hidden",
               display: "flex",
               justifyContent: "center",
@@ -139,7 +210,7 @@ const HeadTail = () => {
               perspective: "1000px",
             }}
           >
-            <div
+            {/* <div
               className="coin"
               style={{
                 width: "300px",
@@ -171,6 +242,70 @@ const HeadTail = () => {
                   transform: "rotateY(180deg)",
                 }}
               ></div>
+            </div> */}
+
+            <div
+              id="coin"
+              className={flipResult}
+              onClick={handleCoinClick}
+              style={{
+                width:
+                  windowWidth === 320
+                    ? "200px"
+                    : windowWidth === 375
+                    ? "220px"
+                    : windowWidth === 425
+                    ? "220px"
+                    : windowWidth === 768
+                    ? "420px"
+                    : windowWidth === 1024
+                    ? "520px"
+                    : windowWidth === 1440
+                    ? "560px"
+                    : "300px",
+                height:
+                  windowWidth === 320
+                    ? "200px"
+                    : windowWidth === 375
+                    ? "220px"
+                    : windowWidth === 425
+                    ? "220px"
+                    : windowWidth === 768
+                    ? "420px"
+                    : windowWidth === 1024
+                    ? "520px"
+                    : windowWidth === 1440
+                    ? "560px"
+                    : "300px",
+              }}
+            >
+              <div
+                style={{
+                  position: "absolute",
+                  width: "100%",
+                  height: "100%",
+                  backgroundImage: `url(${Head})`,
+                  backgroundSize: "cover",
+                  backgroundRepeat: "no-repeat",
+                  backgroundPosition: "center",
+                  backfaceVisibility: "hidden",
+                }}
+                className="side-a"
+              ></div>
+              <div
+                style={{
+                  position: "absolute",
+                  width: "100%",
+                  height: "100%",
+                  backgroundImage: `url(${Tail})`,
+                  backgroundSize: "cover",
+                  backgroundRepeat: "no-repeat",
+                  backgroundPosition: "center",
+                  backfaceVisibility: "hidden",
+                  transform: "rotateY(180deg)",
+                }}
+                className="side-b"
+              ></div>
             </div>
           </div>
 
@@ -179,7 +314,20 @@ const HeadTail = () => {
             className="relative group mx-auto border border-gray-400 p-4"
             style={{
               height: "700px",
-              width: "700px",
+              width:
+                windowWidth === 320
+                  ? "250px"
+                  : windowWidth === 375
+                  ? "300px"
+                  : windowWidth === 425
+                  ? "300px"
+                  : windowWidth === 768
+                  ? "650px"
+                  : windowWidth === 1024
+                  ? "850px"
+                  : windowWidth === 1440
+                  ? "650px"
+                  : "700px",
               overflow: "hidden",
               display: "flex",
               flexDirection: "column", // Display children in a column
@@ -190,8 +338,45 @@ const HeadTail = () => {
           >
             <div className="flex flex-col items-center justify-center p-3">
               <span className="flex items-center justify-center">
-                <p className="text-5xl text-white">Current Balance :</p>
-                <p className="text-5xl text-[#E3BC3F]"> 10.50 USD</p>
+                <p
+                  className={`${
+                    windowWidth === 320
+                      ? "text-xs"
+                      : windowWidth === 375
+                      ? "text-sm"
+                      : windowWidth === 425
+                      ? "text-base"
+                      : windowWidth === 768
+                      ? "text-3xl"
+                      : windowWidth === 1024
+                      ? "text-5xl"
+                      : windowWidth === 1440
+                      ? "text-3xl"
+                      : "text-5xl"
+                  }  text-white`}
+                >
+                  Current Balance :
+                </p>
+                <p
+                  className={`${
+                    windowWidth === 320
+                      ? "text-xs"
+                      : windowWidth === 375
+                      ? "text-sm"
+                      : windowWidth === 425
+                      ? "text-base"
+                      : windowWidth === 768
+                      ? "text-3xl"
+                      : windowWidth === 1024
+                      ? "text-5xl"
+                      : windowWidth === 1440
+                      ? "text-3xl"
+                      : "text-5xl"
+                  }  text-[#E3BC3F]`}
+                >
+                  {" "}
+                  10.50 USD
+                </p>
               </span>
               <div className="flex flex-col items-center w-11/12 mt-3">
                 <div className="flex w-9/12">
@@ -222,7 +407,21 @@ const HeadTail = () => {
               </span>
             </div>
             <div></div>
-            <div className="flex items-center justify-center relative p-20">
+            <div
+              className={`flex items-center justify-center relative ${
+                windowWidth === 320
+                  ? "p-2"
+                  : windowWidth === 375
+                  ? "p-4"
+                  : windowWidth === 425
+                  ? "p-8"
+                  : windowWidth === 1024
+                  ? "p-16"
+                  : windowWidth === 1440
+                  ? "p-16"
+                  : "p-20"
+              }`}
+            >
               <span
                 onClick={(e) => {
                   tabSwitch(e, "head");
@@ -231,18 +430,22 @@ const HeadTail = () => {
               >
                 <img
                   src={Head}
+                  width={
+                    windowWidth === 1024
+                      ? 200
+                      : windowWidth === 1440
+                      ? 300
+                      : 100
+                  }
+                  height={
+                    windowWidth === 1024
+                      ? 200
+                      : windowWidth === 1440
+                      ? 300
+                      : 100
+                  }
                   alt="head"
                 />
-                {/* {tabViews[0].isActive && (
-                  <BsCheckCircleFill
-                    style={{
-                      zIndex: 10, // Assign a numeric value, not a string
-                    }}
-                    size={40}
-                    color="#E3BC3F"
-                    className="absolute top-14 left-80"
-                  />
-                )} */}
               </span>
               <span
                 onClick={(e) => {
@@ -252,18 +455,22 @@ const HeadTail = () => {
               >
                 <img
                   src={Tail}
+                  width={
+                    windowWidth === 1024
+                      ? 200
+                      : windowWidth === 1440
+                      ? 300
+                      : 100
+                  }
+                  height={
+                    windowWidth === 1024
+                      ? 200
+                      : windowWidth === 1440
+                      ? 300
+                      : 100
+                  }
                   alt="tail"
                 />
-                {/* {tabViews[1].isActive && (
-                  <BsCheckCircleFill
-                    style={{
-                      zIndex: 10, // Assign a numeric value, not a string
-                    }}
-                    size={40}
-                    color="#E3BC3F"
-                    className="absolute top-14 left-690"
-                  />
-                )} */}
               </span>
             </div>
             <div className="flex flex-col items-center justify-center w-11/12 p-2">
@@ -278,6 +485,7 @@ const HeadTail = () => {
           </div>
         </div>
       </section>
+      <Footer />
     </>
   );
 };

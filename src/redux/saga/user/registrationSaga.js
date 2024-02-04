@@ -5,12 +5,13 @@ import API from "../../../utils/api";
 import { notifySuccess, notifyWarning } from "../../../utils/helper";
 
 function* registrationRequest(action) {
+  console.log("registrationRequest",action);
   try {
     const { data } = yield API.post(
       "/api/v1/registration",
-      action?.payload?.formPayload
+      action?.payload?.payload
     );
-   
+
     if (data?.meta?.code === 200) {
       yield put(registrationSuccess(data));
       yield call(action.payload.callback, data);

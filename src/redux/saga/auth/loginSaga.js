@@ -12,12 +12,12 @@ function* loginRequest(action) {
   try {
     const { data } = yield API.post(
       "/api/v1/login",
-      action?.payload?.formPayload
+      action?.payload?.payload
     );
 
     if (data.meta.code === 200) {
       yield put(loginSuccess(data));
-      yield call(setLocalStorageItem, "login", JSON.stringify(data));
+      yield call(setLocalStorageItem, "user", JSON.stringify(data?.data));
       yield call(
         setLocalStorageItem,
         "token",

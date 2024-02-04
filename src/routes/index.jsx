@@ -15,6 +15,7 @@ import Register from "../container/Register";
 import ForgotPassword from "../container/ForgotPassword";
 import VerifyEmail from "../container/VerifyMail";
 import ResetPassword from "../container/ResetPassword";
+import Dashboard from "../container/Dashboard";
 
 const RouteFile = () => {
   return (
@@ -25,6 +26,7 @@ const RouteFile = () => {
       <Route exact path="/forgot_password" element={<ForgotPassword />} />
       <Route exact path="/verify_email" element={<VerifyEmail />} />
       <Route exact path="/reset_password" element={<ResetPassword />} />
+      <Route exact path="/dashboard" element={<Dashboard />} />
       <Route exact path="/games" element={<Games />} />
       <Route exact path="/head_tail" element={<HeadTail />} />
       <Route
