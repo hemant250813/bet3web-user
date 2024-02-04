@@ -1,10 +1,14 @@
 import React from "react";
 
-const Footer = () => {
+const Footer = (loading, setLoading) => {
   return (
-    <footer className="bg-gray-800 text-white p-4">
-      <p className="text-center">Your Footer</p>
-    </footer>
+    <>
+      {!loading && (
+        <footer className="bg-gray-800 text-white p-4">
+          <p className="text-center">Your Footer</p>
+        </footer>
+      )}
+    </>
   );
 };
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Header, HumburgerHeader } from "../../component/layout";
+import { Header, HumburgerHeader, Footer } from "../../component/layout";
 import GameTitle from "./GameTitle";
 import Dice1 from "../../assets/images/games/dice/dice1.png";
 import Dice2 from "../../assets/images/games/dice/dice2.png";
@@ -10,6 +10,7 @@ import Dice5 from "../../assets/images/games/dice/dice5.png";
 import Dice6 from "../../assets/images/games/dice/dice6.png";
 import validateAmount from "../../validation/user/amount";
 import HeaderBackground from "../../assets/images/headerBackground.jpg";
+import { getLocalStorageItem } from "../../utils/helper";
 
 const DiceRolling = () => {
   const [form, setForm] = useState({
@@ -31,8 +32,16 @@ const DiceRolling = () => {
     { dice: `dice5`, isActive: false },
     { dice: `dice6`, isActive: false },
   ]);
+  const isAuth = getLocalStorageItem("token");
+  const userData = JSON.parse(getLocalStorageItem("user"));
+  const navigate = useNavigate();
 
   useEffect(() => {
+    if (isAuth && userData) {
+      navigate("/dice_rolling");
+    } else {
+      navigate("/");
+    }
     // Function to update the window dimensions
     const updateWindowDimensions = () => {
       setWindowWidth(window.innerWidth);
@@ -151,7 +160,7 @@ const DiceRolling = () => {
         }}
       >
         {/* Mobile Header with Hamburger Icon */}
-        {hideHeader ? <HumburgerHeader /> : <Header />}
+        {hideHeader ? <HumburgerHeader /> : <Header isVerifyMail={false}/>}
         <GameTitle title="Play Dice Rolling" route="dice_rolling" />
       </section>
 
@@ -325,6 +334,7 @@ const DiceRolling = () => {
           </div>
         </div>
       </section>
+      <Footer/>
     </>
   );
 };

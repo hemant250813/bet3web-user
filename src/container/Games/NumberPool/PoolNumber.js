@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Header, HumburgerHeader } from "../../../component/layout";
+import { useNavigate } from "react-router-dom";
+import { Header, HumburgerHeader, Footer } from "../../../component/layout";
 import GameTitle from "../GameTitle";
 import validateAmount from "../../../validation/user/amount";
 import Ball1 from "../../../assets/images/games/ball/ball01.png";
@@ -11,6 +12,7 @@ import Ball6 from "../../../assets/images/games/ball/ball06.png";
 import Ball7 from "../../../assets/images/games/ball/ball07.png";
 import Ball8 from "../../../assets/images/games/ball/ball08.png";
 import HeaderBackground from "../../../assets/images/headerBackground.jpg";
+import { getLocalStorageItem } from "../../../utils/helper";
 
 const PoolNumber = () => {
   const [form, setForm] = useState({
@@ -33,8 +35,17 @@ const PoolNumber = () => {
     { route: `ball7`, isActive: false },
     { route: "ball8", isActive: false },
   ]);
+  const isAuth = getLocalStorageItem("token");
+  const userData = JSON.parse(getLocalStorageItem("user"));
+  const navigate = useNavigate();
 
   useEffect(() => {
+    if (isAuth && userData) {
+      navigate("/number_pool");
+    } else {
+      navigate("/");
+    }
+
     // Function to update the window dimensions
     const updateWindowDimensions = () => {
       setWindowWidth(window.innerWidth);
@@ -140,7 +151,7 @@ const PoolNumber = () => {
         }}
       >
         {/* Mobile Header with Hamburger Icon */}
-        {hideHeader ? <HumburgerHeader /> : <Header />}
+        {hideHeader ? <HumburgerHeader /> : <Header isVerifyMail={false}/>}
         <GameTitle title="Play Pool Number" route="number_pool" />
       </section>
 
@@ -164,9 +175,9 @@ const PoolNumber = () => {
             }}
           >
             {pause ? (
-              <div class="grid-container">
+              <div className="grid-container">
                 <div
-                  class={`${
+                  className={`${
                     randomBall === 3
                       ? "ball-red"
                       : randomBall === 9
@@ -198,57 +209,57 @@ const PoolNumber = () => {
                       : "ball-brown"
                   } win-ball p-2`}
                 >
-                  <span class="win-ball-number">{randomBall}</span>
+                  <span className="win-ball-number">{randomBall}</span>
                 </div>
               </div>
             ) : (
-              <div class="grid-container">
-                <div class="grid grid-cols-4 gap-8">
-                  <div class="ball ball-red p-2">
-                    <span class="ball-number">3</span>
+              <div className="grid-container">
+                <div className="grid grid-cols-4 gap-8">
+                  <div className="ball ball-red p-2">
+                    <span className="ball-number">3</span>
                   </div>
-                  <div class="ball ball-yellow-striped p-2">
-                    <span class="ball-number">9</span>
+                  <div className="ball ball-yellow-striped p-2">
+                    <span className="ball-number">9</span>
                   </div>
-                  <div class="ball ball-green-striped p-2">
-                    <span class="ball-number">14</span>
+                  <div className="ball ball-green-striped p-2">
+                    <span className="ball-number">14</span>
                   </div>
-                  <div class="ball ball-brown-striped p-2">
-                    <span class="ball-number">15</span>
+                  <div className="ball ball-brown-striped p-2">
+                    <span className="ball-number">15</span>
                   </div>
 
-                  <div class="ball ball-black p-2">
-                    <span class="ball-number">8</span>
+                  <div className="ball ball-black p-2">
+                    <span className="ball-number">8</span>
                   </div>
-                  <div class="ball ball-purple-striped p-2">
-                    <span class="ball-number">12</span>
+                  <div className="ball ball-purple-striped p-2">
+                    <span className="ball-number">12</span>
                   </div>
-                  <div class="ball ball-blue-striped p-2">
-                    <span class="ball-number">10</span>
+                  <div className="ball ball-blue-striped p-2">
+                    <span className="ball-number">10</span>
                   </div>
-                  <div class="ball ball-orange p-2">
-                    <span class="ball-number">5</span>
+                  <div className="ball ball-orange p-2">
+                    <span className="ball-number">5</span>
                   </div>
-                  <div class="ball ball-green p-2">
-                    <span class="ball-number">6</span>
+                  <div className="ball ball-green p-2">
+                    <span className="ball-number">6</span>
                   </div>
-                  <div class="ball ball-blue p-2">
-                    <span class="ball-number">2</span>
+                  <div className="ball ball-blue p-2">
+                    <span className="ball-number">2</span>
                   </div>
-                  <div class="ball ball-orange-striped p-2">
-                    <span class="ball-number">13</span>
+                  <div className="ball ball-orange-striped p-2">
+                    <span className="ball-number">13</span>
                   </div>
-                  <div class="ball ball-yellow p-2">
-                    <span class="ball-number">1</span>
+                  <div className="ball ball-yellow p-2">
+                    <span className="ball-number">1</span>
                   </div>
-                  <div class="ball ball-purple p-2">
-                    <span class="ball-number">4</span>
+                  <div className="ball ball-purple p-2">
+                    <span className="ball-number">4</span>
                   </div>
-                  <div class="ball ball-red-striped p-2">
-                    <span class="ball-number">11</span>
+                  <div className="ball ball-red-striped p-2">
+                    <span className="ball-number">11</span>
                   </div>
-                  <div class="ball ball-brown p-2">
-                    <span class="ball-number">7</span>
+                  <div className="ball ball-brown p-2">
+                    <span className="ball-number">7</span>
                   </div>
                 </div>
               </div>
@@ -383,6 +394,7 @@ const PoolNumber = () => {
           </div>
         </div>
       </section>
+      <Footer/>
     </>
   );
 };

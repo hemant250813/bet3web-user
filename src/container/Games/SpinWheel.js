@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { BsCheckCircleFill } from "react-icons/bs";
+import { Footer } from "../../component/layout";
 import { Header, HumburgerHeader } from "../../component/layout";
 import GameTitle from "./GameTitle";
 import Money from "../../assets/images/games/spinWheel/money.png";
 import MoneyBlack from "../../assets/images/games/spinWheel/moneyblack.png";
 import HeaderBackground from "../../assets/images/headerBackground.jpg";
 import validateAmount from "../../validation/user/amount";
+import { getLocalStorageItem } from "../../utils/helper";
 
 const SpinWheel = () => {
   const [form, setForm] = useState({
@@ -17,12 +18,16 @@ const SpinWheel = () => {
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [error, setError] = useState({});
   const [hideHeader, setHideHeader] = useState(false);
+  const isAuth = getLocalStorageItem("token");
+  const userData = JSON.parse(getLocalStorageItem("user"));
 
   const [tabViews, setTabViews] = useState([
     { route: "rock", isActive: false },
     { route: `paper`, isActive: false },
     { route: `scissor`, isActive: false },
   ]);
+
+  const navigate = useNavigate();
 
   //wheel
   const segments = [
@@ -85,6 +90,11 @@ const SpinWheel = () => {
   //wheel
 
   useEffect(() => {
+    if (isAuth && userData) {
+      navigate("/spin_wheel");
+    } else {
+      navigate("/");
+    }
     // Function to update the window dimensions
     const updateWindowDimensions = () => {
       setWindowWidth(window.innerWidth);
@@ -381,7 +391,7 @@ const SpinWheel = () => {
         }}
       >
         {/* Mobile Header with Hamburger Icon */}
-        {hideHeader ? <HumburgerHeader /> : <Header />}
+        {hideHeader ? <HumburgerHeader /> : <Header isVerifyMail={false}/>}
         <GameTitle
           title="Play Rock Paper scissors"
           route="rock_paper_scissors"
@@ -499,6 +509,7 @@ const SpinWheel = () => {
           </div>
         </div>
       </section>
+      <Footer/>
     </>
   );
 };

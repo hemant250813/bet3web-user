@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { BsCheckCircleFill } from "react-icons/bs";
-import { Header, HumburgerHeader } from "../../../component/layout";
+import { Header, HumburgerHeader, Footer } from "../../../component/layout";
 import GameTitle from "../GameTitle";
 import Slot from "../NumberSlots/Slot";
 import validateAmount from "../../../validation/user/amount";
 import HeaderBackground from "../../../assets/images/headerBackground.jpg";
+import { getLocalStorageItem } from "../../../utils/helper";
 
 const PlayNumberSlots = () => {
   const [form, setForm] = useState({
@@ -27,8 +27,17 @@ const PlayNumberSlots = () => {
     { route: `paper`, isActive: false },
     { route: `scissor`, isActive: false },
   ]);
+  const isAuth = getLocalStorageItem("token");
+  const userData = JSON.parse(getLocalStorageItem("user"));
+  const navigate = useNavigate();
 
   useEffect(() => {
+    if (isAuth && userData) {
+      navigate("/number_slot");
+    } else {
+      navigate("/");
+    }
+
     // Function to update the window dimensions
     const updateWindowDimensions = () => {
       setWindowWidth(window.innerWidth);
@@ -107,7 +116,7 @@ const PlayNumberSlots = () => {
         }}
       >
         {/* Mobile Header with Hamburger Icon */}
-        {hideHeader ? <HumburgerHeader /> : <Header />}
+        {hideHeader ? <HumburgerHeader /> : <Header isVerifyMail={false}/>}
         <GameTitle title="Play Number Slot" route="number_slot" />
       </section>
 
@@ -204,6 +213,7 @@ const PlayNumberSlots = () => {
           </div>
         </div>
       </section>
+      <Footer/>
     </>
   );
 };
