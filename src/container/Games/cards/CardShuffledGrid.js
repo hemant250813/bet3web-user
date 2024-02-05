@@ -21,7 +21,7 @@ import qHeart from "../../../assets/images/games/card/qHeart.png";
 import spade5 from "../../../assets/images/games/card/spade5.png";
 import spade7 from "../../../assets/images/games/card/spade7.png";
 
-const CardShuffledGrid = () => {
+const CardShuffledGrid = ({gridCol, gap, padding}) => {
   const playingCard = [
     aBlack,
     aClubs,
@@ -72,7 +72,7 @@ const CardShuffledGrid = () => {
 
   return (
     <div
-      className="grid grid-cols-7 gap-4 p-0"
+      className={`grid ${gridCol} ${gap} ${padding}`}
       style={{ transform: "rotateY(0deg)" }}
     >
       {cards?.map((card, index) => (

@@ -42,12 +42,12 @@
 
 /* dice */
 
-.container {
+/* .container-dice {
   position: absolute;
   display: inline-block;
   top: 260px;
-  left: 75px !important;
-}
+  left: 155px !important;
+} */
 
 .dice {
   position: relative;
@@ -553,7 +553,7 @@ main {
   /*   background-image: radial-gradient(yellow, green); */
 }
 
-#title {
+/* #title {
   font-size: 7rem;
   font-weight: bold;
   color: #d60000;
@@ -561,9 +561,9 @@ main {
   letter-spacing: 3px;
   font-family: "Satisfy", cursive;
   margin: 20px;
-}
+} */
 
-.slot-object {
+/* .slot-object {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -574,7 +574,7 @@ main {
   box-shadow: inset 2px -10px 8px -10px black, inset 1px 11px 8px -10px black;
   margin: 10px;
   background: white;
-}
+} */
 
 .slot-object p {
   font-size: 4.5em;
@@ -590,12 +590,12 @@ main {
   text-shadow: rgba(255, 255, 255, 0.5) 2px 3px 3px;
 }
 
-.spindle {
+/* .spindle {
   height: auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
+} */
 
 #spinBtnContainer {
   margin-top: 20px;

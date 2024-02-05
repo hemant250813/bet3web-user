@@ -4,13 +4,13 @@ body{
   background-color: black;
 }
 
-.container {
+/* .container {
   position: relative;
   width: 100px;
   height: 100px;
   perspective: 600px;
   background-color: black;
-}
+} */
 
 .cube {
   position: absolute;
