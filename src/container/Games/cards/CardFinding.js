@@ -22,6 +22,10 @@ const CardFinding = () => {
   const [hideHeader, setHideHeader] = useState(false);
   const [error, setError] = useState({});
 
+  const [cardGrid, setCardGrid] = useState("");
+  const [cardGap, setCardGap] = useState("");
+  const [cardPadding, setCardPadding] = useState("");
+
   const [tabViews, setTabViews] = useState([
     { route: "card1", isActive: false },
     { route: `card2`, isActive: false },
@@ -32,9 +36,38 @@ const CardFinding = () => {
 
   useEffect(() => {
     if (isAuth && userData) {
-      navigate("/number_pool");
+      navigate("/card_finding");
     } else {
       navigate("/");
+    }
+    if (windowWidth === 2560) {
+      setCardGrid("grid-cols-7");
+      setCardGap("gap-4");
+      setCardPadding("p-0");
+    }else if(windowWidth === 1440){
+      setCardGrid("grid-cols-7");
+      setCardGap("gap-1");
+      setCardPadding("p-12");
+    }else if(windowWidth === 1024){
+      setCardGrid("grid-cols-6");
+      setCardGap("gap-1");
+      setCardPadding("p-12");
+    }else if(windowWidth === 768){
+      setCardGrid("grid-cols-5");
+      setCardGap("gap-1");
+      setCardPadding("p-1");
+    }else if(windowWidth === 425){
+      setCardGrid("grid-cols-3");
+      setCardGap("gap-1");
+      setCardPadding("p-7");
+    }else if(windowWidth === 375){
+      setCardGrid("grid-cols-3");
+      setCardGap("gap-1");
+      setCardPadding("p-8");
+    }else if(windowWidth === 320){
+      setCardGrid("grid-cols-3");
+      setCardGap("gap-1");
+      setCardPadding("p-1");
     }
 
     // Function to update the window dimensions
@@ -116,7 +149,7 @@ const CardFinding = () => {
         }}
       >
         {/* Mobile Header with Hamburger Icon */}
-        {hideHeader ? <HumburgerHeader /> : <Header isVerifyMail={false}/>}
+        {hideHeader ? <HumburgerHeader /> : <Header isVerifyMail={false} />}
         <GameTitle title="Play Card Finding" route="rock_paper_scissors" />
       </section>
 
@@ -124,14 +157,28 @@ const CardFinding = () => {
         className={`bg-black relative flex-grow p-12 md:p-8 lg:p-12 overflow-hidden`}
       >
         <div
-          className={`grid justify-items-stretch grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-8`}
+          className={`grid justify-items-stretch gap-8 ${
+            windowWidth === 320
+              ? "grid-cols-1"
+              : windowWidth === 1440
+              ? "grid-cols-1"
+              : windowWidth === 1024
+              ? "grid-cols-1"
+              : windowWidth === 768
+              ? "grid-cols-1"
+              : windowWidth === 425
+              ? "grid-cols-1"
+              : windowWidth === 375
+              ? "grid-cols-1"
+              : "grid-cols-2"
+          }`}
         >
           {/* Card 1 */}
           <div
             className="relative group mx-auto border border-gray-400 p-2"
             style={{
-              height: "700px",
-              width: "1000px",
+              height: windowWidth === 1024 ? "700px" : "700px",
+              width: windowWidth === 1024 ? "800px" : windowWidth === 768 ? "500px" : windowWidth === 425 ? "300px" : windowWidth === 375 ? "300px" : windowWidth === 320 ? "250px" : "1000px",
               overflow: "hidden",
               display: "flex",
               justifyContent: "center",
@@ -141,7 +188,11 @@ const CardFinding = () => {
             }}
           >
             {isCardShuffledGrid ? (
-              <CardShuffledGrid />
+              <CardShuffledGrid
+                gridCol={cardGrid}
+                gap={cardGap}
+                padding={cardPadding}
+              />
             ) : isCardShuffled ? (
               <CardShuffled />
             ) : (
@@ -154,7 +205,20 @@ const CardFinding = () => {
             className="relative group mx-auto border border-gray-400 p-2"
             style={{
               height: "700px",
-              width: "400px",
+              width:
+                windowWidth === 320
+                  ? "250px"
+                  : windowWidth === 375
+                  ? "300px"
+                  : windowWidth === 425
+                  ? "300px"
+                  : windowWidth === 768
+                  ? "650px"
+                  : windowWidth === 1024
+                  ? "850px"
+                  : windowWidth === 1440
+                  ? "650px"
+                  : "700px",
               overflow: "hidden",
               display: "flex",
               flexDirection: "column", // Display children in a column
@@ -165,8 +229,36 @@ const CardFinding = () => {
           >
             <div className="flex flex-col items-center justify-center p-3">
               <span className="flex items-center justify-center">
-                <p className="text-5xl text-white">Current Balance :</p>
-                <p className="text-5xl text-[#E3BC3F]"> 10.50 USD</p>
+                <p className={`${
+                    windowWidth === 320
+                      ? "text-xs"
+                      : windowWidth === 375
+                      ? "text-sm"
+                      : windowWidth === 425
+                      ? "text-base"
+                      : windowWidth === 768
+                      ? "text-3xl"
+                      : windowWidth === 1024
+                      ? "text-5xl"
+                      : windowWidth === 1440
+                      ? "text-3xl"
+                      : "text-5xl"
+                  }  text-white`}>Current Balance :</p>
+                <p className={`${
+                    windowWidth === 320
+                      ? "text-xs"
+                      : windowWidth === 375
+                      ? "text-sm"
+                      : windowWidth === 425
+                      ? "text-base"
+                      : windowWidth === 768
+                      ? "text-3xl"
+                      : windowWidth === 1024
+                      ? "text-5xl"
+                      : windowWidth === 1440
+                      ? "text-3xl"
+                      : "text-5xl"
+                  }  text-[#E3BC3F]`}> 10.50 USD</p>
               </span>
               <div className="flex flex-col items-center w-11/12 mt-3">
                 <div className="flex w-9/12">
@@ -196,7 +288,23 @@ const CardFinding = () => {
                 Minimum : 1.00 USD | Maximum : 100.00 USD | Win Amount 150.00 %
               </span>
             </div>
-            <div className="flex items-center justify-center relative p-4 gap-8">
+            <div className={`flex items-center justify-center relative gap-8 ${
+                windowWidth === 320
+                  ? "p-2"
+                  : windowWidth === 375
+                  ? "p-4"
+                  : windowWidth === 425
+                  ? "p-8"
+                  : windowWidth === 1024
+                  ? "p-8"
+                  : windowWidth === 1440
+                  ? "p-16"
+                  : windowWidth === 768
+                  ? "p-8"
+                  : windowWidth === 2560
+                  ? "p-4"
+                  : "p-20"
+              }`}>
               <span
                 onClick={(e) => {
                   tabSwitch(e, "card1");
@@ -226,7 +334,7 @@ const CardFinding = () => {
           </div>
         </div>
       </section>
-      <Footer/>
+      <Footer />
     </>
   );
 };

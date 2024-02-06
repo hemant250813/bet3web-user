@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import  "../../loader.css"
+import "../../loader.css";
 import face1 from "../../assets/images/loader/61051cb37ad601627724979.jpg";
 import face2 from "../../assets/images/loader/630600f0daf711661337840.jpg";
 import face3 from "../../assets/images/loader/6306011c5afd11661337884.jpg";
@@ -27,7 +27,7 @@ const Loader = () => {
       window.removeEventListener("resize", updateWindowDimensions);
     };
   }, [windowWidth, windowHeight]);
-
+  console.log("windowWidth", windowWidth);
   return (
     <div className="relative">
       <div
@@ -35,39 +35,48 @@ const Loader = () => {
           position: "absolute",
           left:
             windowWidth === 2560
-              ? "1100px"
+              ? "850px"
               : windowWidth === 1440
-              ? "600px"
+              ? "450px"
               : windowWidth === 1024
-              ? "400px"
+              ? "310px"
               : windowWidth === 768
-              ? "270px"
+              ? "230px"
               : windowWidth === 425
               ? "100px"
               : windowWidth === 375
-              ? "70px"
+              ? "80px"
               : windowWidth === 320
-              ? "40px"
+              ? "70px"
               : "790px",
           top:
             windowWidth === 2560
-              ? "390px"
+              ? "360px"
               : windowWidth === 1440
-              ? "390px"
+              ? "360px"
               : windowWidth === 1024
-              ? "390px"
+              ? "450px"
               : windowWidth === 768
-              ? "390px"
+              ? "450px"
               : windowWidth === 425
               ? "340px"
               : windowWidth === 375
-              ? "300px"
+              ? "390px"
               : windowWidth === 320
-              ? "300px"
+              ? "380px"
               : "130px",
         }}
       >
-        <div className="container">
+        <div
+          style={{
+            position: "relative",
+            width: "100px",
+            height: "100px",
+            perspective: "600px",
+            backgroundColor: "black",
+          }}
+          // className="container"
+        >
           <div className="cube">
             <div
               style={{
