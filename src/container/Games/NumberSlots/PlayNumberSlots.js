@@ -27,6 +27,14 @@ const PlayNumberSlots = () => {
     { route: `paper`, isActive: false },
     { route: `scissor`, isActive: false },
   ]);
+  const [widthSlot, setWidthSlot] = useState("");
+  const [heightSlot, setHeightSlot] = useState("");
+  const [paddingSlot, setPaddingSlot] = useState("");
+  const [marginSlot, setMarginSlot] = useState("");
+  const [fontSizeTitle, setFontSizeTitle] = useState("");
+  const [letterSpacingTitle, setLetterSpacingTitle] = useState("");
+  const [marginTitle, setMarginTitle] = useState("");
+
   const isAuth = getLocalStorageItem("token");
   const userData = JSON.parse(getLocalStorageItem("user"));
   const navigate = useNavigate();
@@ -36,6 +44,50 @@ const PlayNumberSlots = () => {
       navigate("/number_slot");
     } else {
       navigate("/");
+    }
+
+    if (windowWidth === 2560) {
+      setWidthSlot("110px");
+      setHeightSlot("100px");
+      setPaddingSlot("20px 50px 25px");
+      setMarginSlot("10px");
+
+      setFontSizeTitle("7rem");
+      setLetterSpacingTitle("3px");
+      setMarginTitle("20px");
+    } else if (windowWidth === 768) {
+      setWidthSlot("110px");
+      setHeightSlot("250px");
+      setPaddingSlot("25px 80px 35px");
+      setMarginSlot("15px");
+      setFontSizeTitle("3rem");
+      setLetterSpacingTitle("1px");
+      setMarginTitle("10px");
+    }else if (windowWidth === 425) {
+      setWidthSlot("50px");
+      setHeightSlot("100px");
+      setPaddingSlot("10px 30px 15px");
+      setMarginSlot("10px");
+      setFontSizeTitle("3rem");
+      setLetterSpacingTitle("1px");
+      setMarginTitle("10px");
+    }else if (windowWidth === 320) {
+      setWidthSlot("50px");
+      setHeightSlot("100px");
+      setPaddingSlot("10px 30px 15px");
+      setMarginSlot("8px");
+      setFontSizeTitle("2rem");
+      setLetterSpacingTitle("0px");
+      setMarginTitle("15px");
+    }else if (windowWidth === 1440) {
+      setWidthSlot("110px");
+      setHeightSlot("180px");
+      setPaddingSlot("20px 60px 25px");
+      setMarginSlot("10px");
+
+      setFontSizeTitle("4rem");
+      setLetterSpacingTitle("3px");
+      setMarginTitle("20px");
     }
 
     // Function to update the window dimensions
@@ -116,7 +168,7 @@ const PlayNumberSlots = () => {
         }}
       >
         {/* Mobile Header with Hamburger Icon */}
-        {hideHeader ? <HumburgerHeader /> : <Header isVerifyMail={false}/>}
+        {hideHeader ? <HumburgerHeader /> : <Header isVerifyMail={false} />}
         <GameTitle title="Play Number Slot" route="number_slot" />
       </section>
 
@@ -124,14 +176,54 @@ const PlayNumberSlots = () => {
         className={`bg-black relative flex-grow p-12 md:p-8 lg:p-12 overflow-hidden`}
       >
         <div
-          className={`grid justify-items-stretch grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-8`}
+          className={`grid justify-items-stretch gap-8 ${
+            windowWidth === 320
+              ? "grid-cols-1"
+              : windowWidth === 1440
+              ? "grid-cols-2"
+              : windowWidth === 1024
+              ? "grid-cols-1"
+              : windowWidth === 768
+              ? "grid-cols-1"
+              : windowWidth === 425
+              ? "grid-cols-1"
+              : windowWidth === 375
+              ? "grid-cols-1"
+              : "grid-cols-2"
+          }`}
         >
           {/* Card 1 */}
           <div
             className="relative group mx-auto border border-gray-400 p-4"
             style={{
-              height: "700px",
-              width: "700px",
+              height:
+                windowWidth === 320
+                  ? "250px"
+                  : windowWidth === 375
+                  ? "300px"
+                  : windowWidth === 425
+                  ? "300px"
+                  : windowWidth === 768
+                  ? "650px"
+                  : windowWidth === 1024
+                  ? "650px"
+                  : windowWidth === 1440
+                  ? "700px"
+                  : "700px",
+              width:
+                windowWidth === 320
+                  ? "250px"
+                  : windowWidth === 375
+                  ? "300px"
+                  : windowWidth === 425
+                  ? "300px"
+                  : windowWidth === 768
+                  ? "650px"
+                  : windowWidth === 1024
+                  ? "850px"
+                  : windowWidth === 1440
+                  ? "640px"
+                  : "700px",
               overflow: "hidden",
               display: "flex",
               justifyContent: "center",
@@ -143,6 +235,13 @@ const PlayNumberSlots = () => {
               isPaused={isPaused}
               setIsPaused={setIsPaused}
               randomValue={randomNumber}
+              widthSlot={widthSlot}
+              heightSlot={heightSlot}
+              paddingSlot={paddingSlot}
+              marginSlot={marginSlot}
+              fontSizeTitle={fontSizeTitle}
+              letterSpacingTitle={letterSpacingTitle}
+              marginTitle={marginTitle}
             />
           </div>
 
@@ -151,7 +250,20 @@ const PlayNumberSlots = () => {
             className="relative group mx-auto border border-gray-400 p-4"
             style={{
               height: "700px",
-              width: "700px",
+              width:
+                windowWidth === 320
+                  ? "250px"
+                  : windowWidth === 375
+                  ? "300px"
+                  : windowWidth === 425
+                  ? "300px"
+                  : windowWidth === 768
+                  ? "650px"
+                  : windowWidth === 1024
+                  ? "850px"
+                  : windowWidth === 1440
+                  ? "650px"
+                  : "700px",
               overflow: "hidden",
               display: "flex",
               flexDirection: "column", // Display children in a column
@@ -162,8 +274,45 @@ const PlayNumberSlots = () => {
           >
             <div className="flex flex-col items-center justify-center p-3">
               <span className="flex items-center justify-center">
-                <p className="text-5xl text-white">Current Balance :</p>
-                <p className="text-5xl text-[#E3BC3F]"> 10.50 USD</p>
+                <p
+                  className={`${
+                    windowWidth === 320
+                      ? "text-xs"
+                      : windowWidth === 375
+                      ? "text-sm"
+                      : windowWidth === 425
+                      ? "text-base"
+                      : windowWidth === 768
+                      ? "text-3xl"
+                      : windowWidth === 1024
+                      ? "text-5xl"
+                      : windowWidth === 1440
+                      ? "text-3xl"
+                      : "text-5xl"
+                  }  text-white`}
+                >
+                  Current Balance :
+                </p>
+                <p
+                  className={`${
+                    windowWidth === 320
+                      ? "text-xs"
+                      : windowWidth === 375
+                      ? "text-sm"
+                      : windowWidth === 425
+                      ? "text-base"
+                      : windowWidth === 768
+                      ? "text-3xl"
+                      : windowWidth === 1024
+                      ? "text-5xl"
+                      : windowWidth === 1440
+                      ? "text-3xl"
+                      : "text-5xl"
+                  }  text-[#E3BC3F]`}
+                >
+                  {" "}
+                  10.50 USD
+                </p>
               </span>
               <div className="flex flex-col items-center w-11/12 mt-3">
                 <div className="flex w-9/12">
@@ -213,7 +362,7 @@ const PlayNumberSlots = () => {
           </div>
         </div>
       </section>
-      <Footer/>
+      <Footer />
     </>
   );
 };

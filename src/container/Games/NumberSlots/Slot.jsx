@@ -2,7 +2,18 @@ import React, { useState, useEffect, useRef, memo } from "react";
 
 const slotChoices = ["8", "4", "2", "6", "5", "7", "1", "3", "9"];
 
-const NumberSlot = ({ isPaused, setIsPaused, randomValue }) => {
+const NumberSlot = ({
+  isPaused,
+  setIsPaused,
+  randomValue,
+  widthSlot,
+  heightSlot,
+  paddingSlot,
+  marginSlot,
+  fontSizeTitle,
+  letterSpacingTitle,
+  marginTitle
+}) => {
   const [content, setContent] = useState(slotChoices);
   const [pick1, setPick1] = useState("1");
   const [pick2, setPick2] = useState("6");
@@ -155,8 +166,15 @@ const NumberSlot = ({ isPaused, setIsPaused, randomValue }) => {
     <main
       style={
         jackpot
-          ? { backgroundColor: bgColor }
-          : { backgroundImage: "radial-gradient(yellow, green)" }
+          ? {
+              backgroundColor: bgColor,
+              //  height: "200px", width: "200px"
+            }
+          : {
+              backgroundImage: "radial-gradient(yellow, green)",
+              // height: "200px",
+              // width: "200px",
+            }
       }
     >
       {/* {console.log("kk")}
@@ -167,25 +185,90 @@ const NumberSlot = ({ isPaused, setIsPaused, randomValue }) => {
         })} */}
       <header>
         {/* <h1 id="title">{jackpot ? "JACKPOT!" : "Lost Wages"}</h1> */}
-        <h1 id="title">{jackpot ? "JACKPOT!" : "Lost Wages"}</h1>
+        <h1
+          style={{
+            fontSize: fontSizeTitle,
+            fontWeight: "bold",
+            color: "#d60000",
+            textShadow: "0 0 13px white",
+            letterSpacing: letterSpacingTitle,
+            fontFamily: '"Satisfy", cursive',
+            margin: marginTitle,
+          }}
+          id="title"
+        >
+          {jackpot ? "JACKPOT!" : "Lost Wages"}
+        </h1>
       </header>
-      <section className="spindle">
-        <Slot result={pick1} />
-        <Slot result={pick2} />
-        <Slot result={pick3} />
+      <section
+        style={{
+          height: "auto",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+        className="spindle"
+      >
+        <Slot
+          result={pick1}
+          widthSlot={widthSlot}
+          heightSlot={heightSlot}
+          paddingSlot={paddingSlot}
+          marginSlot={marginSlot}
+          fontSizeTitle={fontSizeTitle}
+          letterSpacingTitle={letterSpacingTitle}
+          marginTitle={marginTitle}
+        />
+        <Slot
+          result={pick2}
+          widthSlot={widthSlot}
+          heightSlot={heightSlot}
+          paddingSlot={paddingSlot}
+          marginSlot={marginSlot}
+          fontSizeTitle={fontSizeTitle}
+          letterSpacingTitle={letterSpacingTitle}
+          marginTitle={marginTitle}
+        />
+        <Slot
+          result={pick3}
+          widthSlot={widthSlot}
+          heightSlot={heightSlot}
+          paddingSlot={paddingSlot}
+          marginSlot={marginSlot}
+          fontSizeTitle={fontSizeTitle}
+          letterSpacingTitle={letterSpacingTitle}
+          marginTitle={marginTitle}
+        />
       </section>
       {/* <SpinButton spinAmount={startSpinCycle} /> */}
     </main>
   );
 };
 
-const Slot = memo(({ result }) => {
-  return (
-    <div className="slot-object">
-      <p className="reel-obj">{result}</p>
-    </div>
-  );
-});
+const Slot = memo(
+  ({ result, widthSlot, heightSlot, paddingSlot, marginSlot }) => {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: widthSlot,
+          height: heightSlot,
+          padding: paddingSlot,
+          border: "1px solid gray",
+          boxShadow:
+            "inset 2px -10px 8px -10px black, inset 1px 11px 8px -10px black",
+          margin: marginSlot,
+          background: "white",
+        }}
+        className="slot-object"
+      >
+        <p className="reel-obj">{result}</p>
+      </div>
+    );
+  }
+);
 
 // const SpinButton = ({ spinAmount }) => {
 //   const handleSpin = () => {
