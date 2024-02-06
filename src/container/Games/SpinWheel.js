@@ -18,6 +18,7 @@ const SpinWheel = () => {
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [error, setError] = useState({});
   const [hideHeader, setHideHeader] = useState(false);
+  const [loading, setLoading] = useState(false);
   const isAuth = getLocalStorageItem("token");
   const userData = JSON.parse(getLocalStorageItem("user"));
 
@@ -90,6 +91,12 @@ const SpinWheel = () => {
   //wheel
 
   useEffect(() => {
+    if (windowWidth <= 768) {
+      setHideHeader(true);
+    } else {
+      setHideHeader(false);
+    }
+    
     if (isAuth && userData) {
       navigate("/spin_wheel");
     } else {
@@ -120,7 +127,6 @@ const SpinWheel = () => {
 
   const wheelInit = () => {
     const canvas = initCanvas();
-    console.log("canvas", canvas);
     if (canvas) {
       wheelDraw(canvas);
     }
@@ -144,7 +150,6 @@ const SpinWheel = () => {
 
   const initCanvas = () => {
     let canvas = document.getElementById("canvas");
-    console.log("initCanvas", canvas);
     if (!canvas) {
       canvas = document.createElement("canvas");
       canvas.setAttribute("width", width);
@@ -178,11 +183,9 @@ const SpinWheel = () => {
   };
 
   const onTimerTick = () => {
-    console.log("onTimerTick");
     frames++;
     draw();
     const duration = new Date().getTime() - spinStart;
-    console.log("duration", duration);
     let progress = 0;
     let finished = false;
     if (duration < upTime) {
@@ -262,7 +265,6 @@ const SpinWheel = () => {
   const drawWheel = () => {
     const ctx = canvasContext;
     if (ctx !== null) {
-      console.log("drawWheel");
       let lastAngle = angleCurrent;
       const len = segments.length;
       const PI2 = Math.PI * 2;
@@ -304,7 +306,6 @@ const SpinWheel = () => {
   const drawNeedle = () => {
     const ctx = canvasContext;
     if (ctx !== null) {
-      console.log("drawNeedle");
       ctx.lineWidth = 1;
       ctx.strokeStyle = contrastColor || "white";
       ctx.fileStyle = contrastColor || "white";
@@ -331,9 +332,7 @@ const SpinWheel = () => {
   };
 
   const clear = () => {
-    console.log("canvasContext", canvasContext);
     const ctx = canvasContext;
-    console.log("clear", ctx);
     if (ctx) {
       ctx.clearRect(0, 0, 1000, 800);
     }
@@ -391,7 +390,7 @@ const SpinWheel = () => {
         }}
       >
         {/* Mobile Header with Hamburger Icon */}
-        {hideHeader ? <HumburgerHeader /> : <Header isVerifyMail={false}/>}
+        {hideHeader ? <HumburgerHeader setLoading={setLoading}/> : <Header isVerifyMail={false} setLoading={setLoading}/>}
         <GameTitle
           title="Play Rock Paper scissors"
           route="rock_paper_scissors"

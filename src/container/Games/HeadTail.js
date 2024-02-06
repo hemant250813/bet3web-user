@@ -30,8 +30,14 @@ const HeadTail = () => {
   const isAuth = getLocalStorageItem("token");
   const userData = JSON.parse(getLocalStorageItem("user"));
   const navigate = useNavigate();
-  console.log("flipResult", flipResult);
+
   useEffect(() => {
+    if (windowWidth <= 768) {
+      setHideHeader(true);
+    } else {
+      setHideHeader(false);
+    }
+    
     if (isAuth && userData) {
       navigate("/head_tail");
     } else {
@@ -148,7 +154,7 @@ const HeadTail = () => {
       >
         {/* Mobile Header with Hamburger Icon */}
         {hideHeader ? (
-          <HumburgerHeader />
+          <HumburgerHeader setLoading={setLoading}/>
         ) : (
           <Header
             isVerifyMail={false}

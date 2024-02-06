@@ -42,7 +42,6 @@ const Section1 = ({ loading, setLoading }) => {
   }, [windowWidth, windowHeight]);
 
   const handleLogin = () => {
-    console.log("handleLogin");
     navigate("/login");
   };
 
@@ -64,7 +63,8 @@ const Section1 = ({ loading, setLoading }) => {
           {/* Mobile Header with Hamburger Icon */}
 
           {hideHeader ? (
-            <HumburgerHeader />
+            <HumburgerHeader loading={loading}
+            setLoading={setLoading}/>
           ) : (
             <Header
               isVerifyMail={true}
@@ -77,8 +77,8 @@ const Section1 = ({ loading, setLoading }) => {
           {/* Your main content goes here */}
           <div
             className={`${
-              windowWidth <= 425 ? "section1-title" : ""
-            } flex flex-col mt-8 md:mt-16 lg:mt-96 ml-4 md:ml-8 lg:ml-12`}
+              windowWidth <= 425 ? "section1-title" : windowWidth <= 768 ? "mt-80" : windowWidth <= 1024 ? "mt-80" : windowWidth <= 1440 ? "mt-80" : windowWidth <= 2560 ? "mt-80" : ""
+            } flex flex-col ml-4 md:ml-8 lg:ml-12`}
           >
             <h2 className="text-[#E3BC3F] text-3xl md:text-4xl lg:text-5xl font-semibold mb-4 leading-tight whitespace-pre-line">
               Play online games

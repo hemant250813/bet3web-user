@@ -10,7 +10,6 @@ function* resendOtpRequest(action) {
       "/api/v1/resend-otp",
       action?.payload?.formPayload
     );
-    console.log("resendOtpRequest",data);
     if (data?.meta?.code === 200) {
       yield put(resendOtpSuccess(data));
       notifySuccess(data?.meta?.message);

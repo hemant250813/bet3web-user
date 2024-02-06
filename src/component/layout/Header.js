@@ -13,11 +13,10 @@ const Header = ({ isVerifyMail, setLoading }) => {
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [loginTimeOut, setLoginTimeOut] = useState(0);
 
-  const dispatch = useDispatch();
   const isAuth = getLocalStorageItem("token");
   const userData = JSON.parse(getLocalStorageItem("user"));
-  console.log("isAuth", isAuth);
-  console.log("userData", userData);
+  
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,7 +40,7 @@ const Header = ({ isVerifyMail, setLoading }) => {
     let payload = {
       user_id: userData.username,
     };
-    console.log("payload", payload);
+ 
     dispatch(
       logout({
         payload,

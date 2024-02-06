@@ -25,6 +25,7 @@ const PoolNumber = () => {
   const [error, setError] = useState({});
   const [hideHeader, setHideHeader] = useState(false);
   const [pause, setPause] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [tabViews, setTabViews] = useState([
     { route: "ball1", isActive: false },
     { route: `ball2`, isActive: false },
@@ -40,6 +41,12 @@ const PoolNumber = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (windowWidth <= 768) {
+      setHideHeader(true);
+    } else {
+      setHideHeader(false);
+    }
+    
     if (isAuth && userData) {
       navigate("/number_pool");
     } else {
@@ -110,7 +117,6 @@ const PoolNumber = () => {
       ...prevState,
       ["amount"]: "",
     }));
-    console.log("randomNumber", randomNumber);
   };
 
   const handleClick = () => {
@@ -151,7 +157,7 @@ const PoolNumber = () => {
         }}
       >
         {/* Mobile Header with Hamburger Icon */}
-        {hideHeader ? <HumburgerHeader /> : <Header isVerifyMail={false}/>}
+        {hideHeader ? <HumburgerHeader setLoading={setLoading}/> : <Header isVerifyMail={false} setLoading={setLoading}/>}
         <GameTitle title="Play Pool Number" route="number_pool" />
       </section>
 

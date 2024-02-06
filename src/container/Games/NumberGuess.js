@@ -17,6 +17,7 @@ const NumberGuess = () => {
   const [guessNumber, setGuessNumber] = useState(null);
   const [inputNumber, setInputNumber] = useState(0);
   const [numberOfAttempt, setNumberOfAttempt] = useState(0);
+  const [loading, setLoading] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [hideHeader, setHideHeader] = useState(false);
@@ -25,6 +26,12 @@ const NumberGuess = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (windowWidth <= 768) {
+      setHideHeader(true);
+    } else {
+      setHideHeader(false);
+    }
+    
     if (isAuth && userData) {
       navigate("/number_guess");
     } else {
@@ -100,7 +107,7 @@ const NumberGuess = () => {
         }}
       >
         {/* Mobile Header with Hamburger Icon */}
-        {hideHeader ? <HumburgerHeader /> : <Header isVerifyMail={false} />}
+        {hideHeader ? <HumburgerHeader setLoading={setLoading}/> : <Header isVerifyMail={false} setLoading={setLoading}/>}
         <GameTitle title="Play Number Guessing" route="number_guess" />
       </section>
 

@@ -20,7 +20,6 @@ const Login = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
 
-  console.log("loading", loading);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -57,7 +56,6 @@ const Login = () => {
   };
 
   const afterLoadingDispatch = () => {
-    console.log("afterLoadingDispatch", loading);
     let payload = {
       email: form.email,
       password: form.password,
@@ -67,7 +65,6 @@ const Login = () => {
         payload,
         callback: async (data) => {
           if (data) {
-            console.log("afterLoadingDispatch", loading);
             setIsSubmit(false);
             setLoading(false);
             navigate("/dashboard");
@@ -91,7 +88,6 @@ const Login = () => {
     }
   };
 
-  console.log("windowWidth login", windowWidth);
   return (
     <Fragment>
       {loading ? (

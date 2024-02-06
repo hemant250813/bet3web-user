@@ -17,12 +17,35 @@ const Game = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (windowWidth <= 768) {
+      setHideHeader(true);
+    } else {
+      setHideHeader(false);
+    }
+
+    // Function to update the window dimensions
+    const updateWindowDimensions = () => {
+      setWindowWidth(window.innerWidth);
+      setWindowHeight(window.innerHeight);
+    };
+
+     // Add an event listener to update dimensions when the window is resized
+     window.addEventListener("resize", updateWindowDimensions);
+
     if (isAuth && userData) {
       navigate("/dashboard");
     } else {
       navigate("/");
     }
-  }, []);
+
+    // Clean up the event listener when the component unmounts
+    return () => {
+      window.removeEventListener("resize", updateWindowDimensions);
+    };
+
+  }, [windowWidth, windowHeight]);
+
+  console.log("hideHeader",hideHeader);
   return (
     <>
       {loading ? (

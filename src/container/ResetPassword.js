@@ -25,7 +25,7 @@ const ResetPassword = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
-  console.log("location", location);
+
   useEffect(() => {
     // Function to update the window dimensions
     const updateWindowDimensions = () => {
@@ -64,7 +64,7 @@ const ResetPassword = () => {
         password: form.password,
         otp: location.state?.otp,
       };
-      console.log("trigger", payload);
+  
       dispatch(
         resetPassword({
           payload,
@@ -73,7 +73,7 @@ const ResetPassword = () => {
               if (data?.meta?.code !== 400) {
                 navigate("/login");
               }
-              console.log("callback", data);
+
               setIsSubmit(false);
               setLoading(false);
             }

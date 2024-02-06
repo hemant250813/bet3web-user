@@ -77,7 +77,6 @@ const Register = () => {
         payload,
         callback: async (data) => {
           if (data) {
-            console.log("hello", data);
             setIsSubmit(false);
             setLoading(false);
             navigate("/verify_email", { state: form.email });

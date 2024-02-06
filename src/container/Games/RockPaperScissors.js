@@ -20,9 +20,9 @@ const RockPaperScissors = () => {
   const [isPaused, setIsPaused] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
-
+  const [loading, setLoading] = useState(false);
   const [hideHeader, setHideHeader] = useState(false);
-  console.log("isPaused", isPaused);
+
   const [tabViews, setTabViews] = useState([
     { route: "rock", isActive: false },
     { route: `paper`, isActive: false },
@@ -34,6 +34,12 @@ const RockPaperScissors = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (windowWidth <= 768) {
+      setHideHeader(true);
+    } else {
+      setHideHeader(false);
+    }
+    
     if (isAuth && userData) {
       navigate("/rock_paper_scissors");
     } else {
@@ -131,7 +137,7 @@ const RockPaperScissors = () => {
         }}
       >
         {/* Mobile Header with Hamburger Icon */}
-        {hideHeader ? <HumburgerHeader /> : <Header isVerifyMail={false} />}
+        {hideHeader ? <HumburgerHeader setLoading={setLoading} /> : <Header isVerifyMail={false} setLoading={setLoading}/>}
         <GameTitle
           title="Play Rock Paper scissors"
           route="rock_paper_scissors"

@@ -21,7 +21,7 @@ const CardFinding = () => {
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [hideHeader, setHideHeader] = useState(false);
   const [error, setError] = useState({});
-
+  const [loading, setLoading] = useState(false);
   const [cardGrid, setCardGrid] = useState("");
   const [cardGap, setCardGap] = useState("");
   const [cardPadding, setCardPadding] = useState("");
@@ -35,6 +35,12 @@ const CardFinding = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (windowWidth <= 768) {
+      setHideHeader(true);
+    } else {
+      setHideHeader(false);
+    }
+    
     if (isAuth && userData) {
       navigate("/card_finding");
     } else {
@@ -126,7 +132,6 @@ const CardFinding = () => {
   };
 
   const callbackCardShuffledPicked = () => {
-    console.log("hello");
     setForm((prevState) => ({
       ...prevState,
       ["amount"]: "",
@@ -149,7 +154,7 @@ const CardFinding = () => {
         }}
       >
         {/* Mobile Header with Hamburger Icon */}
-        {hideHeader ? <HumburgerHeader /> : <Header isVerifyMail={false} />}
+        {hideHeader ? <HumburgerHeader setLoading={setLoading}/> : <Header isVerifyMail={false} setLoading={setLoading}/>}
         <GameTitle title="Play Card Finding" route="rock_paper_scissors" />
       </section>
 
