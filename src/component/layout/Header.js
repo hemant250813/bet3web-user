@@ -8,14 +8,15 @@ import Logo from "../../assets/images/logo.png";
 import { getLocalStorageItem } from "../../utils/helper";
 import { logout } from "../../redux/action";
 
-const Header = ({ isVerifyMail, setLoading }) => {
+const Header = ({ isVerifyMail, setLoading, navbar }) => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [loginTimeOut, setLoginTimeOut] = useState(0);
+  const [activeTabIndex, setActiveTabIndex] = useState(0);
 
   const isAuth = getLocalStorageItem("token");
   const userData = JSON.parse(getLocalStorageItem("user"));
-  
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -40,7 +41,7 @@ const Header = ({ isVerifyMail, setLoading }) => {
     let payload = {
       user_id: userData.username,
     };
- 
+
     dispatch(
       logout({
         payload,
@@ -62,6 +63,10 @@ const Header = ({ isVerifyMail, setLoading }) => {
     setLoginTimeOut(timeout);
   };
 
+  const activeTab = (index) => {
+    setActiveTabIndex(index);
+  };
+
   return (
     <Fragment>
       <header className="md:flex absolute top-0 left-0 right-0 bg-black bg-opacity-80 text-[#e7e7f4] p-4 flex items-center justify-around ">
@@ -78,15 +83,53 @@ const Header = ({ isVerifyMail, setLoading }) => {
         </div>
 
         {/* Middle: Home, Contact, and Game Tabs */}
-        <nav className="flex items-center space-x-4">
-          <span className="hover:text-[#E3BC3F] cursor-pointer">Home</span>
+        <nav className="flex items-center space-x-4 z-50">
+          {navbar?.map((nav, index) => (
+            <div
+              className="relative"
+              key={index}
+              onMouseEnter={() => activeTab(index)}
+              onMouseLeave={()=>setActiveTabIndex(999)}
+            >
+              <span
+                onClick={() => navigate(`/${nav?.route}`)}
+                className="hover:text-[#E3BC3F] cursor-pointer p-3"
+              >
+                {nav?.name}
+              </span>
+              {index !== navbar?.length - 1 && <>|</>}
+              {nav?.child && (index === activeTabIndex) && (
+                <div class="grid grid-cols-1 w-40 h-40 absolute top-12  border-2 border-[#E3BC3F]  shadow-md bg-black">
+                  {nav?.children?.map((sub, subIndex) => (
+                    <Fragment key={subIndex}>
+                      <span
+                        class={`p-2 ${
+                          subIndex === 0
+                            ? "border-b-2 border-[#E3BC3F]"
+                            : subIndex === 1
+                            ? "border-b-2 border-[#E3BC3F]"
+                            : nav?.children?.length === 3
+                            ? "border-b-2 border-[#E3BC3F]"
+                            : ""
+                        } `}
+                      >
+                        {sub?.name}
+                      </span>
+                      {/* <span class="p-2">{sub?.name}</span> */}
+                    </Fragment>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+          {/* <span className="hover:text-[#E3BC3F] cursor-pointer">Home</span>
           <span className="hover:text-[#E3BC3F] cursor-pointer">Contact</span>
           <span
             onClick={() => navigate("/games")}
             className="hover:text-[#E3BC3F] cursor-pointer"
           >
             Game
-          </span>
+          </span> */}
         </nav>
 
         {/* Right Side: Login, Registration, and Dropdown */}

@@ -8,7 +8,7 @@ import validateAmount from "../../validation/user/amount";
 import HeaderBackground from "../../assets/images/headerBackground.jpg";
 import { getLocalStorageItem } from "../../utils/helper";
 
-const HeadTail = () => {
+const HeadTail = ({navbar}) => {
   const [form, setForm] = useState({
     amount: "",
   });
@@ -160,6 +160,7 @@ const HeadTail = () => {
             isVerifyMail={false}
             loading={loading}
             setLoading={setLoading}
+            navbar={navbar}
           />
         )}
         <GameTitle title="Play Head & Tail" route="head_tail" />

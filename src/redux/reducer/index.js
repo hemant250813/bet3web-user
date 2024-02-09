@@ -8,6 +8,7 @@ import Logout from "./auth/logoutReducer";
 import ResendOtp from "./user/resendOtpReducer";
 import ForgotPassword from "./user/forgotPasswordReducer";
 import ResetPassword from "./user/resetPasswordReducer";
+import UserDetail from "./auth/userDetailReducer";
 
 const appReducer = combineReducers({
   Registration,
@@ -16,7 +17,8 @@ const appReducer = combineReducers({
   Logout,
   ResendOtp,
   ForgotPassword,
-  ResetPassword
+  ResetPassword,
+  UserDetail
 });
 const reducers = (state, action) => {
   return appReducer(state, action);

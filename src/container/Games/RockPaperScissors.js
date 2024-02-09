@@ -10,7 +10,7 @@ import validateAmount from "../../validation/user/amount";
 import HeaderBackground from "../../assets/images/headerBackground.jpg";
 import { getLocalStorageItem } from "../../utils/helper";
 
-const RockPaperScissors = () => {
+const RockPaperScissors = ({navbar}) => {
   const images = [Rock, Paper, Scissors];
   const [form, setForm] = useState({
     amount: "",
@@ -137,7 +137,7 @@ const RockPaperScissors = () => {
         }}
       >
         {/* Mobile Header with Hamburger Icon */}
-        {hideHeader ? <HumburgerHeader setLoading={setLoading} /> : <Header isVerifyMail={false} setLoading={setLoading}/>}
+        {hideHeader ? <HumburgerHeader setLoading={setLoading} /> : <Header isVerifyMail={false} setLoading={setLoading} navbar={navbar}/>}
         <GameTitle
           title="Play Rock Paper scissors"
           route="rock_paper_scissors"

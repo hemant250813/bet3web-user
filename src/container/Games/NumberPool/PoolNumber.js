@@ -14,7 +14,7 @@ import Ball8 from "../../../assets/images/games/ball/ball08.png";
 import HeaderBackground from "../../../assets/images/headerBackground.jpg";
 import { getLocalStorageItem } from "../../../utils/helper";
 
-const PoolNumber = () => {
+const PoolNumber = ({navbar}) => {
   const [form, setForm] = useState({
     amount: "",
   });
@@ -157,7 +157,7 @@ const PoolNumber = () => {
         }}
       >
         {/* Mobile Header with Hamburger Icon */}
-        {hideHeader ? <HumburgerHeader setLoading={setLoading}/> : <Header isVerifyMail={false} setLoading={setLoading}/>}
+        {hideHeader ? <HumburgerHeader setLoading={setLoading}/> : <Header isVerifyMail={false} setLoading={setLoading} navbar={navbar}/>}
         <GameTitle title="Play Pool Number" route="number_pool" />
       </section>
 

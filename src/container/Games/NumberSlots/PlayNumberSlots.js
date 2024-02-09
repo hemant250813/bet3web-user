@@ -7,7 +7,7 @@ import validateAmount from "../../../validation/user/amount";
 import HeaderBackground from "../../../assets/images/headerBackground.jpg";
 import { getLocalStorageItem } from "../../../utils/helper";
 
-const PlayNumberSlots = () => {
+const PlayNumberSlots = ({navbar}) => {
   const [form, setForm] = useState({
     amount: "",
   });
@@ -175,7 +175,7 @@ const PlayNumberSlots = () => {
         }}
       >
         {/* Mobile Header with Hamburger Icon */}
-        {hideHeader ? <HumburgerHeader setLoading={setLoading}/> : <Header isVerifyMail={false} setLoading={setLoading}/>}
+        {hideHeader ? <HumburgerHeader setLoading={setLoading}/> : <Header isVerifyMail={false} setLoading={setLoading} navbar={navbar}/>}
         <GameTitle title="Play Number Slot" route="number_slot" />
       </section>
 

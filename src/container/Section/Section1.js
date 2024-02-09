@@ -5,7 +5,7 @@ import HeaderBackground from "../../assets/images/headerBackground.jpg";
 import { getLocalStorageItem } from "../../utils/helper";
 import { Loader } from "../../component/commonComponent";
 
-const Section1 = ({ loading, setLoading }) => {
+const Section1 = ({ loading, setLoading, navbar }) => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [hideHeader, setHideHeader] = useState(false);
@@ -70,6 +70,7 @@ const Section1 = ({ loading, setLoading }) => {
               isVerifyMail={true}
               loading={loading}
               setLoading={setLoading}
+              navbar={navbar}
             />
           )}
 

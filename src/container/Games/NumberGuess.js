@@ -7,7 +7,7 @@ import validateAmount from "../../validation/user/amount";
 import HeaderBackground from "../../assets/images/headerBackground.jpg";
 import { getLocalStorageItem } from "../../utils/helper";
 
-const NumberGuess = () => {
+const NumberGuess = ({navbar}) => {
   const [form, setForm] = useState({
     amount: "",
   });
@@ -107,7 +107,7 @@ const NumberGuess = () => {
         }}
       >
         {/* Mobile Header with Hamburger Icon */}
-        {hideHeader ? <HumburgerHeader setLoading={setLoading}/> : <Header isVerifyMail={false} setLoading={setLoading}/>}
+        {hideHeader ? <HumburgerHeader setLoading={setLoading}/> : <Header isVerifyMail={false} setLoading={setLoading} navbar={navbar}/>}
         <GameTitle title="Play Number Guessing" route="number_guess" />
       </section>
 

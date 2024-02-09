@@ -12,7 +12,7 @@ import validateAmount from "../../validation/user/amount";
 import HeaderBackground from "../../assets/images/headerBackground.jpg";
 import { getLocalStorageItem } from "../../utils/helper";
 
-const DiceRolling = () => {
+const DiceRolling = ({navbar}) => {
   const [form, setForm] = useState({
     amount: "",
   });
@@ -164,7 +164,7 @@ const DiceRolling = () => {
         }}
       >
         {/* Mobile Header with Hamburger Icon */}
-        {hideHeader ? <HumburgerHeader setLoading={setLoading}/> : <Header isVerifyMail={false}  setLoading={setLoading}/>}
+        {hideHeader ? <HumburgerHeader setLoading={setLoading}/> : <Header isVerifyMail={false}  setLoading={setLoading} navbar={navbar}/>}
         <GameTitle title="Play Dice Rolling" route="dice_rolling" />
       </section>
 

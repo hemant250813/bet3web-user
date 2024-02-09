@@ -9,7 +9,7 @@ import HeaderBackground from "../../assets/images/headerBackground.jpg";
 import validateAmount from "../../validation/user/amount";
 import { getLocalStorageItem } from "../../utils/helper";
 
-const SpinWheel = () => {
+const SpinWheel = ({navbar}) => {
   const [form, setForm] = useState({
     amount: "",
   });
@@ -390,7 +390,7 @@ const SpinWheel = () => {
         }}
       >
         {/* Mobile Header with Hamburger Icon */}
-        {hideHeader ? <HumburgerHeader setLoading={setLoading}/> : <Header isVerifyMail={false} setLoading={setLoading}/>}
+        {hideHeader ? <HumburgerHeader setLoading={setLoading}/> : <Header isVerifyMail={false} setLoading={setLoading} navbar={navbar}/>}
         <GameTitle
           title="Play Rock Paper scissors"
           route="rock_paper_scissors"
