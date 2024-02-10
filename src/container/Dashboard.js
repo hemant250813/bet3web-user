@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Navigate, useNavigate } from "react-router-dom";
 import { Header, HumburgerHeader } from "../component/layout";
 import { Section3 } from "../container/Section";
@@ -6,23 +7,54 @@ import GameTitle from "./Games/GameTitle";
 import HeaderBackground from "../assets/images/headerBackground.jpg";
 import { getLocalStorageItem } from "../utils/helper";
 import { Loader } from "../component/commonComponent";
+import { userDetail } from "../redux/action";
 
-const Game = () => {
+const Dashboard = ({navbar}) => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [loading, setLoading] = useState(false);
   const [hideHeader, setHideHeader] = useState(false);
+
   const isAuth = getLocalStorageItem("token");
   const userData = JSON.parse(getLocalStorageItem("user"));
+  const user_detail = useSelector((state) => state?.UserDetail?.userDetails);
+  console.log("user_detail",user_detail);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
+    dispatch(userDetail());
+  }, []);
+
+  useEffect(() => {
+    if (windowWidth <= 768) {
+      setHideHeader(true);
+    } else {
+      setHideHeader(false);
+    }
+
+    // Function to update the window dimensions
+    const updateWindowDimensions = () => {
+      setWindowWidth(window.innerWidth);
+      setWindowHeight(window.innerHeight);
+    };
+
+    // Add an event listener to update dimensions when the window is resized
+    window.addEventListener("resize", updateWindowDimensions);
+
     if (isAuth && userData) {
       navigate("/dashboard");
     } else {
       navigate("/");
     }
-  }, []);
+
+    // Clean up the event listener when the component unmounts
+    return () => {
+      window.removeEventListener("resize", updateWindowDimensions);
+    };
+  }, [windowWidth, windowHeight]);
+
+  console.log("hideHeader", hideHeader);
   return (
     <>
       {loading ? (
@@ -44,15 +76,29 @@ const Game = () => {
             }}
           >
             {/* Mobile Header with Hamburger Icon */}
-            {hideHeader ? <HumburgerHeader /> : <Header isVerifyMail={false} loading ={loading} setLoading={setLoading}/>}
+            {hideHeader ? (
+              <HumburgerHeader />
+            ) : (
+              <Header
+                isVerifyMail={false}
+                loading={loading}
+                setLoading={setLoading}
+                navbar={navbar}
+              />
+            )}
             {/* Centered div */}
             {/* Centered div */}
             <GameTitle title="Dashboard" route="dashboard" />
           </section>
-          <Section3 games={false} isDashboard={true} loading ={loading} setLoading={setLoading}/>
+          <Section3
+            games={false}
+            isDashboard={true}
+            loading={loading}
+            setLoading={setLoading}
+          />
         </>
       )}
     </>
   );
 };
-export default Game;
+export default Dashboard;

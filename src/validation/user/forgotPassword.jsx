@@ -1,7 +1,6 @@
 import validator from "validator";
 
 function validateForgotPassword(data) {
-  console.log("data",data);
   const errors = {};
   if (validator.isEmpty(data.email.trim()))
     errors.email = "Please enter the valid email ID.";

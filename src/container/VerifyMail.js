@@ -24,7 +24,6 @@ const HeadTail = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  console.log("location", location);
   useEffect(() => {
     // Function to update the window dimensions
     const updateWindowDimensions = () => {
@@ -90,7 +89,7 @@ const HeadTail = () => {
       const isOtpFilled = newOtp?.every((otp) => otp !== "");
       if (isOtpFilled) {
         let otp = newOtp?.join("");
-        console.log("otp", otp);
+
         // let mobile_no = JSON.parse(getLocalStorageItem("email"));
         const formPayload = {
           email: location?.state,

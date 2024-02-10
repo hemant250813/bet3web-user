@@ -1,26 +1,29 @@
 import {
-  OTP_VERIFY, OTP_VERIFY_SUCCESS, OTP_VERIFY_FAILURE
+  USER_DETAIL,
+  USER_DETAIL_SUCCESS,
+  USER_DETAIL_FAILURE,
 } from "../../action/types";
 
 const INIT_STATE = {
   loading: false,
+  userDetails: null,
 };
 
-const verifyOtpReducer = (state = INIT_STATE, action) => {
+const userDetailReducer = (state = INIT_STATE, action) => {
   switch (action.type) {
-    case OTP_VERIFY:
+    case USER_DETAIL:
       return { ...state, loading: true };
-    case OTP_VERIFY_SUCCESS:
+    case USER_DETAIL_SUCCESS:
       return {
         ...state,
-        login: action.payload,
+        userDetails: action.payload,
         loading: false,
       };
-    case OTP_VERIFY_FAILURE:
+    case USER_DETAIL_FAILURE:
       return { ...state, loading: false };
     default:
       return state;
   }
 };
 
-export default verifyOtpReducer;
+export default userDetailReducer;

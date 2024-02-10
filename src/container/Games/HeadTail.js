@@ -8,7 +8,7 @@ import validateAmount from "../../validation/user/amount";
 import HeaderBackground from "../../assets/images/headerBackground.jpg";
 import { getLocalStorageItem } from "../../utils/helper";
 
-const HeadTail = () => {
+const HeadTail = ({navbar}) => {
   const [form, setForm] = useState({
     amount: "",
   });
@@ -30,8 +30,14 @@ const HeadTail = () => {
   const isAuth = getLocalStorageItem("token");
   const userData = JSON.parse(getLocalStorageItem("user"));
   const navigate = useNavigate();
-  console.log("flipResult", flipResult);
+
   useEffect(() => {
+    if (windowWidth <= 768) {
+      setHideHeader(true);
+    } else {
+      setHideHeader(false);
+    }
+    
     if (isAuth && userData) {
       navigate("/head_tail");
     } else {
@@ -148,12 +154,13 @@ const HeadTail = () => {
       >
         {/* Mobile Header with Hamburger Icon */}
         {hideHeader ? (
-          <HumburgerHeader />
+          <HumburgerHeader setLoading={setLoading}/>
         ) : (
           <Header
             isVerifyMail={false}
             loading={loading}
             setLoading={setLoading}
+            navbar={navbar}
           />
         )}
         <GameTitle title="Play Head & Tail" route="head_tail" />

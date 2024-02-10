@@ -10,7 +10,7 @@ function* forgotPasswordRequest(action) {
       "/api/v1/forgot_password",
       action?.payload?.payload      
     );
-    console.log("forgotPasswordRequest",data);
+
     if (data?.meta?.code === 200) {
       yield put(forgotPasswordSuccess(data));
       yield call(action.payload.callback, data);

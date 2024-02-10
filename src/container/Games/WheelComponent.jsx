@@ -77,7 +77,6 @@ const WheelComponent = ({
     frames++;
     draw();
     const duration = new Date().getTime() - spinStart;
-    console.log("duration", duration);
     let progress = 0;
     let finished = false;
     if (duration < upTime) {
