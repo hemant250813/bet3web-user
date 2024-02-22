@@ -44,7 +44,6 @@ const HumburgerHeader = ({ setLoading }) => {
       clearTimeout(loginTimeOut);
     };
   }, [windowWidth, windowHeight]);
-  console.log("windowWidth", windowWidth);
 
   const afterLoadingDispatch = () => {
     let payload = {

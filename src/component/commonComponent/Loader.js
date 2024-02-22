@@ -27,7 +27,7 @@ const Loader = () => {
       window.removeEventListener("resize", updateWindowDimensions);
     };
   }, [windowWidth, windowHeight]);
-console.log("windowWidth",windowWidth);
+
   return (
     <div className="relative">
       <div

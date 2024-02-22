@@ -9,13 +9,15 @@ import {
 
 function* userDetailRequest() {
   try {
-    console.log("hello");
     const { data } = yield API.get(
       "/api/v1/get-user-detail");
     if (data.meta.code === 200) {
       yield put(userDetailSuccess(data));
-      notifySuccess(data.meta.message);
-    } else if (data.meta.code !== 200) {
+    } else if (data.meta.code === 401) {
+      localStorage.clear();
+      window.location.href = "/";
+      notifyWarning(data.meta.message);
+    }else if (data.meta.code !== 200) {
       yield put(userDetailFailure(data));
       notifyWarning(data.meta.message);
     }

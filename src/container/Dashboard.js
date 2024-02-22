@@ -18,7 +18,7 @@ const Dashboard = ({navbar}) => {
   const isAuth = getLocalStorageItem("token");
   const userData = JSON.parse(getLocalStorageItem("user"));
   const user_detail = useSelector((state) => state?.UserDetail?.userDetails);
-  console.log("user_detail",user_detail);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -54,7 +54,6 @@ const Dashboard = ({navbar}) => {
     };
   }, [windowWidth, windowHeight]);
 
-  console.log("hideHeader", hideHeader);
   return (
     <>
       {loading ? (
@@ -95,6 +94,7 @@ const Dashboard = ({navbar}) => {
             isDashboard={true}
             loading={loading}
             setLoading={setLoading}
+            userDetails={user_detail?.data}
           />
         </>
       )}

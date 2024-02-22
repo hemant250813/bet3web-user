@@ -14,6 +14,7 @@ function* loginRequest(action) {
       "/api/v1/login",
       action?.payload?.payload
     );
+
     if (data.meta.code === 200) {
       yield put(loginSuccess(data));
       yield call(setLocalStorageItem, "user", JSON.stringify(data?.data));

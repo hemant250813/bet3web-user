@@ -13,6 +13,7 @@ const Header = ({ isVerifyMail, setLoading, navbar }) => {
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [loginTimeOut, setLoginTimeOut] = useState(0);
   const [activeTabIndex, setActiveTabIndex] = useState(0);
+  const [activeTabSubIndex, setActiveTabSubIndex] = useState(0);
 
   const isAuth = getLocalStorageItem("token");
   const userData = JSON.parse(getLocalStorageItem("user"));
@@ -39,7 +40,7 @@ const Header = ({ isVerifyMail, setLoading, navbar }) => {
 
   const afterLoadingDispatch = () => {
     let payload = {
-      user_id: userData.username,
+      user_id: userData?.username,
     };
 
     dispatch(
@@ -67,6 +68,10 @@ const Header = ({ isVerifyMail, setLoading, navbar }) => {
     setActiveTabIndex(index);
   };
 
+  const redirectSubTab = (route) => {
+    navigate(`/${route}`);
+  };
+
   return (
     <Fragment>
       <header className="md:flex absolute top-0 left-0 right-0 bg-black bg-opacity-80 text-[#e7e7f4] p-4 flex items-center justify-around ">
@@ -89,7 +94,6 @@ const Header = ({ isVerifyMail, setLoading, navbar }) => {
               className="relative"
               key={index}
               onMouseEnter={() => activeTab(index)}
-              onMouseLeave={()=>setActiveTabIndex(999)}
             >
               <span
                 onClick={() => navigate(`/${nav?.route}`)}
@@ -98,11 +102,18 @@ const Header = ({ isVerifyMail, setLoading, navbar }) => {
                 {nav?.name}
               </span>
               {index !== navbar?.length - 1 && <>|</>}
-              {nav?.child && (index === activeTabIndex) && (
-                <div class="grid grid-cols-1 w-40 h-40 absolute top-12  border-2 border-[#E3BC3F]  shadow-md bg-black">
+              {nav?.child && index === activeTabIndex && (
+                <div
+                  onMouseLeave={() => setActiveTabIndex(999)}
+                  class="grid grid-cols-1 w-40 h-40 absolute top-12  border-2 border-[#E3BC3F]  shadow-md bg-black"
+                >
                   {nav?.children?.map((sub, subIndex) => (
                     <Fragment key={subIndex}>
                       <span
+                        onMouseEnter={() => {
+                          setActiveTabSubIndex(subIndex);
+                        }}
+                        onClick={() => redirectSubTab(sub?.route)}
                         class={`p-2 ${
                           subIndex === 0
                             ? "border-b-2 border-[#E3BC3F]"
@@ -111,7 +122,11 @@ const Header = ({ isVerifyMail, setLoading, navbar }) => {
                             : nav?.children?.length === 3
                             ? "border-b-2 border-[#E3BC3F]"
                             : ""
-                        } `}
+                        } ${
+                          activeTabSubIndex === subIndex
+                            ? "border-[gray] bg-[#E3BC3F] text-black"
+                            : ""
+                        } cursor-pointer`}
                       >
                         {sub?.name}
                       </span>

@@ -9,6 +9,7 @@ import ResendOtp from "./user/resendOtpReducer";
 import ForgotPassword from "./user/forgotPasswordReducer";
 import ResetPassword from "./user/resetPasswordReducer";
 import UserDetail from "./auth/userDetailReducer";
+import Bet from "./game/betReducer";
 
 const appReducer = combineReducers({
   Registration,
@@ -18,7 +19,8 @@ const appReducer = combineReducers({
   ResendOtp,
   ForgotPassword,
   ResetPassword,
-  UserDetail
+  UserDetail,
+  Bet
 });
 const reducers = (state, action) => {
   return appReducer(state, action);
