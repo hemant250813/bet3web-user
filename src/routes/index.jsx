@@ -27,6 +27,13 @@ import NewTicket from "../container/Support/NewTicket";
 import Ticket from "../container/Support/Ticket";
 import ProfileSetting from "../container/Account/ProfileSetting";
 import ChangePassword from "../container/Account/ChangePassword";
+
+//admin
+import AdminDashboard from "../admin/container/Dashboard.jsx";
+import User from "../admin/container/User/User.jsx";
+import Report from "../admin/container/Report/Report.jsx";
+import Setting from "../admin/container/Setting/Setting.jsx";
+//admin
 import { HOME_NAVBAR, DASHBOARD_NAVBAR } from "../utils/constants";
 
 const RouteFile = () => {
@@ -139,17 +146,13 @@ const RouteFile = () => {
         path="/change_password"
         element={<ChangePassword navbar={DASHBOARD_NAVBAR} />}
       />
-      {/* <Route path={`/sign-up`} element={<SignUp />} />
-      <Route path={`/dashboard`} element={<Dashboard />} />
-      <Route path={`/otp-screen`} element={<OtpScreen />} /> */}
-      {/* <Route element={<Layout />}>
-        <Route exact path="/" element={<Login />} />
-        <Route path={`/sign-up`} element={<SignUp />} />
-        <Route element={<PrivateRoutes />}>
-          <Route path={Paths.mymarket} element={<MyMarketPage />} />
-          <Route path={Paths.pl} element={<ProfitLossPage />} />
-        </Route>
-      </Route> */}
+
+      {/* admin */}
+      <Route path={`/admin-dashboard`} element={<AdminDashboard />} />
+      <Route path={`/user`} element={<User />} />
+      <Route path={`/report`} element={<Report />} />
+      <Route path={`/report/:id`} element={<Report />} />
+      <Route path={`/setting`} element={<Setting />} />
     </Routes>
   );
 };

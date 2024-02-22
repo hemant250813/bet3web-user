@@ -65,9 +65,15 @@ const Login = () => {
         payload,
         callback: async (data) => {
           if (data) {
+            console.log("data", data);
             setIsSubmit(false);
             setLoading(false);
-            navigate("/dashboard");
+            if (data?.data?.type === 1) {
+              navigate("/admin-dashboard");
+            } else {
+              navigate("/dashboard");
+            }
+            // navigate("/dashboard");
           }
         },
       })
@@ -158,9 +164,7 @@ const Login = () => {
               </div>
             </div>
             {error?.user && (
-              <div className="text-rose-600 font-serif mt-1">
-                {error?.user}
-              </div>
+              <div className="text-rose-600 font-serif mt-1">{error?.user}</div>
             )}
             <div className="mt-4 flex relative items-center gap-1">
               <label

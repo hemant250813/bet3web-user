@@ -42,3 +42,33 @@ export const USER_DETAIL_FAILURE = "USER_DETAIL_FAILURE";
 export const BET = "BET";
 export const BET_SUCCESS = "BET_SUCCESS";
 export const BET_FAILURE = "BET_FAILURE";
+
+// =====================AUTH ACTION==============================
+export const AUTH_DETAIL = "AUTH_DETAIL";
+export const AUTH_DETAIL_SUCCESS = "AUTH_DETAIL_SUCCESS";
+export const AUTH_DETAIL_FAILURE = "AUTH_DETAIL_FAILURE";
+
+// =====================USER STATUS ACTION==============================
+export const USER_STATUS = "USER_STATUS";
+export const USER_STATUS_SUCCESS = "USER_STATUS_SUCCESS";
+export const USER_STATUS_FAILURE = "USER_STATUS_FAILURE";
+
+// =====================GET USER ACTION==============================
+export const GET_USER = "GET_USER";
+export const GET_USER_SUCCESS = "GET_USER_SUCCESS";
+export const GET_USER_FAILURE = "GET_USER_FAILURE";
+
+// =====================GET REPORT ACTION==============================
+export const GET_REPORT = "GET_REPORT";
+export const GET_REPORT_SUCCESS = "GET_REPORT_SUCCESS";
+export const GET_REPORT_FAILURE = "GET_REPORT_FAILURE";
+
+// =====================DEPOSIT ACTION==============================
+export const DEPOSIT = "DEPOSIT";
+export const DEPOSIT_SUCCESS = "DEPOSIT_SUCCESS";
+export const DEPOSIT_FAILURE = "DEPOSIT_FAILURE";
+
+// =====================WITHDRAWL ACTION==============================
+export const WITHDRAW = "WITHDRAW";
+export const WITHDRAW_SUCCESS = "WITHDRAW_SUCCESS";
+export const WITHDRAW_FAILURE = "WITHDRAW_FAILURE";
