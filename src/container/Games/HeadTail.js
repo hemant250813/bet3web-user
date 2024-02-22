@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { Header, HumburgerHeader, Footer } from "../../component/layout";
 import GameTitle from "./GameTitle";
 import Head from "../../assets/images/games/headAndTail/head.png";
 import Tail from "../../assets/images/games/headAndTail/tail.png";
-import validateAmount from "../../validation/user/amount";
+import validateHeadtail from "../../validation/game/headTail";
 import HeaderBackground from "../../assets/images/headerBackground.jpg";
 import { getLocalStorageItem } from "../../utils/helper";
+import { Win, Lose } from "../../container/Modal/index";
+import { bet, userDetail } from "../../redux/action";
+import { GAME, RESULT } from "../../utils/constants";
 
-const HeadTail = () => {
-  const [form, setForm] = useState({
-    amount: "",
-  });
+const HeadTail = ({ navbar }) => {
   const [error, setError] = useState({});
   const [loading, setLoading] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -22,16 +23,43 @@ const HeadTail = () => {
   const [rotationAngle, setRotationAngle] = useState(0);
   const [isRotating, setIsRotating] = useState(true);
   const [tabViews, setTabViews] = useState([
-    { route: "head", isActive: false },
-    { route: `tail`, isActive: false },
+    { route: "heads", isActive: false },
+    { route: `tails`, isActive: false },
   ]);
+  const [clearCoinRotate, setClearCoinRotate] = useState(0);
   const [flipResult, setFlipResult] = useState(null);
+  const [winOpenModal, setWinOpenModal] = useState(false);
+  const [loseOpenModal, setLoseOpenModal] = useState(false);
 
   const isAuth = getLocalStorageItem("token");
   const userData = JSON.parse(getLocalStorageItem("user"));
+  const user_detail = useSelector((state) => state?.UserDetail?.userDetails);
+  const [form, setForm] = useState({
+    amount: "",
+    balance: user_detail?.data?.balance,
+  });
+
   const navigate = useNavigate();
-  console.log("flipResult", flipResult);
+  const dispatch = useDispatch();
+
   useEffect(() => {
+    dispatch(userDetail());
+  }, []);
+
+  useEffect(() => {
+    setForm((prevState) => ({
+      ...prevState,
+      ["balance"]: user_detail?.data?.balance,
+    }));
+  }, [user_detail]);
+
+  useEffect(() => {
+    if (windowWidth <= 768) {
+      setHideHeader(true);
+    } else {
+      setHideHeader(false);
+    }
+
     if (isAuth && userData) {
       navigate("/head_tail");
     } else {
@@ -67,7 +95,7 @@ const HeadTail = () => {
     );
     setTabViews(filterTabList);
 
-    if (tab === "head") {
+    if (tab === "heads") {
       setRotationAngle(0);
     } else {
       setRotationAngle(180);
@@ -76,6 +104,8 @@ const HeadTail = () => {
   };
 
   const changeHandler = (e) => {
+    setWinOpenModal(false);
+    setLoseOpenModal(false);
     if (e.target) {
       const value = e.target.value;
       const { name } = e.target;
@@ -92,6 +122,7 @@ const HeadTail = () => {
 
   const generateRandomBoolean = () => {
     const randomBoolean = Math.random() < 0.5; // true or false with 50% probability
+
     setIsRotating(false);
     if (randomBoolean) {
       if (tabViews[0].isActive) {
@@ -108,27 +139,79 @@ const HeadTail = () => {
     }
   };
 
+  const onSubmit = (coin) => {
+    let payload = {
+      game: GAME?.HEAD_TAIL,
+    };
+
+    if (coin === "win") {
+      payload = {
+        ...payload,
+        amount: parseInt(form.amount),
+        result: RESULT?.WIN,
+      };
+    } else {
+      payload = {
+        ...payload,
+        amount: -parseInt(form.amount),
+        result: RESULT?.LOSE,
+      };
+    }
+    dispatch(
+      bet({
+        payload,
+        callback: async (data) => {
+          if (data) {
+          }
+        },
+      })
+    );
+  };
+
   const handleClick = () => {
-    const { errors, isValid } = validateAmount(form);
+    setWinOpenModal(false);
+    setLoseOpenModal(false);
+    const { errors, isValid } = validateHeadtail(form, tabViews);
     if (isValid) {
-      setIsRotating(true);
-      setTimeout(generateRandomBoolean, 4000); // 40 seconds delay
+      handleCoinClick();
+      // setIsRotating(true);
+      // setTimeout(generateRandomBoolean, 4000); // 40 seconds delay
     } else {
       setError(errors);
     }
   };
 
   const handleCoinClick = () => {
-    setFlipResult(null);
-
+    setFlipResult("");
+    clearInterval(clearCoinRotate);
+    let result = "";
     let coinRotate = setInterval(() => {
       const newFlipResult = Math.random();
-      setFlipResult(newFlipResult <= 0.5 ? "heads" : "tails");
-    }, 1000);
+      result = newFlipResult <= 0.5 ? "heads" : "tails";
+      setFlipResult(result);
+    }, 500);
 
+    setClearCoinRotate(coinRotate);
     setTimeout(() => {
       clearInterval(coinRotate);
-    }, 6000);
+      if (tabViews[0].isActive) {
+        if (tabViews[0].route === result) {
+          setWinOpenModal(true);
+          onSubmit("win");
+        } else {
+          setLoseOpenModal(true);
+          onSubmit("lose");
+        }
+      } else {
+        if (tabViews[1].route === result) {
+          setWinOpenModal(true);
+          onSubmit("win");
+        } else {
+          setLoseOpenModal(true);
+          onSubmit("lose");
+        }
+      }
+    }, 7000);
   };
 
   return (
@@ -148,12 +231,13 @@ const HeadTail = () => {
       >
         {/* Mobile Header with Hamburger Icon */}
         {hideHeader ? (
-          <HumburgerHeader />
+          <HumburgerHeader setLoading={setLoading} />
         ) : (
           <Header
             isVerifyMail={false}
             loading={loading}
             setLoading={setLoading}
+            navbar={navbar}
           />
         )}
         <GameTitle title="Play Head & Tail" route="head_tail" />
@@ -247,7 +331,7 @@ const HeadTail = () => {
             <div
               id="coin"
               className={flipResult}
-              onClick={handleCoinClick}
+              // onClick={handleCoinClick}
               style={{
                 width:
                   windowWidth === 320
@@ -352,7 +436,7 @@ const HeadTail = () => {
                       ? "text-5xl"
                       : windowWidth === 1440
                       ? "text-3xl"
-                      : "text-5xl"
+                      : "text-4xl"
                   }  text-white`}
                 >
                   Current Balance :
@@ -371,11 +455,11 @@ const HeadTail = () => {
                       ? "text-5xl"
                       : windowWidth === 1440
                       ? "text-3xl"
-                      : "text-5xl"
+                      : "text-4xl"
                   }  text-[#E3BC3F]`}
                 >
                   {" "}
-                  10.50 USD
+                  {form?.balance?.toFixed(2)} USD
                 </p>
               </span>
               <div className="flex flex-col items-center w-11/12 mt-3">
@@ -386,7 +470,26 @@ const HeadTail = () => {
                     name="amount"
                     value={form?.amount}
                     onChange={(e) => {
-                      changeHandler(e);
+                      const value = e.target.value;
+                      const { name } = e.target;
+                      let finalAmount = user_detail?.data?.balance - value;
+                     
+                      if (value <= user_detail?.data?.balance) {
+                        setForm((prevState) => ({
+                          ...prevState,
+                          [name]: value,
+                        }));
+
+                        setForm((prevState) => ({
+                          ...prevState,
+                          ["balance"]: finalAmount,
+                        }));
+                      }
+
+                      setError((prevState) => ({
+                        ...prevState,
+                        [name]: "",
+                      }));
                     }}
                     className="border p-2 focus:outline-none focus:border-blue-500 bg-[#020C25] text-white w-full"
                     style={{ height: "2rem" }}
@@ -424,7 +527,11 @@ const HeadTail = () => {
             >
               <span
                 onClick={(e) => {
-                  tabSwitch(e, "head");
+                  tabSwitch(e, "heads");
+                  setError((prevState) => ({
+                    ...prevState,
+                    ["coin"]: "",
+                  }));
                 }}
                 className={`${tabViews[0].isActive && "border p-2"}`}
               >
@@ -444,12 +551,16 @@ const HeadTail = () => {
                       ? 300
                       : 100
                   }
-                  alt="head"
+                  alt="heads"
                 />
               </span>
               <span
                 onClick={(e) => {
-                  tabSwitch(e, "tail");
+                  tabSwitch(e, "tails");
+                  setError((prevState) => ({
+                    ...prevState,
+                    ["coin"]: "",
+                  }));
                 }}
                 className={`${tabViews[1].isActive && "border p-2"}`}
               >
@@ -469,9 +580,12 @@ const HeadTail = () => {
                       ? 300
                       : 100
                   }
-                  alt="tail"
+                  alt="tails"
                 />
               </span>
+            </div>
+            <div className="flex flex-col items-center justify-center text-rose-600 font-serif mt-1">
+              {error?.coin}
             </div>
             <div className="flex flex-col items-center justify-center w-11/12 p-2">
               <button
@@ -486,6 +600,20 @@ const HeadTail = () => {
         </div>
       </section>
       <Footer />
+      {winOpenModal && (
+        <Win
+          winOpenModal={winOpenModal}
+          setWinOpenModal={setWinOpenModal}
+          flipResult={flipResult}
+        />
+      )}
+      {loseOpenModal && (
+        <Lose
+          loseOpenModal={loseOpenModal}
+          setLoseOpenModal={setLoseOpenModal}
+          flipResult={flipResult}
+        />
+      )}
     </>
   );
 };

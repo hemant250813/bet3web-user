@@ -27,7 +27,7 @@ const Loader = () => {
       window.removeEventListener("resize", updateWindowDimensions);
     };
   }, [windowWidth, windowHeight]);
-  console.log("windowWidth", windowWidth);
+
   return (
     <div className="relative">
       <div
@@ -48,6 +48,8 @@ const Loader = () => {
               ? "80px"
               : windowWidth === 320
               ? "70px"
+              : windowWidth === 1850
+              ? "860px"
               : "790px",
           top:
             windowWidth === 2560
@@ -64,7 +66,9 @@ const Loader = () => {
               ? "390px"
               : windowWidth === 320
               ? "380px"
-              : "130px",
+              : windowWidth === 1850
+              ? "500px"
+              : "790px",
         }}
       >
         <div

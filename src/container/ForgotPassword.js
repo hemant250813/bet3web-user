@@ -64,7 +64,6 @@ const ForgotPassword = () => {
         payload,
         callback: async (data) => {
           if (data) {
-            console.log("forgotPassword", data);
             setIsSubmit(false);
             setLoading(false);
             navigate("/reset_password", {

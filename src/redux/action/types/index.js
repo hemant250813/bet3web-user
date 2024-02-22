@@ -28,7 +28,17 @@ export const FORGOT_PASSWORD = "FORGOT_PASSWORD";
 export const FORGOT_PASSWORD_SUCCESS = "FORGOT_PASSWORD_SUCCESS";
 export const FORGOT_PASSWORD_FAILURE = "FORGOT_PASSWORD_FAILURE";
 
-// =====================FORGOT PASSWORD ACTION==============================
+// =====================RESET PASSWORD ACTION==============================
 export const RESET_PASSWORD = "RESET_PASSWORD";
 export const RESET_PASSWORD_SUCCESS = "RESET_PASSWORD_SUCCESS";
 export const RESET_PASSWORD_FAILURE = "RESET_PASSWORD_FAILURE";
+
+// =====================USER DETAIL ACTION==============================
+export const USER_DETAIL = "USER_DETAIL";
+export const USER_DETAIL_SUCCESS = "USER_DETAIL_SUCCESS";
+export const USER_DETAIL_FAILURE = "USER_DETAIL_FAILURE";
+
+// =====================BET ACTION==============================
+export const BET = "BET";
+export const BET_SUCCESS = "BET_SUCCESS";
+export const BET_FAILURE = "BET_FAILURE";

@@ -11,7 +11,7 @@ import aHeart from "../../../assets/images/games/card/aHeart.png";
 import HeaderBackground from "../../../assets/images/headerBackground.jpg";
 import { getLocalStorageItem } from "../../../utils/helper";
 
-const CardFinding = () => {
+const CardFinding = ({ navbar }) => {
   const [form, setForm] = useState({
     amount: "",
   });
@@ -21,7 +21,7 @@ const CardFinding = () => {
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [hideHeader, setHideHeader] = useState(false);
   const [error, setError] = useState({});
-
+  const [loading, setLoading] = useState(false);
   const [cardGrid, setCardGrid] = useState("");
   const [cardGap, setCardGap] = useState("");
   const [cardPadding, setCardPadding] = useState("");
@@ -35,6 +35,12 @@ const CardFinding = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (windowWidth <= 768) {
+      setHideHeader(true);
+    } else {
+      setHideHeader(false);
+    }
+
     if (isAuth && userData) {
       navigate("/card_finding");
     } else {
@@ -44,27 +50,27 @@ const CardFinding = () => {
       setCardGrid("grid-cols-7");
       setCardGap("gap-4");
       setCardPadding("p-0");
-    }else if(windowWidth === 1440){
+    } else if (windowWidth === 1440) {
       setCardGrid("grid-cols-7");
       setCardGap("gap-1");
       setCardPadding("p-12");
-    }else if(windowWidth === 1024){
+    } else if (windowWidth === 1024) {
       setCardGrid("grid-cols-6");
       setCardGap("gap-1");
       setCardPadding("p-12");
-    }else if(windowWidth === 768){
+    } else if (windowWidth === 768) {
       setCardGrid("grid-cols-5");
       setCardGap("gap-1");
       setCardPadding("p-1");
-    }else if(windowWidth === 425){
+    } else if (windowWidth === 425) {
       setCardGrid("grid-cols-3");
       setCardGap("gap-1");
       setCardPadding("p-7");
-    }else if(windowWidth === 375){
+    } else if (windowWidth === 375) {
       setCardGrid("grid-cols-3");
       setCardGap("gap-1");
       setCardPadding("p-8");
-    }else if(windowWidth === 320){
+    } else if (windowWidth === 320) {
       setCardGrid("grid-cols-3");
       setCardGap("gap-1");
       setCardPadding("p-1");
@@ -126,7 +132,6 @@ const CardFinding = () => {
   };
 
   const callbackCardShuffledPicked = () => {
-    console.log("hello");
     setForm((prevState) => ({
       ...prevState,
       ["amount"]: "",
@@ -149,7 +154,15 @@ const CardFinding = () => {
         }}
       >
         {/* Mobile Header with Hamburger Icon */}
-        {hideHeader ? <HumburgerHeader /> : <Header isVerifyMail={false} />}
+        {hideHeader ? (
+          <HumburgerHeader setLoading={setLoading} />
+        ) : (
+          <Header
+            isVerifyMail={false}
+            setLoading={setLoading}
+            navbar={navbar}
+          />
+        )}
         <GameTitle title="Play Card Finding" route="rock_paper_scissors" />
       </section>
 
@@ -178,7 +191,18 @@ const CardFinding = () => {
             className="relative group mx-auto border border-gray-400 p-2"
             style={{
               height: windowWidth === 1024 ? "700px" : "700px",
-              width: windowWidth === 1024 ? "800px" : windowWidth === 768 ? "500px" : windowWidth === 425 ? "300px" : windowWidth === 375 ? "300px" : windowWidth === 320 ? "250px" : "1000px",
+              width:
+                windowWidth === 1024
+                  ? "800px"
+                  : windowWidth === 768
+                  ? "500px"
+                  : windowWidth === 425
+                  ? "300px"
+                  : windowWidth === 375
+                  ? "300px"
+                  : windowWidth === 320
+                  ? "250px"
+                  : "1000px",
               overflow: "hidden",
               display: "flex",
               justifyContent: "center",
@@ -229,7 +253,8 @@ const CardFinding = () => {
           >
             <div className="flex flex-col items-center justify-center p-3">
               <span className="flex items-center justify-center">
-                <p className={`${
+                <p
+                  className={`${
                     windowWidth === 320
                       ? "text-xs"
                       : windowWidth === 375
@@ -243,8 +268,12 @@ const CardFinding = () => {
                       : windowWidth === 1440
                       ? "text-3xl"
                       : "text-5xl"
-                  }  text-white`}>Current Balance :</p>
-                <p className={`${
+                  }  text-white`}
+                >
+                  Current Balance :
+                </p>
+                <p
+                  className={`${
                     windowWidth === 320
                       ? "text-xs"
                       : windowWidth === 375
@@ -258,7 +287,11 @@ const CardFinding = () => {
                       : windowWidth === 1440
                       ? "text-3xl"
                       : "text-5xl"
-                  }  text-[#E3BC3F]`}> 10.50 USD</p>
+                  }  text-[#E3BC3F]`}
+                >
+                  {" "}
+                  10.50 USD
+                </p>
               </span>
               <div className="flex flex-col items-center w-11/12 mt-3">
                 <div className="flex w-9/12">
@@ -288,7 +321,8 @@ const CardFinding = () => {
                 Minimum : 1.00 USD | Maximum : 100.00 USD | Win Amount 150.00 %
               </span>
             </div>
-            <div className={`flex items-center justify-center relative gap-8 ${
+            <div
+              className={`flex items-center justify-center relative gap-8 ${
                 windowWidth === 320
                   ? "p-2"
                   : windowWidth === 375
@@ -304,7 +338,8 @@ const CardFinding = () => {
                   : windowWidth === 2560
                   ? "p-4"
                   : "p-20"
-              }`}>
+              }`}
+            >
               <span
                 onClick={(e) => {
                   tabSwitch(e, "card1");

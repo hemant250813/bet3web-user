@@ -12,7 +12,7 @@ import validateAmount from "../../validation/user/amount";
 import HeaderBackground from "../../assets/images/headerBackground.jpg";
 import { getLocalStorageItem } from "../../utils/helper";
 
-const DiceRolling = () => {
+const DiceRolling = ({navbar}) => {
   const [form, setForm] = useState({
     amount: "",
   });
@@ -20,6 +20,7 @@ const DiceRolling = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [hideHeader, setHideHeader] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   var paused = true;
   var initialRolling = false;
@@ -37,6 +38,12 @@ const DiceRolling = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (windowWidth <= 768) {
+      setHideHeader(true);
+    } else {
+      setHideHeader(false);
+    }
+    
     if (isAuth && userData) {
       navigate("/dice_rolling");
     } else {
@@ -91,7 +98,6 @@ const DiceRolling = () => {
     }
   };
 
-  console.log("initialRolling", initialRolling);
   const tabSwitch = (e, tab) => {
     e.preventDefault();
     const filterTabList = tabViews.map((el) =>
@@ -111,7 +117,6 @@ const DiceRolling = () => {
       }
 
       setTimeout(() => {
-        console.log("setTimeout0 3000");
         paused = true;
       }, 5000);
     } else {
@@ -138,7 +143,6 @@ const DiceRolling = () => {
     // 3->6
     // 6->2
     // 4->3
-    console.log("diceOne inside", diceOne);
     if (!paused) {
       setTimeout(rollDice, 1000); // Continue the animation if not paused
     }
@@ -160,7 +164,7 @@ const DiceRolling = () => {
         }}
       >
         {/* Mobile Header with Hamburger Icon */}
-        {hideHeader ? <HumburgerHeader /> : <Header isVerifyMail={false} />}
+        {hideHeader ? <HumburgerHeader setLoading={setLoading}/> : <Header isVerifyMail={false}  setLoading={setLoading} navbar={navbar}/>}
         <GameTitle title="Play Dice Rolling" route="dice_rolling" />
       </section>
 

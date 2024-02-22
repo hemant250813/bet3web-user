@@ -16,7 +16,7 @@ import Account from "../../container/Account";
 import { getLocalStorageItem, WarningToast } from "../../utils/helper";
 import { Loader } from "../../component/commonComponent";
 
-const Section3 = ({ games, isDashboard, loading, setLoading }) => {
+const Section3 = ({ games, isDashboard, loading, setLoading, userDetails }) => {
   const [loginTimeOut, setLoginTimeOut] = useState(0);
 
   const navigate = useNavigate();
@@ -58,7 +58,7 @@ const Section3 = ({ games, isDashboard, loading, setLoading }) => {
               <p>Our Awesome Games</p>
             </div>
           )}
-          {isDashboard && <Account />}
+          {isDashboard && <Account userDetails={userDetails}/>}
           <div
             className={`${
               games ? "" : "p-28"

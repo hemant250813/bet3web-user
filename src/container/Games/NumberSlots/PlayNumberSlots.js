@@ -7,7 +7,7 @@ import validateAmount from "../../../validation/user/amount";
 import HeaderBackground from "../../../assets/images/headerBackground.jpg";
 import { getLocalStorageItem } from "../../../utils/helper";
 
-const PlayNumberSlots = () => {
+const PlayNumberSlots = ({navbar}) => {
   const [form, setForm] = useState({
     amount: "",
   });
@@ -17,6 +17,7 @@ const PlayNumberSlots = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [hideHeader, setHideHeader] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [numbers, setNumbers] = useState([
     [1, 2, 3],
     [4, 5, 6],
@@ -40,6 +41,12 @@ const PlayNumberSlots = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (windowWidth <= 768) {
+      setHideHeader(true);
+    } else {
+      setHideHeader(false);
+    }
+    
     if (isAuth && userData) {
       navigate("/number_slot");
     } else {
@@ -168,7 +175,7 @@ const PlayNumberSlots = () => {
         }}
       >
         {/* Mobile Header with Hamburger Icon */}
-        {hideHeader ? <HumburgerHeader /> : <Header isVerifyMail={false} />}
+        {hideHeader ? <HumburgerHeader setLoading={setLoading}/> : <Header isVerifyMail={false} setLoading={setLoading} navbar={navbar}/>}
         <GameTitle title="Play Number Slot" route="number_slot" />
       </section>
 

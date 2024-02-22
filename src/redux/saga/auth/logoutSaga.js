@@ -10,7 +10,6 @@ import {
 
 function* logoutRequest(action) {
   try {
-    console.log("logoutRequest",action);
     const { data } = yield API.post("/api/v1/logout", action?.payload?.payload);
 
     if (data.meta.code === 200) {

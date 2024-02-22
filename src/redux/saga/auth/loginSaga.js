@@ -28,6 +28,7 @@ function* loginRequest(action) {
     } else if (data.meta.code !== 200) {
       yield put(loginFailure(data));
       notifyWarning(data.meta.message);
+      yield call(action.payload.callback, data);
     }
   } catch (error) {
     yield put(loginFailure());

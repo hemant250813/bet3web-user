@@ -8,16 +8,17 @@ import Logo from "../../assets/images/logo.png";
 import { getLocalStorageItem } from "../../utils/helper";
 import { logout } from "../../redux/action";
 
-const Header = ({ isVerifyMail, setLoading }) => {
+const Header = ({ isVerifyMail, setLoading, navbar }) => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [loginTimeOut, setLoginTimeOut] = useState(0);
+  const [activeTabIndex, setActiveTabIndex] = useState(0);
+  const [activeTabSubIndex, setActiveTabSubIndex] = useState(0);
 
-  const dispatch = useDispatch();
   const isAuth = getLocalStorageItem("token");
   const userData = JSON.parse(getLocalStorageItem("user"));
-  console.log("isAuth", isAuth);
-  console.log("userData", userData);
+
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,9 +40,9 @@ const Header = ({ isVerifyMail, setLoading }) => {
 
   const afterLoadingDispatch = () => {
     let payload = {
-      user_id: userData.username,
+      user_id: userData?.username,
     };
-    console.log("payload", payload);
+
     dispatch(
       logout({
         payload,
@@ -63,6 +64,14 @@ const Header = ({ isVerifyMail, setLoading }) => {
     setLoginTimeOut(timeout);
   };
 
+  const activeTab = (index) => {
+    setActiveTabIndex(index);
+  };
+
+  const redirectSubTab = (route) => {
+    navigate(`/${route}`);
+  };
+
   return (
     <Fragment>
       <header className="md:flex absolute top-0 left-0 right-0 bg-black bg-opacity-80 text-[#e7e7f4] p-4 flex items-center justify-around ">
@@ -79,15 +88,63 @@ const Header = ({ isVerifyMail, setLoading }) => {
         </div>
 
         {/* Middle: Home, Contact, and Game Tabs */}
-        <nav className="flex items-center space-x-4">
-          <span className="hover:text-[#E3BC3F] cursor-pointer">Home</span>
+        <nav className="flex items-center space-x-4 z-50">
+          {navbar?.map((nav, index) => (
+            <div
+              className="relative"
+              key={index}
+              onMouseEnter={() => activeTab(index)}
+            >
+              <span
+                onClick={() => navigate(`/${nav?.route}`)}
+                className="hover:text-[#E3BC3F] cursor-pointer p-3"
+              >
+                {nav?.name}
+              </span>
+              {index !== navbar?.length - 1 && <>|</>}
+              {nav?.child && index === activeTabIndex && (
+                <div
+                  onMouseLeave={() => setActiveTabIndex(999)}
+                  class="grid grid-cols-1 w-40 h-40 absolute top-12  border-2 border-[#E3BC3F]  shadow-md bg-black"
+                >
+                  {nav?.children?.map((sub, subIndex) => (
+                    <Fragment key={subIndex}>
+                      <span
+                        onMouseEnter={() => {
+                          setActiveTabSubIndex(subIndex);
+                        }}
+                        onClick={() => redirectSubTab(sub?.route)}
+                        class={`p-2 ${
+                          subIndex === 0
+                            ? "border-b-2 border-[#E3BC3F]"
+                            : subIndex === 1
+                            ? "border-b-2 border-[#E3BC3F]"
+                            : nav?.children?.length === 3
+                            ? "border-b-2 border-[#E3BC3F]"
+                            : ""
+                        } ${
+                          activeTabSubIndex === subIndex
+                            ? "border-[gray] bg-[#E3BC3F] text-black"
+                            : ""
+                        } cursor-pointer`}
+                      >
+                        {sub?.name}
+                      </span>
+                      {/* <span class="p-2">{sub?.name}</span> */}
+                    </Fragment>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+          {/* <span className="hover:text-[#E3BC3F] cursor-pointer">Home</span>
           <span className="hover:text-[#E3BC3F] cursor-pointer">Contact</span>
           <span
             onClick={() => navigate("/games")}
             className="hover:text-[#E3BC3F] cursor-pointer"
           >
             Game
-          </span>
+          </span> */}
         </nav>
 
         {/* Right Side: Login, Registration, and Dropdown */}

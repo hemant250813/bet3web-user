@@ -5,13 +5,11 @@ import API from "../../../utils/api";
 import { notifySuccess, notifyWarning } from "../../../utils/helper";
 
 function* resetPasswordRequest(action) {
-  console.log("resetPasswordRequest action");
   try {
     const { data } = yield API.post(
       "/api/v1/reset_password",
       action?.payload?.payload  
     );
-    console.log("resetPasswordRequest",data);
     if (data?.meta?.code === 200) {
       yield put(resetPasswordSuccess(data));
       notifySuccess(data?.meta?.message);

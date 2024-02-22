@@ -1,45 +1,85 @@
-export const defaultChipValues = [
-  { name: "100", value: 100 },
-  { name: "1,000", value: 1000 },
-  { name: "2,000", value: 2000 },
-  { name: "5,000", value: 5000 },
-  { name: "10,000", value: 10000 },
-  { name: "20,000", value: 20000 },
-  { name: "50,000", value: 50000 },
-  { name: "100,000", value: 100000 },
-];
-
 export const ACCOUNT_TYPE = [
   { name: "saving", value: "saving" },
   { name: "current", value: "current" },
 ];
 
-export const MARKET_TYPES = {
-  BKMKR: "BOOKMAKER",
-  EXCH: "EXCHANGE",
-  FANCY: "FANCY",
+export const HOME_NAVBAR = [
+  { name: "Home", route: "home", type: "home", child: false },
+  { name: "About Us", route: "aboutus", type: "home", child: false },
+  { name: "Game", route: "game", type: "home", child: false },
+  { name: "Blog", route: "blog", type: "home", child: false },
+  { name: "Contact", route: "contact", type: "home", child: false },
+];
+
+export const GAME = {
+  HEAD_TAIL: "head_tail",
+  ROCK_PAPER_SCISSORS: "rock_paper_scissors",
+  SPIN_WHEEL: "spin_wheel",
+  NUMBER_GUESS: "number_guess",
+  DICE_ROLLING: "dice_rolling",
+  CARD_FINDING: "card_finding",
+  NUMBER_SLOT: "number_slot",
+  NUMBER_POOL: "number_pool",
 };
 
-export const MARKET_TYPES_CRICKET_LEAGUE = {
-  BKMKR: "bookmaker",
-  EXCH: "exchange",
-  FANCY: "fancy",
+export const RESULT = {
+  WIN: "win",
+  LOSE: "loss",
 };
 
-export const TAB_ITEMS = ["All", "Match Odd", "Bookmaker", "Fancy"];
-
-export const RUNNER_ODDS_LENGTH = 3;
-
-export const availableCasinos = {
-  ALL: 0,
-  NO_CASINO: null,
-  LIVE_CASINO: 1,
-  INDIAN_CASINO: 2,
-};
-
-export const MARKET_SLUGS = {
-  MATCH_ODDS: "match_odds",
-  BOOKMAKER: "bookmaker",
-};
-
-export const LIVE_CASINO_DISABLE = false;
+export const DASHBOARD_NAVBAR = [
+  { name: "Dashboard", route: "dashboard", type: "dashboard", child: false },
+  {
+    name: "Deposit",
+    route: "deposit",
+    type: "dashboard",
+    child: true,
+    children: [
+      { name: "Deposit", route: "deposit" },
+      { name: "Deposit Log", route: "deposit/log" },
+    ],
+  },
+  {
+    name: "Withdraw",
+    route: "withdraw",
+    type: "dashboard",
+    child: true,
+    children: [
+      { name: "Withdraw", route: "withdraw" },
+      { name: "Withdraw Log", route: "withdraw/log" },
+    ],
+  },
+  { name: "Referals", route: "referals", type: "dashboard", child: false },
+  {
+    name: "Reports",
+    route: "reports",
+    type: "dashboard",
+    child: true,
+    children: [
+      { name: "Game Log", route: "game/log" },
+      { name: "Commission Log", route: "commission/log" },
+      { name: "Transactions", route: "transactions" },
+    ],
+  },
+  {
+    name: "Support",
+    route: "support",
+    type: "dashboard",
+    child: true,
+    children: [
+      { name: "Open New Ticket", route: "ticket/new" },
+      { name: "My Tickets", route: "ticket" },
+    ],
+  },
+  {
+    name: "Account",
+    route: "account",
+    type: "dashboard",
+    child: true,
+    children: [
+      { name: "Profile Setting", route: "profile_setting" },
+      { name: "Change Password", route: "change_password" },
+      // { name: "2fa Security", route: "security" },
+    ],
+  },
+];

@@ -113,12 +113,6 @@ const NumberSlot = ({
   const spinReel2Cycle = (amountOfSpins) => {
     spinReelCycle(amountOfSpins, setPick2);
   };
-  console.log("outside");
-  console.log({
-    pick1: pick1,
-    pick2: pick2,
-    pick3: pick3,
-  });
 
   const spinReel3Cycle = (amountOfSpins) => {
     const arr = content;
@@ -177,12 +171,6 @@ const NumberSlot = ({
             }
       }
     >
-      {/* {console.log("kk")}
-      { console.log({
-          pick1: pick1,
-          pick2: pick2,
-          pick3: pick3,
-        })} */}
       <header>
         {/* <h1 id="title">{jackpot ? "JACKPOT!" : "Lost Wages"}</h1> */}
         <h1
