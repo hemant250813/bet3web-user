@@ -10,6 +10,12 @@ import ForgotPassword from "./user/forgotPasswordReducer";
 import ResetPassword from "./user/resetPasswordReducer";
 import UserDetail from "./auth/userDetailReducer";
 import Bet from "./game/betReducer";
+import AuthDetail from "./auth/authDetailReducer";
+import UserStatus from "./user/activateDeActivateReducer";
+import GetUser from "./user/getUserReducer";
+import GetReport from "./report/reportReducer";
+import Deposit from "./transaction/depositReducer";
+import Withdraw from "./transaction/withdrawlReducer";
 
 const appReducer = combineReducers({
   Registration,
@@ -20,7 +26,13 @@ const appReducer = combineReducers({
   ForgotPassword,
   ResetPassword,
   UserDetail,
-  Bet
+  Bet,
+  AuthDetail,
+  UserStatus,
+  GetUser,
+  GetReport,
+  Deposit,
+  Withdraw
 });
 const reducers = (state, action) => {
   return appReducer(state, action);

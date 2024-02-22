@@ -8,6 +8,12 @@ import ForgotPassword from "../saga/user/forgotPasswordSaga";
 import ResetPassword from "../saga/user/resetPasswordSaga";
 import UserDetail from "../saga/auth/userDetailSaga";
 import Bet from "../saga/game/betSaga";
+import AuthDetail from "../saga/auth/authDetailSaga";
+import UserStatus from "./user/activateDeActivateSaga";
+import GetUser from "../saga/user/getUserSaga";
+import GetReport from "./report/reportSaga";
+import Deposit from "./transaction/depositSaga";
+import Withdraw from "./transaction/withdrawlSaga";
 
 export default function* rootSaga() {
   yield all([
@@ -19,6 +25,12 @@ export default function* rootSaga() {
     ForgotPassword(),
     ResetPassword(),
     UserDetail(),
-    Bet()
+    Bet(),
+    AuthDetail(),
+    UserStatus(),
+    GetUser(),
+    GetReport(),
+    Deposit(),
+    Withdraw()
   ]);
 }
