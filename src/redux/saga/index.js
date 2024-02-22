@@ -7,6 +7,7 @@ import ResendOtp from "../saga/user/resendOtpSaga";
 import ForgotPassword from "../saga/user/forgotPasswordSaga";
 import ResetPassword from "../saga/user/resetPasswordSaga";
 import UserDetail from "../saga/auth/userDetailSaga";
+import Bet from "../saga/game/betSaga";
 
 export default function* rootSaga() {
   yield all([
@@ -17,6 +18,7 @@ export default function* rootSaga() {
     ResendOtp(),
     ForgotPassword(),
     ResetPassword(),
-    UserDetail()
+    UserDetail(),
+    Bet()
   ]);
 }

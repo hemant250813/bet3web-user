@@ -10,7 +10,7 @@ function* registrationRequest(action) {
       "/api/v1/registration",
       action?.payload?.payload
     );
-console.log("registrationRequest",data);
+
     if (data?.meta?.code === 200) {
       yield put(registrationSuccess(data));
       yield call(action.payload.callback, data);

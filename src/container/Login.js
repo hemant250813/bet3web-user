@@ -10,7 +10,7 @@ import { Loader } from "../component/commonComponent";
 
 const Login = () => {
   const [form, setForm] = useState({
-    email: "",
+    user: "",
     password: "",
   });
   const [error, setError] = useState({});
@@ -57,7 +57,7 @@ const Login = () => {
 
   const afterLoadingDispatch = () => {
     let payload = {
-      email: form.email,
+      user: form.user,
       password: form.password,
     };
     dispatch(
@@ -147,8 +147,8 @@ const Login = () => {
               <div className="flex flex-col w-full relative">
                 <input
                   type="text"
-                  id="email"
-                  name="email"
+                  id="user"
+                  name="user"
                   onChange={(e) => {
                     changeHandler(e);
                   }}
@@ -157,9 +157,9 @@ const Login = () => {
                 />
               </div>
             </div>
-            {error?.email && (
+            {error?.user && (
               <div className="text-rose-600 font-serif mt-1">
-                {error?.email}
+                {error?.user}
               </div>
             )}
             <div className="mt-4 flex relative items-center gap-1">

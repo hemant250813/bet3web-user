@@ -37,3 +37,8 @@ export const RESET_PASSWORD_FAILURE = "RESET_PASSWORD_FAILURE";
 export const USER_DETAIL = "USER_DETAIL";
 export const USER_DETAIL_SUCCESS = "USER_DETAIL_SUCCESS";
 export const USER_DETAIL_FAILURE = "USER_DETAIL_FAILURE";
+
+// =====================BET ACTION==============================
+export const BET = "BET";
+export const BET_SUCCESS = "BET_SUCCESS";
+export const BET_FAILURE = "BET_FAILURE";
