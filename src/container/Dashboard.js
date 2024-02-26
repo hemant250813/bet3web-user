@@ -6,7 +6,7 @@ import { Section3 } from "../container/Section";
 import GameTitle from "./Games/GameTitle";
 import HeaderBackground from "../assets/images/headerBackground.jpg";
 import { getLocalStorageItem } from "../utils/helper";
-import { Loader } from "../component/commonComponent";
+import { LoaderMain } from "../component/commonComponent";
 import { userDetail } from "../redux/action";
 
 const Dashboard = ({navbar}) => {
@@ -57,7 +57,7 @@ const Dashboard = ({navbar}) => {
   return (
     <>
       {loading ? (
-        <Loader />
+        <LoaderMain />
       ) : (
         <>
           {" "}

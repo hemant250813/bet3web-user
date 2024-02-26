@@ -9,7 +9,7 @@ import validateHeadtail from "../../validation/game/headTail";
 import HeaderBackground from "../../assets/images/headerBackground.jpg";
 import { getLocalStorageItem } from "../../utils/helper";
 import { Win, Lose } from "../../container/Modal/index";
-import { bet, userDetail } from "../../redux/action";
+import { bet, userDetail, getSetting } from "../../redux/action";
 import { GAME, RESULT } from "../../utils/constants";
 
 const HeadTail = ({ navbar }) => {
@@ -38,11 +38,13 @@ const HeadTail = ({ navbar }) => {
     amount: "",
     balance: user_detail?.data?.balance,
   });
+  const setting = useSelector((state) => state?.GetSetting?.setting);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   useEffect(() => {
+    dispatch(getSetting({ game: "head_tail" }));
     dispatch(userDetail());
   }, []);
 
@@ -145,9 +147,10 @@ const HeadTail = ({ navbar }) => {
     };
 
     if (coin === "win") {
+      let pl = (parseInt(form.amount) * (setting?.odd) / 100);
       payload = {
         ...payload,
-        amount: parseInt(form.amount),
+        amount: parseInt(pl),
         result: RESULT?.WIN,
       };
     } else {
@@ -157,21 +160,33 @@ const HeadTail = ({ navbar }) => {
         result: RESULT?.LOSE,
       };
     }
-    dispatch(
-      bet({
-        payload,
-        callback: async (data) => {
-          if (data) {
-          }
-        },
-      })
-    );
+    // dispatch(
+    //   bet({
+    //     payload,
+    //     callback: async (data) => {
+    //       if (data) {
+    //       }
+    //     },
+    //   })
+    // );
+  };
+
+  const resetHandler = (e) => {
+    setForm((prevState) => ({
+      ...prevState,
+      ["amount"]: "",
+    }));
+    setForm((prevState) => ({
+      ...prevState,
+      ["balance"]: form?.balance - form?.amount,
+    }));
+    dispatch(userDetail());
   };
 
   const handleClick = () => {
     setWinOpenModal(false);
     setLoseOpenModal(false);
-    const { errors, isValid } = validateHeadtail(form, tabViews);
+    const { errors, isValid } = validateHeadtail(form, tabViews, setting);
     if (isValid) {
       handleCoinClick();
       // setIsRotating(true);
@@ -198,17 +213,21 @@ const HeadTail = ({ navbar }) => {
         if (tabViews[0].route === result) {
           setWinOpenModal(true);
           onSubmit("win");
+          resetHandler();
         } else {
           setLoseOpenModal(true);
           onSubmit("lose");
+          resetHandler();
         }
       } else {
         if (tabViews[1].route === result) {
           setWinOpenModal(true);
           onSubmit("win");
+          resetHandler();
         } else {
           setLoseOpenModal(true);
           onSubmit("lose");
+          resetHandler();
         }
       }
     }, 7000);
@@ -473,7 +492,7 @@ const HeadTail = ({ navbar }) => {
                       const value = e.target.value;
                       const { name } = e.target;
                       let finalAmount = user_detail?.data?.balance - value;
-                     
+
                       if (value <= user_detail?.data?.balance) {
                         setForm((prevState) => ({
                           ...prevState,
@@ -506,7 +525,9 @@ const HeadTail = ({ navbar }) => {
                 </div>
               </div>
               <span className="text-[#adb5bd] mt-3">
-                Minimum : 1.00 USD | Maximum : 100.00 USD | Win Amount 150.00 %
+                Minimum : {setting?.min?.toFixed(2)} USD | Maximum :{" "}
+                {setting?.max?.toFixed(2)} USD | Win Amount{" "}
+                {setting?.odd?.toFixed(2)} %
               </span>
             </div>
             <div></div>

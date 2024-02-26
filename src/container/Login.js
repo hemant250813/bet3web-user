@@ -6,7 +6,7 @@ import LoginImage from "../assets/images/login/login.jpg";
 import Logo from "../assets/images/logo.png";
 import validateLogin from "../validation/user/login";
 import { login } from "../redux/action";
-import { Loader } from "../component/commonComponent";
+import { LoaderMain } from "../component/commonComponent";
 
 const Login = () => {
   const [form, setForm] = useState({
@@ -65,13 +65,14 @@ const Login = () => {
         payload,
         callback: async (data) => {
           if (data) {
-            console.log("data", data);
             setIsSubmit(false);
             setLoading(false);
             if (data?.data?.type === 1) {
               navigate("/admin-dashboard");
-            } else {
+            } else if (data?.data?.type === 2) {
               navigate("/dashboard");
+            } else {
+              navigate("/");
             }
             // navigate("/dashboard");
           }
@@ -97,7 +98,7 @@ const Login = () => {
   return (
     <Fragment>
       {loading ? (
-        <Loader />
+        <LoaderMain />
       ) : (
         <div
           className="min-h-screen flex items-center justify-center bg-cover relative"

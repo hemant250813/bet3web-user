@@ -143,20 +143,20 @@ const Ticket = ({ navbar }) => {
                     {/* <!-- Your table content here --> */}
                     <thead className={`bg-[#E3BC3F] text-black`}>
                       <tr>
-                        <th class={`py-4 lg:px-16 sm:px-4`}>Subject</th>
-                        <th class={`py-4 lg:px-16 sm:px-4`}>Status</th>
-                        <th class={`py-4 lg:px-16 sm:px-4`}>Priority</th>
-                        <th class={`py-4 lg:px-16 sm:px-4`}>Last Reply</th>
-                        <th class={`py-4 lg:px-16 sm:px-4`}>Action</th>
+                        <th className={`py-4 lg:px-16 sm:px-4`}>Subject</th>
+                        <th className={`py-4 lg:px-16 sm:px-4`}>Status</th>
+                        <th className={`py-4 lg:px-16 sm:px-4`}>Priority</th>
+                        <th className={`py-4 lg:px-16 sm:px-4`}>Last Reply</th>
+                        <th className={`py-4 lg:px-16 sm:px-4`}>Action</th>
                       </tr>
                     </thead>
                     <tbody className=" text-[#BFC9CA]">
                       <tr className="bg-cyan-950">
-                        <td class={`py-4 lg:px-16 sm:px-4`}>Data 1</td>
-                        <td class={`py-4 lg:px-16 sm:px-4`}>Data 2</td>
-                        <td class={`py-4 lg:px-16 sm:px-4`}>Data 4</td>
-                        <td class={`py-4 lg:px-16 sm:px-4`}>Data 5</td>
-                        <td class={`py-4 lg:px-16 sm:px-4`}>Data 6</td>
+                        <td className={`py-4 lg:px-16 sm:px-4`}>Data 1</td>
+                        <td className={`py-4 lg:px-16 sm:px-4`}>Data 2</td>
+                        <td className={`py-4 lg:px-16 sm:px-4`}>Data 4</td>
+                        <td className={`py-4 lg:px-16 sm:px-4`}>Data 5</td>
+                        <td className={`py-4 lg:px-16 sm:px-4`}>Data 6</td>
                       </tr>
                       {/* <!-- More rows --> */}
                     </tbody>

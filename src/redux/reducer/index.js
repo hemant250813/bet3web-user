@@ -16,6 +16,15 @@ import GetUser from "./user/getUserReducer";
 import GetReport from "./report/reportReducer";
 import Deposit from "./transaction/depositReducer";
 import Withdraw from "./transaction/withdrawlReducer";
+import Setting from "./game/settingReducer";
+import LogoutUser from "./user/logoutUserReducer";
+import GetSetting from "./game/getSettingReducer";
+import Question from "./question/questionReducer";
+import GetQuestion from "./question/getQuestionReducer";
+import QuestionResult from "./question/questionResultReducer";
+import QuestionDropdown from "./question/getQuestionDropdownReducer";
+import Result from "./result/resultReducer";
+import GetResult from "./result/getResultReducer";
 
 const appReducer = combineReducers({
   Registration,
@@ -32,7 +41,16 @@ const appReducer = combineReducers({
   GetUser,
   GetReport,
   Deposit,
-  Withdraw
+  Withdraw,
+  Setting,
+  LogoutUser,
+  GetSetting,
+  Question,
+  GetQuestion,
+  QuestionResult,
+  QuestionDropdown,
+  Result,
+  GetResult
 });
 const reducers = (state, action) => {
   return appReducer(state, action);

@@ -10,6 +10,7 @@ export const defaultChipValues = [
 ];
 
 export const GAME = [
+  { label: "All", value: "all" },
   { label: "Head & Tail", value: "head_tail" },
   { label: "Rock Paper & Scissors", value: "rock_paper_scissors" },
   { label: "Spin Wheel", value: "spin_wheel" },
@@ -50,5 +51,15 @@ export const NAVBAR = [
     key: 3,
     name: "setting",
     route: "setting",
+  },
+  {
+    key: 4,
+    name: "Q Betting",
+    route: "qbetting",
+  },
+  {
+    key: 5,
+    name: "Result",
+    route: "result",
   },
 ];

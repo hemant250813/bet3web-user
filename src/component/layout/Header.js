@@ -1,12 +1,16 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { BsArrowRightCircle } from "react-icons/bs";
 import { CgLogOut } from "react-icons/cg";
 import { BsPersonAdd } from "react-icons/bs";
 import Logo from "../../assets/images/logo.png";
-import { getLocalStorageItem } from "../../utils/helper";
-import { logout } from "../../redux/action";
+import { logoutUser,userDetail } from "../../redux/action";
+import {
+  removeLocalStorageItem,
+  getLocalStorageItem,
+  clearLocalStorage,
+} from "../../utils/helper";
 
 const Header = ({ isVerifyMail, setLoading, navbar }) => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -17,9 +21,19 @@ const Header = ({ isVerifyMail, setLoading, navbar }) => {
 
   const isAuth = getLocalStorageItem("token");
   const userData = JSON.parse(getLocalStorageItem("user"));
+  const user_detail = useSelector((state) => state?.UserDetail?.userDetails);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  useEffect(()=>{
+    if (!isAuth && !userData) {
+      navigate("/");
+      clearLocalStorage();
+      removeLocalStorageItem("user");
+      removeLocalStorageItem("token");
+    }
+  },[]);
 
   useEffect(() => {
     // Function to update the window dimensions
@@ -44,12 +58,16 @@ const Header = ({ isVerifyMail, setLoading, navbar }) => {
     };
 
     dispatch(
-      logout({
+      logoutUser({
         payload,
         callback: async (data) => {
           if (data) {
             setLoading(false);
+            clearLocalStorage();
+            removeLocalStorageItem("user");
+            removeLocalStorageItem("token");
             navigate("/");
+            clearTimeout(loginTimeOut);
           }
         },
       })
@@ -105,7 +123,7 @@ const Header = ({ isVerifyMail, setLoading, navbar }) => {
               {nav?.child && index === activeTabIndex && (
                 <div
                   onMouseLeave={() => setActiveTabIndex(999)}
-                  class="grid grid-cols-1 w-40 h-40 absolute top-12  border-2 border-[#E3BC3F]  shadow-md bg-black"
+                  className="grid grid-cols-1 w-40 h-40 absolute top-12  border-2 border-[#E3BC3F]  shadow-md bg-black"
                 >
                   {nav?.children?.map((sub, subIndex) => (
                     <Fragment key={subIndex}>
@@ -114,7 +132,7 @@ const Header = ({ isVerifyMail, setLoading, navbar }) => {
                           setActiveTabSubIndex(subIndex);
                         }}
                         onClick={() => redirectSubTab(sub?.route)}
-                        class={`p-2 ${
+                        className={`p-2 ${
                           subIndex === 0
                             ? "border-b-2 border-[#E3BC3F]"
                             : subIndex === 1
@@ -130,7 +148,7 @@ const Header = ({ isVerifyMail, setLoading, navbar }) => {
                       >
                         {sub?.name}
                       </span>
-                      {/* <span class="p-2">{sub?.name}</span> */}
+                      {/* <span className="p-2">{sub?.name}</span> */}
                     </Fragment>
                   ))}
                 </div>

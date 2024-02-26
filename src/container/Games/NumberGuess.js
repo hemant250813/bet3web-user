@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { Footer } from "../../component/layout";
 import { Header, HumburgerHeader } from "../../component/layout";
 import GameTitle from "./GameTitle";
-import validateAmount from "../../validation/user/amount";
+import validateNumberGuess from "../../validation/game/numberGuess";
 import HeaderBackground from "../../assets/images/headerBackground.jpg";
 import { getLocalStorageItem } from "../../utils/helper";
+import { Win, Lose } from "../../container/Modal/index";
+import { bet, userDetail, getSetting } from "../../redux/action";
+import { GAME, RESULT } from "../../utils/constants";
 
-const NumberGuess = ({navbar}) => {
-  const [form, setForm] = useState({
-    amount: "",
-  });
+const NumberGuess = ({ navbar }) => {
   const [error, setError] = useState({});
   const [randomNumber, setRandomNumber] = useState(0);
   const [isPlay, setIsPlay] = useState(false);
@@ -21,9 +22,32 @@ const NumberGuess = ({navbar}) => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [hideHeader, setHideHeader] = useState(false);
+  const [winOpenModal, setWinOpenModal] = useState(false);
+  const [loseOpenModal, setLoseOpenModal] = useState(false);
+
+  const user_detail = useSelector((state) => state?.UserDetail?.userDetails);
+  const [form, setForm] = useState({
+    amount: "",
+    balance: user_detail?.data?.balance,
+  });
+  const setting = useSelector((state) => state?.GetSetting?.setting);
+
   const isAuth = getLocalStorageItem("token");
   const userData = JSON.parse(getLocalStorageItem("user"));
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getSetting({ game: "number_guess" }));
+    dispatch(userDetail());
+  }, []);
+
+  useEffect(() => {
+    setForm((prevState) => ({
+      ...prevState,
+      ["balance"]: user_detail?.data?.balance,
+    }));
+  }, [user_detail]);
 
   useEffect(() => {
     if (windowWidth <= 768) {
@@ -31,7 +55,7 @@ const NumberGuess = ({navbar}) => {
     } else {
       setHideHeader(false);
     }
-    
+
     if (isAuth && userData) {
       navigate("/number_guess");
     } else {
@@ -68,17 +92,75 @@ const NumberGuess = ({navbar}) => {
     }
   };
 
+  const resetHandler = (e) => {
+    setForm((prevState) => ({
+      ...prevState,
+      ["amount"]: "",
+    }));
+    setForm((prevState) => ({
+      ...prevState,
+      ["balance"]: form?.balance - form?.amount,
+    }));
+    dispatch(userDetail());
+  };
+
   const guessTheNumber = (e) => {
     e.preventDefault();
     setGuessNumber(inputNumber);
+
     if (numberOfAttempt === 2) {
       setIsPlay(false);
+      if (guessNumber === randomNumber) {
+        setWinOpenModal(true);
+        onSubmit("win");
+        resetHandler();
+      } else {
+        setLoseOpenModal(true);
+        onSubmit("lose");
+        resetHandler();
+      }
+    } else {
+      if (guessNumber === randomNumber) {
+        setWinOpenModal(true);
+        onSubmit("win");
+        resetHandler();
+      }
     }
     setNumberOfAttempt(numberOfAttempt + 1);
   };
 
+  const onSubmit = (hand) => {
+    let payload = {
+      game: GAME?.ROCK_PAPER_SCISSORS,
+    };
+
+    if (hand === "win") {
+      let pl = (parseInt(form.amount) * (setting?.odd) / 100);
+      payload = {
+        ...payload,
+        amount: parseInt(pl),
+        result: RESULT?.WIN,
+      };
+    } else {
+      payload = {
+        ...payload,
+        amount: -parseInt(form.amount),
+        result: RESULT?.LOSE,
+      };
+    }
+    dispatch(
+      bet({
+        payload,
+        callback: async (data) => {
+          if (data) {
+          }
+        },
+      })
+    );
+  };
+
   const handleClick = () => {
-    const { errors, isValid } = validateAmount(form);
+    const { errors, isValid } = validateNumberGuess(form, setting);
     if (isValid) {
       setIsPlay(true);
       setGuessNumber(null);
@@ -107,7 +189,15 @@ const NumberGuess = ({navbar}) => {
         }}
       >
         {/* Mobile Header with Hamburger Icon */}
-        {hideHeader ? <HumburgerHeader setLoading={setLoading}/> : <Header isVerifyMail={false} setLoading={setLoading} navbar={navbar}/>}
+        {hideHeader ? (
+          <HumburgerHeader setLoading={setLoading} />
+        ) : (
+          <Header
+            isVerifyMail={false}
+            setLoading={setLoading}
+            navbar={navbar}
+          />
+        )}
         <GameTitle title="Play Number Guessing" route="number_guess" />
       </section>
 
@@ -236,7 +326,7 @@ const NumberGuess = ({navbar}) => {
                       ? "text-5xl"
                       : windowWidth === 1440
                       ? "text-3xl"
-                      : "text-5xl"
+                      : "text-4xl"
                   }  text-white`}
                 >
                   Current Balance :
@@ -255,11 +345,11 @@ const NumberGuess = ({navbar}) => {
                       ? "text-5xl"
                       : windowWidth === 1440
                       ? "text-3xl"
-                      : "text-5xl"
+                      : "text-4xl"
                   }  text-[#E3BC3F]`}
                 >
                   {" "}
-                  10.50 USD
+                  {form?.balance?.toFixed(2)} USD
                 </p>
               </span>
               <div className="flex flex-col items-center w-11/12 mt-3">
@@ -270,7 +360,26 @@ const NumberGuess = ({navbar}) => {
                     name="amount"
                     value={form?.amount}
                     onChange={(e) => {
-                      changeHandler(e);
+                      const value = e.target.value;
+                      const { name } = e.target;
+                      let finalAmount = user_detail?.data?.balance - value;
+
+                      if (value <= user_detail?.data?.balance) {
+                        setForm((prevState) => ({
+                          ...prevState,
+                          [name]: value,
+                        }));
+
+                        setForm((prevState) => ({
+                          ...prevState,
+                          ["balance"]: finalAmount,
+                        }));
+                      }
+
+                      setError((prevState) => ({
+                        ...prevState,
+                        [name]: "",
+                      }));
                     }}
                     className="border p-2 focus:outline-none focus:border-blue-500 bg-[#020C25] text-white w-full"
                     style={{ height: "2rem" }}
@@ -287,7 +396,8 @@ const NumberGuess = ({navbar}) => {
                 </div>
               </div>
               <span className="text-[#adb5bd] mt-3">
-                Minimum : 1.00 USD | Maximum : 100.00 USD | Win Amount 150.00 %
+                Minimum : {setting?.min?.toFixed(2)} USD | Maximum :{" "}
+                {setting?.max?.toFixed(2)} USD | Win Amount {setting?.odd?.toFixed(2)} %
               </span>
             </div>
             <div></div>
@@ -340,6 +450,15 @@ const NumberGuess = ({navbar}) => {
         </div>
       </section>
       <Footer />
+      {winOpenModal && (
+        <Win winOpenModal={winOpenModal} setWinOpenModal={setWinOpenModal} />
+      )}
+      {loseOpenModal && (
+        <Lose
+          loseOpenModal={loseOpenModal}
+          setLoseOpenModal={setLoseOpenModal}
+        />
+      )}
     </>
   );
 };

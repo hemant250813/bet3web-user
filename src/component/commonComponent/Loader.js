@@ -1,12 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "../../loader.css";
-import face1 from "../../assets/images/loader/61051cb37ad601627724979.jpg";
-import face2 from "../../assets/images/loader/630600f0daf711661337840.jpg";
-import face3 from "../../assets/images/loader/6306011c5afd11661337884.jpg";
-import face4 from "../../assets/images/loader/blackjack-preview.png";
-import face5 from "../../assets/images/loader/610521608fde21627726176.jpg";
-import face6 from "../../assets/images/loader/thumb_63060112437731661337874.jpg";
-import logo from "../../assets/images/logo.png";
+import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
 
 const Loader = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -29,117 +22,12 @@ const Loader = () => {
   }, [windowWidth, windowHeight]);
 
   return (
-    <div className="relative">
-      <div
-        style={{
-          position: "absolute",
-          left:
-            windowWidth === 2560
-              ? "850px"
-              : windowWidth === 1440
-              ? "450px"
-              : windowWidth === 1024
-              ? "310px"
-              : windowWidth === 768
-              ? "230px"
-              : windowWidth === 425
-              ? "100px"
-              : windowWidth === 375
-              ? "80px"
-              : windowWidth === 320
-              ? "70px"
-              : windowWidth === 1850
-              ? "860px"
-              : "790px",
-          top:
-            windowWidth === 2560
-              ? "360px"
-              : windowWidth === 1440
-              ? "360px"
-              : windowWidth === 1024
-              ? "450px"
-              : windowWidth === 768
-              ? "450px"
-              : windowWidth === 425
-              ? "340px"
-              : windowWidth === 375
-              ? "390px"
-              : windowWidth === 320
-              ? "380px"
-              : windowWidth === 1850
-              ? "500px"
-              : "790px",
-        }}
-      >
-        <div
-          style={{
-            position: "relative",
-            width: "100px",
-            height: "100px",
-            perspective: "600px",
-            backgroundColor: "black",
-          }}
-          // className="container"
-        >
-          <div className="cube">
-            <div
-              style={{
-                backgroundImage: `url(${face1})`,
-                backgroundSize: "cover",
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center",
-              }}
-              className="face"
-            ></div>
-            <div
-              style={{
-                backgroundImage: `url(${face2})`,
-                backgroundSize: "cover",
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center",
-              }}
-              className="face"
-            ></div>
-            <div
-              style={{
-                backgroundImage: `url(${face3})`,
-                backgroundSize: "cover",
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center",
-              }}
-              className="face"
-            ></div>
-            <div
-              style={{
-                backgroundImage: `url(${face4})`,
-                backgroundSize: "cover",
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center",
-              }}
-              className="face"
-            ></div>
-            <div
-              style={{
-                backgroundImage: `url(${face5})`,
-                backgroundSize: "cover",
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center",
-              }}
-              className="face"
-            ></div>
-            <div
-              style={{
-                backgroundImage: `url(${face6})`,
-                backgroundSize: "cover",
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center",
-              }}
-              className="face"
-            ></div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <main
+      className="flex-1 overflow-x-hidden overflow-y-auto scrollbar scrollbar-thumb-[#4fd1c5] scrollbar-track-[#93C5FD] bg-[#E3BC3F] p-4"
+      style={{ maxHeight: "calc(100vh - 120px)" }}
+    >
+      <ClimbingBoxLoader color="#000000" />
+    </main>
   );
 };
 
