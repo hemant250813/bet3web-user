@@ -13,6 +13,7 @@ function* reportRequest(action) {
     );
     if (data?.meta?.code === 200) {
       yield put(getReportSuccess(data));
+      yield call(action.payload.callback, data);
     } else if (data?.code === 400) {
       yield put(getReportFailure(data));
       notifyWarning(data.message);

@@ -14,6 +14,15 @@ import GetUser from "../saga/user/getUserSaga";
 import GetReport from "./report/reportSaga";
 import Deposit from "./transaction/depositSaga";
 import Withdraw from "./transaction/withdrawlSaga";
+import Setting from "./game/settingSaga";
+import LogoutUser from "./user/logoutUserSaga";
+import GetSetting from "./game/getSettingSaga";
+import Question from "./question/questionSaga";
+import GetQuestion from "./question/getQuestionSaga";
+import QuestionResult from "./question/questionResultSaga";
+import QuestionDropdown from "./question/getQuestionDropdownSaga";
+import Result from "./result/resultSaga";
+import GetResult from "./result/getResultSaga";
 
 export default function* rootSaga() {
   yield all([
@@ -31,6 +40,15 @@ export default function* rootSaga() {
     GetUser(),
     GetReport(),
     Deposit(),
-    Withdraw()
+    Withdraw(),
+    Setting(),
+    LogoutUser(),
+    GetSetting(),
+    Question(),
+    GetQuestion(),
+    QuestionResult(),
+    QuestionDropdown(),
+    Result(),
+    GetResult()
   ]);
 }

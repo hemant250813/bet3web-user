@@ -1,33 +1,44 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { Footer } from "../../component/layout";
 import { Header, HumburgerHeader } from "../../component/layout";
 import GameTitle from "./GameTitle";
 import Money from "../../assets/images/games/spinWheel/money.png";
 import MoneyBlack from "../../assets/images/games/spinWheel/moneyblack.png";
 import HeaderBackground from "../../assets/images/headerBackground.jpg";
-import validateAmount from "../../validation/user/amount";
+import validateSpinWheel from "../../validation/game/spinWheel";
 import { getLocalStorageItem } from "../../utils/helper";
+import { Win, Lose } from "../../container/Modal/index";
+import { bet, userDetail, getSetting } from "../../redux/action";
+import { GAME, RESULT } from "../../utils/constants";
 
-const SpinWheel = ({navbar}) => {
-  const [form, setForm] = useState({
-    amount: "",
-  });
+const SpinWheel = ({ navbar }) => {
   const [isPaused, setIsPaused] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [error, setError] = useState({});
   const [hideHeader, setHideHeader] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [winOpenModal, setWinOpenModal] = useState(false);
+  const [loseOpenModal, setLoseOpenModal] = useState(false);
+  const [selectedColor, setSelectedColor] = useState("");
+
+  const user_detail = useSelector((state) => state?.UserDetail?.userDetails);
+  const [form, setForm] = useState({
+    amount: "",
+    balance: user_detail?.data?.balance,
+  });
+  const setting = useSelector((state) => state?.GetSetting?.setting);
+  
   const isAuth = getLocalStorageItem("token");
   const userData = JSON.parse(getLocalStorageItem("user"));
 
   const [tabViews, setTabViews] = useState([
-    { route: "rock", isActive: false },
-    { route: `paper`, isActive: false },
-    { route: `scissor`, isActive: false },
+    { route: `blue`, isActive: false },
+    { route: "red", isActive: false },
   ]);
-
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   //wheel
@@ -91,12 +102,24 @@ const SpinWheel = ({navbar}) => {
   //wheel
 
   useEffect(() => {
+    dispatch(getSetting({ game: "spin_wheel" }));
+    dispatch(userDetail());
+  }, []);
+
+  useEffect(() => {
+    setForm((prevState) => ({
+      ...prevState,
+      ["balance"]: user_detail?.data?.balance,
+    }));
+  }, [user_detail]);
+
+  useEffect(() => {
     if (windowWidth <= 768) {
       setHideHeader(true);
     } else {
       setHideHeader(false);
     }
-    
+
     if (isAuth && userData) {
       navigate("/spin_wheel");
     } else {
@@ -148,6 +171,18 @@ const SpinWheel = ({navbar}) => {
     }
   };
 
+  const resetHandler = (e) => {
+    setForm((prevState) => ({
+      ...prevState,
+      ["amount"]: "",
+    }));
+    setForm((prevState) => ({
+      ...prevState,
+      ["balance"]: form?.balance - form?.amount,
+    }));
+    dispatch(userDetail());
+  };
+
   const initCanvas = () => {
     let canvas = document.getElementById("canvas");
     if (!canvas) {
@@ -170,6 +205,8 @@ const SpinWheel = ({navbar}) => {
   };
 
   const spin = () => {
+    setWinOpenModal(false);
+    setLoseOpenModal(false);
     wheelInit();
     isStarted = true;
     // onRotate();
@@ -339,7 +376,45 @@ const SpinWheel = ({navbar}) => {
   };
 
   const onFinished = (winner) => {
-    console.log("winner", winner);
+    if(selectedColor === winner){
+      onSubmit("win");
+      setWinOpenModal(true);
+      resetHandler();
+    }else{
+      onSubmit("lose");
+      setLoseOpenModal(true);
+      resetHandler();
+    }
+  };
+
+  const onSubmit = (color) => {
+    let payload = {
+      game: GAME?.SPIN_WHEEL,
+    };
+
+    if (color === "win") {
+      let pl = (parseInt(form.amount) * (setting?.odd) / 100);
+      payload = {
+        ...payload,
+        amount: parseInt(pl),
+        result: RESULT?.WIN,
+      };
+    } else {
+      payload = {
+        ...payload,
+        amount: -parseInt(form.amount),
+        result: RESULT?.LOSE,
+      };
+    }
+    dispatch(
+      bet({
+        payload,
+        callback: async (data) => {
+          if (data) {
+          }
+        },
+      })
+    );
   };
 
   const stopWheel = () => {
@@ -358,14 +433,14 @@ const SpinWheel = ({navbar}) => {
       el.route === tab ? { ...el, isActive: true } : { ...el, isActive: false }
     );
     setTabViews(filterTabList);
-    setIsPaused(true);
+    // setIsPaused(true);
 
-    stopWheel();
-    wheelInit();
+    // stopWheel();
+    // wheelInit();
   };
 
   const handleClick = () => {
-    const { errors, isValid } = validateAmount(form);
+    const { errors, isValid } = validateSpinWheel(form, tabViews,setting);
     if (isValid) {
       spin();
       setIsPaused(false);
@@ -390,7 +465,15 @@ const SpinWheel = ({navbar}) => {
         }}
       >
         {/* Mobile Header with Hamburger Icon */}
-        {hideHeader ? <HumburgerHeader setLoading={setLoading}/> : <Header isVerifyMail={false} setLoading={setLoading} navbar={navbar}/>}
+        {hideHeader ? (
+          <HumburgerHeader setLoading={setLoading} />
+        ) : (
+          <Header
+            isVerifyMail={false}
+            setLoading={setLoading}
+            navbar={navbar}
+          />
+        )}
         <GameTitle
           title="Play Rock Paper scissors"
           route="rock_paper_scissors"
@@ -457,7 +540,9 @@ const SpinWheel = ({navbar}) => {
             }}
           >
             <div id="wheelCircle">
-              <div onClick={() => spin()} id="wheel">
+              <div
+              //  onClick={() => spin()}
+                id="wheel">
                 <canvas
                   id="canvas"
                   width="600"
@@ -499,7 +584,8 @@ const SpinWheel = ({navbar}) => {
           >
             <div className="flex flex-col items-center justify-center p-3">
               <span className="flex items-center justify-center">
-                <p className={`${
+                <p
+                  className={`${
                     windowWidth === 320
                       ? "text-xs"
                       : windowWidth === 375
@@ -513,8 +599,12 @@ const SpinWheel = ({navbar}) => {
                       : windowWidth === 1440
                       ? "text-3xl"
                       : "text-5xl"
-                  }  text-white`}>Current Balance :</p>
-                <p className={`${
+                  }  text-white`}
+                >
+                  Current Balance :
+                </p>
+                <p
+                  className={`${
                     windowWidth === 320
                       ? "text-xs"
                       : windowWidth === 375
@@ -527,8 +617,12 @@ const SpinWheel = ({navbar}) => {
                       ? "text-5xl"
                       : windowWidth === 1440
                       ? "text-3xl"
-                      : "text-5xl"
-                  }  text-[#E3BC3F]`}> 10.50 USD</p>
+                      : "text-4xl"
+                  }  text-[#E3BC3F]`}
+                >
+                  {" "}
+                  {form?.balance?.toFixed(2)} USD
+                </p>
               </span>
               <div className="flex flex-col items-center w-11/12 mt-3">
                 <div className="flex w-9/12">
@@ -538,7 +632,26 @@ const SpinWheel = ({navbar}) => {
                     name="amount"
                     value={form?.amount}
                     onChange={(e) => {
-                      changeHandler(e);
+                      const value = e.target.value;
+                      const { name } = e.target;
+                      let finalAmount = user_detail?.data?.balance - value;
+
+                      if (value <= user_detail?.data?.balance) {
+                        setForm((prevState) => ({
+                          ...prevState,
+                          [name]: value,
+                        }));
+
+                        setForm((prevState) => ({
+                          ...prevState,
+                          ["balance"]: finalAmount,
+                        }));
+                      }
+
+                      setError((prevState) => ({
+                        ...prevState,
+                        [name]: "",
+                      }));
                     }}
                     className="border p-2 focus:outline-none focus:border-blue-500 bg-[#020C25] text-white w-full"
                     style={{ height: "2rem" }}
@@ -555,11 +668,13 @@ const SpinWheel = ({navbar}) => {
                 </div>
               </div>
               <span className="text-[#adb5bd] mt-3">
-                Minimum : 1.00 USD | Maximum : 100.00 USD | Win Amount 150.00 %
+              Minimum : {setting?.min?.toFixed(2)} USD | Maximum :{" "}
+                {setting?.max?.toFixed(2)} USD | Win Amount {setting?.odd?.toFixed(2)} %
               </span>
             </div>
             <div></div>
-            <div className={`flex items-center justify-center relative gap-6 ${
+            <div
+              className={`flex items-center justify-center relative gap-6 ${
                 windowWidth === 320
                   ? "p-2"
                   : windowWidth === 375
@@ -571,10 +686,16 @@ const SpinWheel = ({navbar}) => {
                   : windowWidth === 1440
                   ? "p-16"
                   : "p-20"
-              }`}>
+              }`}
+            >
               <span
                 onClick={(e) => {
-                  tabSwitch(e, "rock");
+                  tabSwitch(e, "blue");
+                  setSelectedColor("blue");
+                  setError((prevState) => ({
+                    ...prevState,
+                    ["color"]: "",
+                  }));
                 }}
                 className={`${tabViews[0].isActive && "border p-2"}`}
               >
@@ -582,12 +703,20 @@ const SpinWheel = ({navbar}) => {
               </span>
               <span
                 onClick={(e) => {
-                  tabSwitch(e, "paper");
+                  tabSwitch(e, "red");
+                  setSelectedColor("red");
+                  setError((prevState) => ({
+                    ...prevState,
+                    ["color"]: "",
+                  }));
                 }}
                 className={`${tabViews[1].isActive && "border p-2"}`}
               >
                 <img src={Money} alt="red" />
               </span>
+            </div>
+            <div className="flex flex-col items-center justify-center text-rose-600 font-serif mt-1">
+              {error?.color}
             </div>
             <div className="flex flex-col items-center justify-center w-11/12 p-2">
               <button
@@ -601,7 +730,19 @@ const SpinWheel = ({navbar}) => {
           </div>
         </div>
       </section>
-      <Footer/>
+      <Footer />
+      {winOpenModal && (
+        <Win
+          winOpenModal={winOpenModal}
+          setWinOpenModal={setWinOpenModal}
+        />
+      )}
+      {loseOpenModal && (
+        <Lose
+          loseOpenModal={loseOpenModal}
+          setLoseOpenModal={setLoseOpenModal}
+        />
+      )}
     </>
   );
 };

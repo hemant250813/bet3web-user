@@ -245,30 +245,30 @@ const Transactions = ({ navbar }) => {
                     {/* <!-- Your table content here --> */}
                     <thead className={`bg-[#E3BC3F] text-black`}>
                       <tr>
-                        <th class={`py-4 lg:px-16 sm:px-4`}>Trx</th>
-                        <th class={`py-4 lg:px-16 sm:px-4`}>
+                        <th className={`py-4 lg:px-16 sm:px-4`}>Trx</th>
+                        <th className={`py-4 lg:px-16 sm:px-4`}>
                           Date
                         </th>
-                        <th class={`py-4 lg:px-16 sm:px-4`}>Amount</th>
-                        <th class={`py-4 lg:px-16 sm:px-4`}>Post Balance</th>
-                        <th class={`py-4 lg:px-16 sm:px-4`}>Detail</th>
+                        <th className={`py-4 lg:px-16 sm:px-4`}>Amount</th>
+                        <th className={`py-4 lg:px-16 sm:px-4`}>Post Balance</th>
+                        <th className={`py-4 lg:px-16 sm:px-4`}>Detail</th>
                       </tr>
                     </thead>
                     <tbody className=" text-[#BFC9CA]">
                       <tr className="bg-cyan-950">
-                        <td class={`py-4 lg:px-16 sm:px-4`}>Data 1</td>
-                        <td class={`py-4 lg:px-16 sm:px-4`}>Data 2</td>
-                        <td class={`py-4 lg:px-16 sm:px-4`}><span className="flex text-red-600"><p className="px-2">-</p><p className="">Data 3</p></span></td>
-                        <td class={`py-4 lg:px-16 sm:px-4`}>Data 4</td>
-                        <td class={`py-4 lg:px-16 sm:px-4`}>Data 5</td>
+                        <td className={`py-4 lg:px-16 sm:px-4`}>Data 1</td>
+                        <td className={`py-4 lg:px-16 sm:px-4`}>Data 2</td>
+                        <td className={`py-4 lg:px-16 sm:px-4`}><span className="flex text-red-600"><p className="px-2">-</p><p className="">Data 3</p></span></td>
+                        <td className={`py-4 lg:px-16 sm:px-4`}>Data 4</td>
+                        <td className={`py-4 lg:px-16 sm:px-4`}>Data 5</td>
                       </tr>
 
                       <tr className="bg-[#202438]">
-                        <td class={`py-4 lg:px-16 sm:px-4`}>Data 1</td>
-                        <td class={`py-4 lg:px-16 sm:px-4`}>Data 2</td>
-                        <td class={`py-4 lg:px-16 sm:px-4`}><span className="flex text-green-400"><p className="px-2">+</p><p className="">Data 3</p></span></td>
-                        <td class={`py-4 lg:px-16 sm:px-4`}>Data 1</td>
-                        <td class={`py-4 lg:px-16 sm:px-4`}>Data 5</td>
+                        <td className={`py-4 lg:px-16 sm:px-4`}>Data 1</td>
+                        <td className={`py-4 lg:px-16 sm:px-4`}>Data 2</td>
+                        <td className={`py-4 lg:px-16 sm:px-4`}><span className="flex text-green-400"><p className="px-2">+</p><p className="">Data 3</p></span></td>
+                        <td className={`py-4 lg:px-16 sm:px-4`}>Data 1</td>
+                        <td className={`py-4 lg:px-16 sm:px-4`}>Data 5</td>
                       </tr>
                       {/* <!-- More rows --> */}
                     </tbody>

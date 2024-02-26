@@ -21,8 +21,8 @@ const BottomNavbar = () => {
               onClick={() => activeTab(index)}
               key={index}
               to={`/${nav?.route}`}
-              className={` hover:text-indigo-600 ${
-                active === index ? "text-indigo-600" : "text-[#4fd1c5]"
+              className={` hover:text-[#4fd1c5] ${
+                active === index ? "text-[#4fd1c5]" : "text-[#E3BC3F]"
               }`}
             >
               {" "}

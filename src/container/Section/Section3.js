@@ -12,6 +12,7 @@ import roulette from "../../assets/images/games/roulette.jpg";
 import casinodice from "../../assets/images/games/casinodice.jpg";
 import keno from "../../assets/images/games/keno.png";
 import blackjack from "../../assets/images/games/blackjack.jpg";
+import questionAndAnswer from "../../assets/images/games/question/questionAndAnswer.png";
 import Account from "../../container/Account";
 import { getLocalStorageItem, WarningToast } from "../../utils/helper";
 import { Loader } from "../../component/commonComponent";
@@ -31,7 +32,7 @@ const Section3 = ({ games, isDashboard, loading, setLoading, userDetails }) => {
   }, []);
 
   const afterLoadingDispatch = (route) => {
-    navigate(route);
+    navigate(`/${route}`);
   };
 
   const playGame = (route) => {
@@ -58,7 +59,7 @@ const Section3 = ({ games, isDashboard, loading, setLoading, userDetails }) => {
               <p>Our Awesome Games</p>
             </div>
           )}
-          {isDashboard && <Account userDetails={userDetails}/>}
+          {isDashboard && <Account userDetails={userDetails} />}
           <div
             className={`${
               games ? "" : "p-28"
@@ -138,6 +139,24 @@ const Section3 = ({ games, isDashboard, loading, setLoading, userDetails }) => {
 
             {/* Card 5 */}
             <div
+              onClick={() => playGame("question")}
+              className="relative group"
+              style={{
+                backgroundImage: `url(${questionAndAnswer})`,
+                backgroundSize: "cover",
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center",
+                height: "200px",
+              }}
+            >
+              {/* Button at center bottom */}
+              <button className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-[#E3BC3F] text-black px-8 py-3 rounded-full cursor-pointer w-4/5">
+                Play Now
+              </button>
+            </div>
+
+            {/* Card 6 */}
+            <div
               onClick={() => playGame("dice_rolling")}
               className="relative group"
               style={{
@@ -154,7 +173,7 @@ const Section3 = ({ games, isDashboard, loading, setLoading, userDetails }) => {
               </button>
             </div>
 
-            {/* Card 6 */}
+            {/* Card 7 */}
             <div
               onClick={() => playGame("card_finding")}
               className="relative group"
@@ -172,7 +191,7 @@ const Section3 = ({ games, isDashboard, loading, setLoading, userDetails }) => {
               </button>
             </div>
 
-            {/* Card 7 */}
+            {/* Card 8 */}
             <div
               onClick={() => playGame("number_slot")}
               className="relative group"
@@ -190,7 +209,7 @@ const Section3 = ({ games, isDashboard, loading, setLoading, userDetails }) => {
               </button>
             </div>
 
-            {/* Card 8 */}
+            {/* Card 9 */}
             <div
               onClick={() => playGame("number_pool")}
               className="relative group"
@@ -208,7 +227,7 @@ const Section3 = ({ games, isDashboard, loading, setLoading, userDetails }) => {
               </button>
             </div>
 
-            {/* Card 9 */}
+            {/* Card 10 */}
             <div
               className="relative group"
               style={{
@@ -225,7 +244,7 @@ const Section3 = ({ games, isDashboard, loading, setLoading, userDetails }) => {
               </button>
             </div>
 
-            {/* Card 10 */}
+            {/* Card 11 */}
             <div
               className="relative group"
               style={{
@@ -242,7 +261,7 @@ const Section3 = ({ games, isDashboard, loading, setLoading, userDetails }) => {
               </button>
             </div>
 
-            {/* Card 11 */}
+            {/* Card 12 */}
             <div
               className="relative group"
               style={{
@@ -259,7 +278,7 @@ const Section3 = ({ games, isDashboard, loading, setLoading, userDetails }) => {
               </button>
             </div>
 
-            {/* Card 12 */}
+            {/* Card 13 */}
             <div
               className="relative group"
               style={{

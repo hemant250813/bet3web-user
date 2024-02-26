@@ -1,18 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import profilePic from "../../assets/images/profile/profile.jpeg"; // Replace with the actual path to your profile picture
 import {
   removeLocalStorageItem,
   getLocalStorageItem,
-  clearLocalStorage
+  clearLocalStorage,
 } from "../../utils/helper";
+import { logout } from "../../../redux/action";
 
-const Navbar = ({ title }) => {
+const Navbar = ({ title, admin_detail, setLoading }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
-
+  const [loginTimeOut, setLoginTimeOut] = useState(0);
+  
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     // Function to update the window dimensions
@@ -30,41 +34,48 @@ const Navbar = ({ title }) => {
     };
   }, [windowWidth, windowHeight]);
 
-  // useEffect(() => {
-  //   if (getLocalStorageItem("token") && getLocalStorageItem("user")) {
-  //     navigate("/dashboard");
-  //   } else {
-  //     navigate("/");
-  //   }
-  // }, []);
-
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
+  const afterLoadingDispatch = () => {
+    let logoutPayload = {
+      user_id: admin_detail?.username,
+    };
+
+    dispatch(
+      logout({
+        logoutPayload,
+        callback: async (data) => {
+          if (data) {
+            setLoading(false);
+            clearLocalStorage();
+            removeLocalStorageItem("user");
+            removeLocalStorageItem("token");
+            navigate("/");
+            clearTimeout(loginTimeOut);
+          }
+        },
+      })
+    );
+  }
+
   const handleLogOut = (e) => {
     e.preventDefault();
-    e.preventDefault();
-    clearLocalStorage()
-    removeLocalStorageItem("user");
-    removeLocalStorageItem("token");
-    navigate("/");
+    setLoading(true);
+    let timeout = setTimeout(() => {
+      afterLoadingDispatch();
+    }, 2000);
+    setLoginTimeOut(timeout);
+   
   };
 
   return (
     <div className="bg-gray-900 text-white p-6">
       <div className="container mx-auto flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-[#4fd1c5]">{title}</h1>
+        <h1 className="text-2xl font-semibold text-[#E3BC3F]">{title}</h1>
 
-        <div
-          className="relative"
-          // style={{
-          //   position: "absolute",
-          //   top: windowWidth === 1850 ? "6%" : "4.5%",
-          //   right: "2rem",
-          //   transform: "translateY(-50%)",
-          // }}
-        >
+        <div className="relative">
           <button onClick={toggleDropdown} className="focus:outline-none">
             <img
               src={profilePic}

@@ -72,3 +72,48 @@ export const DEPOSIT_FAILURE = "DEPOSIT_FAILURE";
 export const WITHDRAW = "WITHDRAW";
 export const WITHDRAW_SUCCESS = "WITHDRAW_SUCCESS";
 export const WITHDRAW_FAILURE = "WITHDRAW_FAILURE";
+
+// =====================SETTING ACTION==============================
+export const SETTING = "SETTING";
+export const SETTING_SUCCESS = "SETTING_SUCCESS";
+export const SETTING_FAILURE = "SETTING_FAILURE";
+
+// =====================USER LOGIN ACTION==============================
+export const LOGOUT_USER = "LOGOUT_USER";
+export const LOGOUT_USER_SUCCESS = "LOGOUT_USER_SUCCESS";
+export const LOGOUT_USER_FAILURE = "LOGOUT_USER_FAILURE";
+
+// =====================USER LOGIN ACTION==============================
+export const GET_SETTING = "GET_SETTING";
+export const GET_SETTING_SUCCESS = "GET_SETTING_SUCCESS";
+export const GET_SETTING_FAILURE = "GET_SETTING_FAILURE";
+
+// =====================QUESTION ACTION==============================
+export const QUESTION = "QUESTION";
+export const QUESTION_SUCCESS = "QUESTION_SUCCESS";
+export const QUESTION_FAILURE = "QUESTION_FAILURE";
+
+// =====================GET QUESTION ACTION==============================
+export const GET_QUESTION = "GET_QUESTION";
+export const GET_QUESTION_SUCCESS = "GET_QUESTION_SUCCESS";
+export const GET_QUESTION_FAILURE = "GET_QUESTION_FAILURE";
+
+// =====================QUESTION RESULT ACTION==============================
+export const QUESTION_RESULT = "QUESTION_RESULT";
+export const QUESTION_RESULT_SUCCESS = "QUESTION_RESULT_SUCCESS";
+export const QUESTION_RESULT_FAILURE = "QUESTION_RESULT_FAILURE";
+
+// =====================GET QUESTION DROPDOWN ACTION==============================
+export const GET_QUESTION_DROPDOWN = "GET_QUESTION_DROPDOWN";
+export const GET_QUESTION_DROPDOWN_SUCCESS = "GET_QUESTION_DROPDOWN_SUCCESS";
+export const GET_QUESTION_DROPDOWN_FAILURE = "GET_QUESTION_DROPDOWN_FAILURE";
+
+// =====================RESULT ACTION==============================
+export const RESULT = "RESULT";
+export const RESULT_SUCCESS = "RESULT_SUCCESS";
+export const RESULT_FAILURE = "RESULT_FAILURE";
+
+// =====================GET RESULT ACTION==============================
+export const GET_RESULT = "GET_RESULT";
+export const GET_RESULT_SUCCESS = "GET_RESULT_SUCCESS";
+export const GET_RESULT_FAILURE = "GET_RESULT_FAILURE";

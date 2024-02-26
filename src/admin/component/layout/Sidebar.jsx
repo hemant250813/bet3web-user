@@ -53,20 +53,20 @@ const Sidebar = () => {
           : isSidebarOpened
           ? "w-2/5"
           : "w-1/5"
-      } bg-gray-800 text-white h-screen p-4 transition-all duration-300`}
+      } bg-gray-900 text-white h-screen p-4 transition-all duration-300`}
     >
       <div className="flex items-center justify-between mb-4">
         {/* <div className="flex items-center ml-12"> */}
         <div className="flex items-center ">
           {/* Adjusted the margin here */}
-          <FaGlobe size={24} className="text-[#4fd1c5]" />
+          <FaGlobe size={24} className="text-[#E3BC3F]" />
         </div>
         <button
           onClick={() => toggleSidebar()}
           className={`text-white focus:outline-none p-2`}
         >
           {/* {isSidebarOpen ? <FiX size={32} /> : <FiMenu className="text-blue-500" size={32} />} */}
-          <FiMenu className="text-[#4fd1c5]" size={32} />
+          <FiMenu className="text-[#E3BC3F]" size={32} />
         </button>
       </div>
       {isSidebarOpened ? (
@@ -81,8 +81,8 @@ const Sidebar = () => {
             >
               <p
                 className={` ${
-                  active === index ? "text-indigo-600" : "text-[#4fd1c5]"
-                } hover:text-indigo-600 text-xl capitalize`}
+                  active === index ? "text-[#4fd1c5]" : "text-[#E3BC3F]"
+                } hover:text-[#4fd1c5] text-xl capitalize`}
               >
                 {nav?.name}
               </p>
@@ -103,29 +103,29 @@ const Sidebar = () => {
                 <RxDashboard
                   size={32}
                   className={`${
-                    active === index ? "text-indigo-600" : "text-[#4fd1c5]"
-                  } hover:text-indigo-600`}
+                    active === index ? "text-[#4fd1c5]" : "text-[#E3BC3F]"
+                  } hover:text-[#4fd1c5]`}
                 />
               ) : nav?.name === "user" ? (
                 <FaUsers
                   size={32}
                   className={`${
-                    active === index ? "text-indigo-600" : "text-[#4fd1c5]"
-                  } hover:text-indigo-600`}
+                    active === index ? "text-[#4fd1c5]" : "text-[#E3BC3F]"
+                  } hover:text-[#4fd1c5]`}
                 />
               ) : nav?.name === "report" ? (
                 <TbReportSearch
                   size={32}
                   className={`${
-                    active === index ? "text-indigo-600" : "text-[#4fd1c5]"
-                  } hover:text-indigo-600`}
+                    active === index ? "text-[#4fd1c5]" : "text-[#E3BC3F]"
+                  } hover:text-[#4fd1c5]`}
                 />
               ) : (
                 <IoSettings
                   size={32}
                   className={`${
-                    active === index ? "text-indigo-600" : "text-[#4fd1c5]"
-                  } hover:text-indigo-600`}
+                    active === index ? "text-[#4fd1c5]" : "text-[#E3BC3F]"
+                  } hover:text-[#4fd1c5]`}
                 />
               )}
             </li>

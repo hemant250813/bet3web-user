@@ -10,7 +10,6 @@ import {
 
 function* loginRequest(action) {
   try {
-    console.log("loginRequest");
     const { data } = yield API.post(
       "admin/login",
       action?.payload?.payload

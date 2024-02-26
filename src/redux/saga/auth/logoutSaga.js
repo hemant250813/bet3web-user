@@ -10,8 +10,7 @@ import {
 
 function* logoutRequest(action) {
   try {
-    const { data } = yield API.post("/api/v1/logout", action?.payload?.payload);
-
+    const { data } = yield API.post("admin/logout", action?.payload?.logoutPayload);
     if (data.meta.code === 200) {
       yield put(logoutSuccess(data));
       yield call(clearLocalStorage, "user");
@@ -20,7 +19,6 @@ function* logoutRequest(action) {
       notifySuccess(data.meta.message);
     } else if (data.meta.code !== 200) {
       yield put(logoutFailure(data));
-      notifyWarning(data.meta.message);
     }
   } catch (error) {
     yield put(logoutFailure());

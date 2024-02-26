@@ -132,40 +132,40 @@ const GameLog = ({ navbar }) => {
 
           <section className="justify-center items-center h-screen bg-black relative flex-grow p-6 md:p-8 lg:p-12 overflow-hidden">
             <div className="flex justify-center items-center">
-              <div class={`${windowWidth <= 375 ? "px-1" : "px-16"}`}>
+              <div className={`${windowWidth <= 375 ? "px-1" : "px-16"}`}>
                 <input
                   type="text"
                   placeholder="Search"
                   className="rounded-full border px-4 py-2 mb-4 bg-cyan-950 text-[#BFC9CA] focus:border-[#E3BC3F]"
                 />
                 <div className="overflow-x-auto">
-                  <table class={`table-auto rounded-md`}>
+                  <table className={`table-auto rounded-md`}>
                     {/* <!-- Your table content here --> */}
                     <thead className={`bg-[#E3BC3F] text-black`}>
                       <tr>
-                        <th class={`py-4 lg:px-16 sm:px-4`}>
+                        <th className={`py-4 lg:px-16 sm:px-4`}>
                           Game Name
                         </th>
-                        <th class={`py-4 lg:px-16 sm:px-4`}>You Select</th>
-                        <th class={`py-4 lg:px-16 sm:px-4`}>Result</th>
-                        <th class={`py-4 lg:px-16 sm:px-4`}>Invest</th>
-                        <th class={`py-4 lg:px-16 sm:px-4`}>Win or Lost</th>
+                        <th className={`py-4 lg:px-16 sm:px-4`}>You Select</th>
+                        <th className={`py-4 lg:px-16 sm:px-4`}>Result</th>
+                        <th className={`py-4 lg:px-16 sm:px-4`}>Invest</th>
+                        <th className={`py-4 lg:px-16 sm:px-4`}>Win or Lost</th>
                       </tr>
                     </thead>
                     <tbody className=" text-[#BFC9CA]">
                       <tr className="bg-cyan-950">
-                        <td class={`py-4 lg:px-16 sm:px-4`}>Data 1</td>
-                        <td class={`py-4 lg:px-16 sm:px-4`}>Data 2</td>
-                        <td class={`py-4 lg:px-16 sm:px-4`}>Data 3</td>
-                        <td class={`py-4 lg:px-16 sm:px-4`}>Data 1</td>
-                        <td class={`py-4 lg:px-16 sm:px-4`}><span className="flex p-2 border border-red-600 text-red-600 rounded-md"><FaDice /><p className="px-2">Lost</p></span></td>
+                        <td className={`py-4 lg:px-16 sm:px-4`}>Data 1</td>
+                        <td className={`py-4 lg:px-16 sm:px-4`}>Data 2</td>
+                        <td className={`py-4 lg:px-16 sm:px-4`}>Data 3</td>
+                        <td className={`py-4 lg:px-16 sm:px-4`}>Data 1</td>
+                        <td className={`py-4 lg:px-16 sm:px-4`}><span className="flex p-2 border border-red-600 text-red-600 rounded-md"><FaDice /><p className="px-2">Lost</p></span></td>
                       </tr>
                       <tr className="bg-[#202438]">
-                        <td class={`py-4 lg:px-16 sm:px-4`}>Data 1</td>
-                        <td class={`py-4 lg:px-16 sm:px-4`}>Data 2</td>
-                        <td class={`py-4 lg:px-16 sm:px-4`}>Data 3</td>
-                        <td class={`py-4 lg:px-16 sm:px-4`}>Data 1</td>
-                        <td class={`py-4 lg:px-16 sm:px-4`}><span className="flex p-2 border border-green-400 text-green-400 rounded-md"><FaDice /><p className="px-2">Win</p></span></td>
+                        <td className={`py-4 lg:px-16 sm:px-4`}>Data 1</td>
+                        <td className={`py-4 lg:px-16 sm:px-4`}>Data 2</td>
+                        <td className={`py-4 lg:px-16 sm:px-4`}>Data 3</td>
+                        <td className={`py-4 lg:px-16 sm:px-4`}>Data 1</td>
+                        <td className={`py-4 lg:px-16 sm:px-4`}><span className="flex p-2 border border-green-400 text-green-400 rounded-md"><FaDice /><p className="px-2">Win</p></span></td>
                       </tr>
                       {/* <!-- More rows --> */}
                     </tbody>
