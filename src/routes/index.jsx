@@ -10,6 +10,7 @@ import DiceRolling from "../container/Games/DiceRolling";
 import CardFinding from "../container/Games/cards/CardFinding";
 import NumberSlot from "../container/Games/NumberSlots/PlayNumberSlots";
 import NumberPool from "../container/Games/NumberPool/PoolNumber";
+import Question from "../container/Games/Question.js";
 import Login from "../container/Login";
 import Register from "../container/Register";
 import ForgotPassword from "../container/ForgotPassword";
@@ -33,6 +34,8 @@ import AdminDashboard from "../admin/container/Dashboard.jsx";
 import User from "../admin/container/User/User.jsx";
 import Report from "../admin/container/Report/Report.jsx";
 import Setting from "../admin/container/Setting/Setting.jsx";
+import Qbetting from "../admin/container/Qbetting/Qbetting.jsx";
+import Result from "../admin/container/Result/Result.jsx";
 //admin
 import { HOME_NAVBAR, DASHBOARD_NAVBAR } from "../utils/constants";
 
@@ -90,6 +93,11 @@ const RouteFile = () => {
         exact
         path="/number_pool"
         element={<NumberPool navbar={DASHBOARD_NAVBAR} />}
+      />
+      <Route
+        exact
+        path="/question"
+        element={<Question navbar={DASHBOARD_NAVBAR} />}
       />
       <Route
         exact
@@ -153,6 +161,8 @@ const RouteFile = () => {
       <Route path={`/report`} element={<Report />} />
       <Route path={`/report/:id`} element={<Report />} />
       <Route path={`/setting`} element={<Setting />} />
+      <Route path={`/qbetting`} element={<Qbetting />} />
+      <Route path={`/result`} element={<Result />} />
     </Routes>
   );
 };

@@ -1,27 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { Footer } from "../../component/layout";
 import { Header, HumburgerHeader } from "../../component/layout";
 import GameTitle from "./GameTitle";
 import Rock from "../../assets/images/games/rockPaperScissors/rock.png";
 import Paper from "../../assets/images/games/rockPaperScissors/paper.png";
 import Scissors from "../../assets/images/games/rockPaperScissors/scissors.png";
-import validateAmount from "../../validation/user/amount";
+import validateRockPaperScissors from "../../validation/game/RockPaperScissors";
 import HeaderBackground from "../../assets/images/headerBackground.jpg";
 import { getLocalStorageItem } from "../../utils/helper";
+import { bet, userDetail, getSetting } from "../../redux/action";
+import { GAME, RESULT } from "../../utils/constants";
+import { Win, Lose } from "../../container/Modal/index";
 
-const RockPaperScissors = ({navbar}) => {
+const RockPaperScissors = ({ navbar }) => {
   const images = [Rock, Paper, Scissors];
-  const [form, setForm] = useState({
-    amount: "",
-  });
   const [error, setError] = useState({});
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [loading, setLoading] = useState(false);
   const [hideHeader, setHideHeader] = useState(false);
+  const [winOpenModal, setWinOpenModal] = useState(false);
+  const [loseOpenModal, setLoseOpenModal] = useState(false);
 
   const [tabViews, setTabViews] = useState([
     { route: "rock", isActive: false },
@@ -31,7 +35,28 @@ const RockPaperScissors = ({navbar}) => {
 
   const isAuth = getLocalStorageItem("token");
   const userData = JSON.parse(getLocalStorageItem("user"));
+  const user_detail = useSelector((state) => state?.UserDetail?.userDetails);
+  const [form, setForm] = useState({
+    amount: "",
+    balance: user_detail?.data?.balance,
+  });
+
+  const setting = useSelector((state) => state?.GetSetting?.setting);
+
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getSetting({ game: "rock_paper_scissors" }));
+    dispatch(userDetail());
+  }, []);
+
+  useEffect(() => {
+    setForm((prevState) => ({
+      ...prevState,
+      ["balance"]: user_detail?.data?.balance,
+    }));
+  }, [user_detail]);
 
   useEffect(() => {
     if (windowWidth <= 768) {
@@ -39,7 +64,7 @@ const RockPaperScissors = ({navbar}) => {
     } else {
       setHideHeader(false);
     }
-    
+
     if (isAuth && userData) {
       navigate("/rock_paper_scissors");
     } else {
@@ -71,10 +96,13 @@ const RockPaperScissors = ({navbar}) => {
 
     if (tab === "rock") {
       setCurrentImageIndex(0);
+      setSelectedImageIndex(0);
     } else if (tab === "paper") {
       setCurrentImageIndex(1);
+      setSelectedImageIndex(1);
     } else {
       setCurrentImageIndex(2);
+      setSelectedImageIndex(2);
     }
   };
 
@@ -93,6 +121,18 @@ const RockPaperScissors = ({navbar}) => {
     }
   };
 
+  const resetHandler = (e) => {
+    setForm((prevState) => ({
+      ...prevState,
+      ["amount"]: "",
+    }));
+    setForm((prevState) => ({
+      ...prevState,
+      ["balance"]: form?.balance - form?.amount,
+    }));
+    dispatch(userDetail());
+  };
+
   useEffect(() => {
     let intervalId;
 
@@ -109,10 +149,55 @@ const RockPaperScissors = ({navbar}) => {
 
   const generateRandomBoolean = () => {
     setIsPaused(true);
+    if (selectedImageIndex === currentImageIndex) {
+      onSubmit("win");
+      setWinOpenModal(true);
+      resetHandler();
+    } else {
+      onSubmit("lose");
+      setLoseOpenModal(true);
+      resetHandler();
+    }
+  };
+
+  const onSubmit = (hand) => {
+    let payload = {
+      game: GAME?.ROCK_PAPER_SCISSORS,
+    };
+
+    if (hand === "win") {
+      let pl = (parseInt(form.amount) * (setting?.odd) / 100);
+      payload = {
+        ...payload,
+        amount: parseInt(pl),
+        result: RESULT?.WIN,
+      };
+    } else {
+      payload = {
+        ...payload,
+        amount: -parseInt(form.amount),
+        result: RESULT?.LOSE,
+      };
+    }
+    dispatch(
+      bet({
+        payload,
+        callback: async (data) => {
+          if (data) {
+          }
+        },
+      })
+    );
   };
 
   const handleClick = () => {
-    const { errors, isValid } = validateAmount(form);
+    setWinOpenModal(false);
+    setLoseOpenModal(false);
+    const { errors, isValid } = validateRockPaperScissors(
+      form,
+      tabViews,
+      setting
+    );
     if (isValid) {
       setIsPaused(false);
       setTimeout(generateRandomBoolean, 6000); // 40 seconds delay
@@ -137,7 +222,15 @@ const RockPaperScissors = ({navbar}) => {
         }}
       >
         {/* Mobile Header with Hamburger Icon */}
-        {hideHeader ? <HumburgerHeader setLoading={setLoading} /> : <Header isVerifyMail={false} setLoading={setLoading} navbar={navbar}/>}
+        {hideHeader ? (
+          <HumburgerHeader setLoading={setLoading} />
+        ) : (
+          <Header
+            isVerifyMail={false}
+            setLoading={setLoading}
+            navbar={navbar}
+          />
+        )}
         <GameTitle
           title="Play Rock Paper scissors"
           route="rock_paper_scissors"
@@ -239,7 +332,8 @@ const RockPaperScissors = ({navbar}) => {
           >
             <div className="flex flex-col items-center justify-center p-3">
               <span className="flex items-center justify-center">
-                <p className={`${
+                <p
+                  className={`${
                     windowWidth === 320
                       ? "text-xs"
                       : windowWidth === 375
@@ -253,8 +347,12 @@ const RockPaperScissors = ({navbar}) => {
                       : windowWidth === 1440
                       ? "text-3xl"
                       : "text-5xl"
-                  } text-white`}>Current Balance :</p>
-                <p className={`${
+                  } text-white`}
+                >
+                  Current Balance :
+                </p>
+                <p
+                  className={`${
                     windowWidth === 320
                       ? "text-xs"
                       : windowWidth === 375
@@ -267,8 +365,12 @@ const RockPaperScissors = ({navbar}) => {
                       ? "text-5xl"
                       : windowWidth === 1440
                       ? "text-3xl"
-                      : "text-5xl"
-                  } text-[#E3BC3F]`}> 10.50 USD</p>
+                      : "text-4xl"
+                  } text-[#E3BC3F]`}
+                >
+                  {" "}
+                  {form?.balance?.toFixed(2)} USD
+                </p>
               </span>
               <div className="flex flex-col items-center w-11/12 mt-3">
                 <div className="flex w-9/12">
@@ -278,7 +380,26 @@ const RockPaperScissors = ({navbar}) => {
                     name="amount"
                     value={form?.amount}
                     onChange={(e) => {
-                      changeHandler(e);
+                      const value = e.target.value;
+                      const { name } = e.target;
+                      let finalAmount = user_detail?.data?.balance - value;
+
+                      if (value <= user_detail?.data?.balance) {
+                        setForm((prevState) => ({
+                          ...prevState,
+                          [name]: value,
+                        }));
+
+                        setForm((prevState) => ({
+                          ...prevState,
+                          ["balance"]: finalAmount,
+                        }));
+                      }
+
+                      setError((prevState) => ({
+                        ...prevState,
+                        [name]: "",
+                      }));
                     }}
                     className="border p-2 focus:outline-none focus:border-blue-500 bg-[#020C25] text-white w-full"
                     style={{ height: "2rem" }}
@@ -295,11 +416,13 @@ const RockPaperScissors = ({navbar}) => {
                 </div>
               </div>
               <span className="text-[#adb5bd] mt-3">
-                Minimum : 1.00 USD | Maximum : 100.00 USD | Win Amount 150.00 %
+                Minimum : {setting?.min?.toFixed(2)} USD | Maximum :{" "}
+                {setting?.max?.toFixed(2)} USD | Win Amount {setting?.odd?.toFixed(2)} %
               </span>
             </div>
             <div></div>
-            <div className={`flex items-center justify-center relative ${
+            <div
+              className={`flex items-center justify-center relative ${
                 windowWidth === 320
                   ? "p-2"
                   : windowWidth === 375
@@ -311,10 +434,15 @@ const RockPaperScissors = ({navbar}) => {
                   : windowWidth === 1440
                   ? "p-16"
                   : "p-20"
-              }`}>
+              }`}
+            >
               <span
                 onClick={(e) => {
                   tabSwitch(e, "rock");
+                  setError((prevState) => ({
+                    ...prevState,
+                    ["hand"]: "",
+                  }));
                 }}
                 className={`${tabViews[0].isActive && "border p-2"}`}
               >
@@ -323,6 +451,10 @@ const RockPaperScissors = ({navbar}) => {
               <span
                 onClick={(e) => {
                   tabSwitch(e, "paper");
+                  setError((prevState) => ({
+                    ...prevState,
+                    ["hand"]: "",
+                  }));
                 }}
                 className={`${tabViews[1].isActive && "border p-2"}`}
               >
@@ -331,11 +463,18 @@ const RockPaperScissors = ({navbar}) => {
               <span
                 onClick={(e) => {
                   tabSwitch(e, "scissor");
+                  setError((prevState) => ({
+                    ...prevState,
+                    ["hand"]: "",
+                  }));
                 }}
                 className={`${tabViews[2].isActive && "border p-2"}`}
               >
                 <img src={Scissors} alt="scissors" />
               </span>
+            </div>
+            <div className="flex flex-col items-center justify-center text-rose-600 font-serif mt-1">
+              {error?.hand}
             </div>
             <div className="flex flex-col items-center justify-center w-11/12 p-2">
               <button
@@ -350,6 +489,15 @@ const RockPaperScissors = ({navbar}) => {
         </div>
       </section>
       <Footer />
+      {winOpenModal && (
+        <Win winOpenModal={winOpenModal} setWinOpenModal={setWinOpenModal} />
+      )}
+      {loseOpenModal && (
+        <Lose
+          loseOpenModal={loseOpenModal}
+          setLoseOpenModal={setLoseOpenModal}
+        />
+      )}
     </>
   );
 };

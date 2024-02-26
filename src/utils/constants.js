@@ -24,7 +24,7 @@ export const GAME = {
 
 export const RESULT = {
   WIN: "win",
-  LOSE: "loss",
+  LOSE: "lose",
 };
 
 export const DASHBOARD_NAVBAR = [

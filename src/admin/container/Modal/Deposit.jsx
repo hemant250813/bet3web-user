@@ -10,7 +10,8 @@ const Deposit = ({
   adminBalance,
   userBalance,
   userDetail,
-  init
+  init,
+  setLoading,
 }) => {
   const [form, setForm] = useState({
     admin_balance: adminBalance,
@@ -20,7 +21,16 @@ const Deposit = ({
     password: "",
   });
   const [error, setError] = useState({});
+  const [loginTimeOut, setLoginTimeOut] = useState(0);
+
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    // Clean up the event listener when the component unmounts
+    return () => {
+      clearTimeout(loginTimeOut);
+    };
+  }, []);
 
   const changeHandler = (e, name) => {
     if (e.target) {
@@ -73,30 +83,41 @@ const Deposit = ({
     }
   };
 
+  const afterLoadingDispatch = () => {
+    const formPayload = {
+      userId: userDetail?._id,
+      amount: parseInt(form?.amount),
+      remark: form?.remark,
+      transaction_type: "deposit",
+      password: form?.password,
+    };
+
+    dispatch(
+      deposit({
+        formPayload,
+        callback: (data) => {
+          if (data) {
+            setLoading(false);
+            setIsDepositModal(false);
+            init();
+            setLoginTimeOut(loginTimeOut);
+          }
+        },
+      })
+    );
+  };
+
   const handleOnSubmit = (e) => {
     e.preventDefault();
     const { errors, isValid } = validateDeposit(form);
 
     if (isValid) {
-      const formPayload = {
-        userId: userDetail?._id,
-        amount: parseInt(form?.amount),
-        remark: form?.remark,
-        transaction_type: "deposit",
-        password: form?.password,
-      };
-
-      dispatch(
-        deposit({
-          formPayload,
-          callback: (data) => {
-            if (data) {
-              setIsDepositModal(false);
-              init();
-            }
-          },
-        })
-      );
+      setIsDepositModal(false);
+      setLoading(true);
+      let timeout = setTimeout(() => {
+        afterLoadingDispatch();
+      }, 2000);
+      setLoginTimeOut(timeout);
     } else {
       setError(errors);
     }
@@ -109,20 +130,20 @@ const Deposit = ({
           id="authentication-modal"
           tabIndex="-1"
           aria-hidden="true"
-          className="fixed inset-0 z-50 overflow-y-auto overflow-x-hidden flex items-center justify-center"
+          className="fixed inset-0 z-50 overflow-y-auto overflow-x-hidden flex items-center justify-center mt-4"
         >
           <div className="relative p-4 w-full max-w-md">
             {/* Modal content */}
-            <div className="relative bg-gray-800  rounded-lg shadow dark:bg-gray-700">
+            <div className="relative bg-gray-900  rounded-lg shadow dark:bg-gray-700">
               {/* Modal header */}
               <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-                <h3 className="text-xl font-semibold text-[#4fd1c5] dark:text-white">
+                <h3 className="text-xl font-semibold text-[#E3BC3F] dark:text-white">
                   Deposit to {userDetail?.username}
                 </h3>
                 <button
                   onClick={() => setIsDepositModal(false)}
                   type="button"
-                  className="end-2.5 text-[#4fd1c5] bg-transparent hover:bg-indigo-600 hover:text-[#4fd1c5] rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                  className="end-2.5 text-[#E3BC3F] bg-transparent hover:bg-indigo-600 hover:text-[#4fd1c5] rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
                 >
                   <svg
                     className="w-3 h-3"
@@ -148,7 +169,7 @@ const Deposit = ({
                   <div>
                     <label
                       htmlFor="admin_balance"
-                      className="block mb-2 text-sm font-medium text-[#4fd1c5] dark:text-white"
+                      className="block mb-2 text-sm font-medium text-[#E3BC3F] dark:text-white"
                     >
                       Enter the amount
                     </label>
@@ -170,7 +191,7 @@ const Deposit = ({
                   <div>
                     <label
                       htmlFor="admin_balance"
-                      className="block mb-2 text-sm font-medium text-[#4fd1c5] dark:text-white"
+                      className="block mb-2 text-sm font-medium text-[#E3BC3F] dark:text-white"
                     >
                       Admin Balance
                     </label>
@@ -188,7 +209,7 @@ const Deposit = ({
                   <div>
                     <label
                       htmlFor="user_balance"
-                      className="block mb-2 text-sm font-medium text-[#4fd1c5] dark:text-white"
+                      className="block mb-2 text-sm font-medium text-[#E3BC3F] dark:text-white"
                     >
                       User Balance
                     </label>
@@ -206,7 +227,7 @@ const Deposit = ({
                   <div>
                     <label
                       htmlFor="remarks"
-                      className="block mb-2 text-sm font-medium text-[#4fd1c5] dark:text-white"
+                      className="block mb-2 text-sm font-medium text-[#E3BC3F] dark:text-white"
                     >
                       Remarks
                     </label>

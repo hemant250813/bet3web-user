@@ -127,28 +127,28 @@ const CommissionLog = ({navbar}) => {
 
           <section className="justify-center items-center h-screen bg-black relative flex-grow p-6 md:p-8 lg:p-12 overflow-hidden">
             <div className="flex justify-center items-center">
-              <div class={`${windowWidth <= 375 ? "px-1" : "px-16"}`}>
+              <div className={`${windowWidth <= 375 ? "px-1" : "px-16"}`}>
                 <div className="overflow-x-auto">
-                  <table class={`table-auto rounded-md`}>
+                  <table className={`table-auto rounded-md`}>
                     {/* <!-- Your table content here --> */}
                     <thead className={`bg-[#E3BC3F] text-black`}>
                       <tr>
-                        <th class={`py-4 lg:px-16 sm:px-4`}>
+                        <th className={`py-4 lg:px-16 sm:px-4`}>
                         Commission From
                         </th>
-                        <th class={`py-4 lg:px-16 sm:px-4`}>Commission Level</th>
-                        <th class={`py-4 lg:px-16 sm:px-4`}>Amount</th>
-                        <th class={`py-4 lg:px-16 sm:px-4`}>Title</th>
-                        <th class={`py-4 lg:px-16 sm:px-4`}>Transaction</th>
+                        <th className={`py-4 lg:px-16 sm:px-4`}>Commission Level</th>
+                        <th className={`py-4 lg:px-16 sm:px-4`}>Amount</th>
+                        <th className={`py-4 lg:px-16 sm:px-4`}>Title</th>
+                        <th className={`py-4 lg:px-16 sm:px-4`}>Transaction</th>
                       </tr>
                     </thead>
                     <tbody className="bg-cyan-950 text-[#BFC9CA]">
                       <tr>
-                        <td class={`py-4 lg:px-16 sm:px-4`}>Data 1</td>
-                        <td class={`py-4 lg:px-16 sm:px-4`}>Data 2</td>
-                        <td class={`py-4 lg:px-16 sm:px-4`}>Data 3</td>
-                        <td class={`py-4 lg:px-16 sm:px-4`}>Data 4</td>
-                        <td class={`py-4 lg:px-16 sm:px-4`}>Data 5</td>
+                        <td className={`py-4 lg:px-16 sm:px-4`}>Data 1</td>
+                        <td className={`py-4 lg:px-16 sm:px-4`}>Data 2</td>
+                        <td className={`py-4 lg:px-16 sm:px-4`}>Data 3</td>
+                        <td className={`py-4 lg:px-16 sm:px-4`}>Data 4</td>
+                        <td className={`py-4 lg:px-16 sm:px-4`}>Data 5</td>
                       </tr>
                       {/* <!-- More rows --> */}
                     </tbody>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Navbar,
@@ -10,6 +11,7 @@ import {
 import { getLocalStorageItem } from "../../utils/helper";
 import { getReport } from "../../../redux/action";
 import { GAME } from "../../utils/constants";
+import { Loader } from "../../../component/commonComponent";
 
 const Report = () => {
   let { id } = useParams();
@@ -22,11 +24,14 @@ const Report = () => {
   const [selectGame, setSelectGame] = useState("head_tail");
   const [winGameFilterFlag, setWinGameFilterFlag] = useState(false);
   const [loseGameFilterFlag, setLoseGameFilterFlag] = useState(false);
+  const [loginTimeOut, setLoginTimeOut] = useState(0);
+  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const report = useSelector((state) => state?.GetReport?.report);
- 
+
   useEffect(() => {
     // Function to update the window dimensions
     const updateWindowDimensions = () => {
@@ -40,6 +45,7 @@ const Report = () => {
     // Clean up the event listener when the component unmounts
     return () => {
       window.removeEventListener("resize", updateWindowDimensions);
+      clearTimeout(loginTimeOut);
     };
   }, [windowWidth, windowHeight]);
 
@@ -66,13 +72,12 @@ const Report = () => {
       game_name: "",
     };
 
-    console.log("reset",reset);
-    if(reset === undefined){
+    if (reset === undefined) {
       if (id !== undefined) {
         query.userId = id;
       }
     }
-   
+
     dispatch(
       getReport({
         query,
@@ -80,7 +85,7 @@ const Report = () => {
     );
   };
 
-  const filter = (filter_by, value) => {
+  const afterLoadingDispatch = (filter_by, value) => {
     let query = {};
     if (filter_by === "deposit") {
       query = { deposit: true };
@@ -105,8 +110,22 @@ const Report = () => {
     dispatch(
       getReport({
         query,
+        callback: async (data) => {
+          if (data) {
+            setLoading(false);
+            clearTimeout(loginTimeOut);
+          }
+        },
       })
     );
+  };
+
+  const filter = (filter_by, value) => {
+    setLoading(true);
+    let timeout = setTimeout(() => {
+      afterLoadingDispatch(filter_by, value);
+    }, 2000);
+    setLoginTimeOut(timeout);
   };
 
   return (
@@ -115,18 +134,18 @@ const Report = () => {
       <div className="flex-1 flex flex-col overflow-hidden">
         <Navbar title="Report" />
         <main
-          className="flex-1 overflow-x-hidden overflow-y-auto scrollbar scrollbar-thumb-[#4fd1c5] scrollbar-track-[#93C5FD] bg-indigo-600 p-4"
+          className="flex-1 overflow-x-hidden overflow-y-auto scrollbar scrollbar-thumb-[#4fd1c5] scrollbar-track-[#93C5FD] bg-[#E3BC3F] p-4 border-4 border-[#4fd1c5]"
           style={{ maxHeight: "calc(100vh - 120px)" }}
         >
           {/* Filter buttons */}
-          <div className="relative justify-between grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-4 mb-4 gap-4 border-8 border-gray-900 p-4">
+          <div className="relative justify-between grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-4 mb-4 gap-4 border-8 border-[#7E8D8D] p-4 w-full">
             <h1
               style={{
                 position: "absolute",
                 top: "-17px",
                 left: "50%",
               }}
-              className="text-center bg-indigo-600 px-4 text-xl font-bold text-[#4fd1c5]"
+              className="text-center bg-[#7E8D8D] px-4 text-xl font-bold text-[#E3BC3F]"
             >
               Filter
             </h1>
@@ -210,27 +229,28 @@ const Report = () => {
                 setLoseFilterFlag(false);
                 init("reset");
               }}
-              className={`bg-[#ABBCBC] hover:bg-[#4fd1c5] text-black font-bold py-2 px-4 rounded`}
+              className={`bg-[#7E8D8D] hover:bg-[#4fd1c5] text-black font-bold py-2 px-4 rounded`}
             >
               Reset
             </button>
           </div>
 
-          <div className="relative justify-between grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-4 mb-4 gap-4 border-8 border-gray-900 p-4">
+          {/* Game Filter buttons */}
+          <div className="relative justify-between grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-4 mb-4 gap-4 border-8 border-[#7E8D8D] p-4 w-full">
             <h1
               style={{
                 position: "absolute",
-                top: "-17px",
-                left: "50%",
+                top: windowWidth === 320 ? "-20px" : "-17px",
+                left: windowWidth === 320 ? "30%" : "50%",
               }}
-              className="text-center bg-indigo-600 px-4 text-xl font-bold text-[#4fd1c5]"
+              className="text-center bg-[#7E8D8D] px-4 text-xl font-bold text-[#E3BC3F]"
             >
               Game Filter
             </h1>
             <select
               name="gateway"
               id="select_gateway"
-              className="bg-gray-900 text-indigo-600 cursor-pointer font-bold py-2 px-4 rounded"
+              className="bg-gray-900 text-[#E3BC3F] cursor-pointer font-bold py-2 px-4 rounded"
               // onChange={onChange}
               value={selectGame}
               onChange={(e) => setSelectGame(e.target.value)}
@@ -291,105 +311,124 @@ const Report = () => {
                 setLoseGameFilterFlag(false);
                 init("reset");
               }}
-              className="bg-[#ABBCBC] hover:bg-[#4fd1c5] text-black font-bold py-2 px-4 rounded"
+              className="bg-[#7E8D8D] hover:bg-[#4fd1c5] text-black font-bold py-2 px-4 rounded"
             >
               Reset
             </button>
           </div>
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto w-full">
             <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-900">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xl font-medium text-indigo-600 uppercase tracking-wider">
-                    Date
-                  </th>
-                  <th className="px-6 py-3 text-left text-xl font-medium text-indigo-600 uppercase tracking-wider">
-                    Type
-                  </th>
-                  <th className="px-6 py-3 text-left text-xl font-medium text-indigo-600 uppercase tracking-wider">
-                    From
-                  </th>
-                  <th className="px-6 py-3 text-left text-xl font-medium text-indigo-600 uppercase tracking-wider">
-                    To
-                  </th>
-                  <th className="px-6 py-3 text-left text-xl font-medium text-indigo-600 uppercase tracking-wider">
-                    Description
-                  </th>
-                  <th className="px-6 py-3 text-left text-xl font-medium text-indigo-600 uppercase tracking-wider">
-                    CR
-                  </th>
-                  <th className="px-6 py-3 text-left text-xl font-medium text-indigo-600 uppercase tracking-wider">
-                    DR
-                  </th>
-                  <th className="px-6 py-3 text-left text-xl font-medium text-indigo-600 uppercase tracking-wider">
-                    Balance
-                  </th>
-                  {/* Add more table headers as needed */}
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {report?.data?.length > 0 ? (
-                  report?.data?.map((transaction, index) => (
-                    <tr
-                      key={index}
-                      className={`${
-                        (index + 1) % 2 === 0 ? "bg-[#4fd1c5]" : "bg-[#7E8D8D]"
-                      }  `}
-                    >
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {transaction?.date}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {transaction?.type === "win" ? (
-                          <span className="p-2 bg-blue-500 rounded-lg">
-                            P|L Market
-                          </span>
-                        ) : transaction?.type === "loss" ? (
-                          <span className="p-2 bg-blue-500 rounded-lg">
-                            P|L Market
-                          </span>
-                        ) : transaction?.type === "deposit" ? (
-                          <span className="p-2 bg-red-500 rounded-lg">
-                            D/W Point
-                          </span>
-                        ) : (
-                          <span className="p-2 bg-red-500 rounded-lg">
-                            D/W Point
-                          </span>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {transaction?.from === null ? "" : transaction?.from}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {transaction?.to === null ? "" : transaction?.to}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {transaction?.desc}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {transaction?.cr}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {transaction?.dr}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {transaction?.balance}
-                      </td>
-                      {/* Add more table data cells as needed */}
-                    </tr>
-                  ))
-                ) : (
-                  <tr className="bg-[#4fd1c5] text-center">
-                    <td colSpan={8} className="px-6 py-4 whitespace-nowrap">
-                      no data found
-                    </td>
+              <>
+                <thead className="bg-gray-900">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xl font-medium text-[#E3BC3F] uppercase tracking-wider">
+                      Date
+                    </th>
+                    <th className="px-6 py-3 text-left text-xl font-medium text-[#E3BC3F] uppercase tracking-wider">
+                      Type
+                    </th>
+                    <th className="px-6 py-3 text-left text-xl font-medium text-[#E3BC3F] uppercase tracking-wider">
+                      From
+                    </th>
+                    <th className="px-6 py-3 text-left text-xl font-medium text-[#E3BC3F] uppercase tracking-wider">
+                      To
+                    </th>
+                    <th className="px-6 py-3 text-left text-xl font-medium text-[#E3BC3F] uppercase tracking-wider">
+                      Description
+                    </th>
+                    <th className="px-6 py-3 text-left text-xl font-medium text-[#E3BC3F] uppercase tracking-wider">
+                      CR
+                    </th>
+                    <th className="px-6 py-3 text-left text-xl font-medium text-[#E3BC3F] uppercase tracking-wider">
+                      DR
+                    </th>
+                    <th className="px-6 py-3 text-left text-xl font-medium text-[#E3BC3F] uppercase tracking-wider">
+                      Balance
+                    </th>
+                    {/* Add more table headers as needed */}
                   </tr>
-                )}
-              </tbody>
+                </thead>
+                <tbody className={`${loading ? "":"bg-white divide-y divide-gray-200"} `}>
+                  {loading ? (
+                    <tr className="w-full">
+                      <td colSpan={8} className="px-6 py-4 whitespace-nowrap">
+                        {" "}
+                        <Loader />
+                      </td>
+                    </tr>
+                  ) : report?.data?.length > 0 ? (
+                    report?.data?.map((transaction, index) => (
+                      <tr
+                        key={index}
+                        className={`${
+                          (index + 1) % 2 === 0
+                            ? "bg-[#4fd1c5]"
+                            : "bg-[#7E8D8D]"
+                        }  `}
+                      >
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="text-xl  p-2">
+                            {" "}
+                            {moment(transaction?.date).format(
+                              "YYYY-MM-DD HH:mm:ss"
+                            )}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {transaction?.type === "win" ? (
+                            <span className="p-2 bg-blue-500 rounded-lg">
+                              P|L Market
+                            </span>
+                          ) : transaction?.type === "lose" ? (
+                            <span className="p-2 bg-blue-500 rounded-lg">
+                              P|L Market
+                            </span>
+                          ) : transaction?.type === "deposit" ? (
+                            <span className="p-2 bg-red-500 rounded-lg">
+                              D/W Point
+                            </span>
+                          ) : (
+                            <span className="p-2 bg-red-500 rounded-lg">
+                              D/W Point
+                            </span>
+                          )}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-xl">
+                          {transaction?.from === null ? "" : transaction?.from}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-xl">
+                          {transaction?.to === null ? "" : transaction?.to}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-xl">
+                          {transaction?.desc}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-xl">
+                          {transaction?.cr}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-xl">
+                          {transaction?.dr}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-xl">
+                          {transaction?.balance}
+                        </td>
+                        {/* Add more table data cells as needed */}
+                      </tr>
+                    ))
+                  ) : (
+                    <tr className="bg-[#4fd1c5] text-center text-xl">
+                      <td colSpan={8} className="px-6 py-4 whitespace-nowrap">
+                        no data found
+                      </td>
+                    </tr>
+                  )}
+
+                  {}
+                </tbody>
+              </>
             </table>
           </div>
         </main>
+
         {/* Bottom navbar */}
         {windowWidth < 768 ? <BottomNavbar /> : <Footer />}
       </div>
