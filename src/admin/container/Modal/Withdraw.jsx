@@ -12,7 +12,7 @@ const Withdraw = ({
   userBalance,
   userDetail,
   init,
-  setLoading
+  setInnerLoading
 }) => {
   const [form, setForm] = useState({
     admin_balance: adminBalance,
@@ -90,7 +90,7 @@ const Withdraw = ({
         formPayload,
         callback: (data) => {
           if (data) {
-            setLoading(false);
+            setInnerLoading(false);
             setIsWithdrawalModal(false);
             init();
             clearTimeout(loginTimeOut);
@@ -104,7 +104,7 @@ const Withdraw = ({
     e.preventDefault();
     const { errors, isValid } = validateWithdraw(form);
     if (isValid) {
-      setLoading(true);
+      setInnerLoading(true);
       setIsWithdrawalModal(false);
       let timeout = setTimeout(() => {
         afterLoadingDispatch();

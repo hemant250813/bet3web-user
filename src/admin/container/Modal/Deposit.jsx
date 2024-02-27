@@ -11,7 +11,7 @@ const Deposit = ({
   userBalance,
   userDetail,
   init,
-  setLoading,
+  setInnerLoading,
 }) => {
   const [form, setForm] = useState({
     admin_balance: adminBalance,
@@ -97,7 +97,7 @@ const Deposit = ({
         formPayload,
         callback: (data) => {
           if (data) {
-            setLoading(false);
+            setInnerLoading(false);
             setIsDepositModal(false);
             init();
             setLoginTimeOut(loginTimeOut);
@@ -113,7 +113,7 @@ const Deposit = ({
 
     if (isValid) {
       setIsDepositModal(false);
-      setLoading(true);
+      setInnerLoading(true);
       let timeout = setTimeout(() => {
         afterLoadingDispatch();
       }, 2000);
