@@ -11,13 +11,17 @@ import {
 function* logoutUserRequest(action) {
   try {
     const { data } = yield API.post("/api/v1/logout", action?.payload?.payload);
-    if (data.meta.code === 200) {
+    console.log("logoutUserRequest",data);
+    if (data?.meta?.code === 200) {
       yield put(logoutUserSuccess(data));
       yield call(clearLocalStorage, "user");
       yield call(clearLocalStorage, "token");
       yield call(action.payload.callback, data);
       notifySuccess(data.meta.message);
-    } else if (data.meta.code !== 200) {
+    } else if (data?.code === 400) {
+      yield put(logoutUserFailure(data));
+      yield call(action.payload.callback, data);
+    } else if (data?.meta?.code !== 200) {
       yield put(logoutUserFailure(data));
     }
   } catch (error) {

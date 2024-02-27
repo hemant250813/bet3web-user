@@ -10,15 +10,23 @@ import {
 
 function* logoutRequest(action) {
   try {
-    const { data } = yield API.post("admin/logout", action?.payload?.logoutPayload);
-    if (data.meta.code === 200) {
+    const { data } = yield API.post(
+      "admin/logout",
+      action?.payload?.logoutPayload
+    );
+ 
+    if (data?.meta?.code === 200) {
       yield put(logoutSuccess(data));
       yield call(clearLocalStorage, "user");
       yield call(clearLocalStorage, "token");
       yield call(action.payload.callback, data);
       notifySuccess(data.meta.message);
-    } else if (data.meta.code !== 200) {
+    } else if (data?.code === 400) {
       yield put(logoutFailure(data));
+      yield call(action.payload.callback, data);
+    } else if (data?.meta?.code !== 200) {
+      yield put(logoutFailure(data));
+      yield call(action.payload.callback, data);
     }
   } catch (error) {
     yield put(logoutFailure());

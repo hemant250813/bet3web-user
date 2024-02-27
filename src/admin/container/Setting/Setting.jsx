@@ -9,7 +9,7 @@ import {
 } from "../../component/layout/index";
 import { getLocalStorageItem } from "../../utils/helper";
 import { GAME } from "../../utils/constants";
-import { setting } from "../../../redux/action";
+import { setting, authDetail } from "../../../redux/action";
 import { Loader, LoaderMain } from "../../../component/commonComponent";
 
 const Setting = () => {
@@ -25,6 +25,8 @@ const Setting = () => {
   const [selectGame, setSelectGame] = useState("all");
   const [loading, setLoading] = useState(false);
   const [innerLoading, setInnerLoading] = useState(false);
+
+  const admin_detail = useSelector((state) => state?.AuthDetail?.authDetails);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -47,6 +49,7 @@ const Setting = () => {
   }, [windowWidth, windowHeight]);
 
   useEffect(() => {
+    dispatch(authDetail());
     if (getLocalStorageItem("token") && getLocalStorageItem("user")) {
       navigate("/setting");
     } else {
@@ -104,7 +107,7 @@ const Setting = () => {
         <div className="flex h-screen">
           {windowWidth > 768 && <Sidebar />}
           <div className="flex-1 flex flex-col overflow-hidden">
-            <Navbar title="Setting" setLoading={setLoading} />
+            <Navbar title="Setting" setLoading={setLoading} admin_detail={admin_detail}/>
             {innerLoading ? (
               <Loader />
             ) : (
