@@ -59,7 +59,7 @@ const Account = ({ userDetails }) => {
         <span>
           {" "}
           <p className="text-white">Total Invest</p>
-          <p className="text-white">{userDetails?.total_pl.toFixed(2)} USD</p>
+          <p className="text-white">{userDetails?.total_invest.toFixed(2)} USD</p>
         </span>
       </div>
 

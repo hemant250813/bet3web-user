@@ -11,6 +11,7 @@ import { getLocalStorageItem } from "../../utils/helper";
 import { Win, Lose } from "../../container/Modal/index";
 import { bet, userDetail, getSetting } from "../../redux/action";
 import { GAME, RESULT } from "../../utils/constants";
+import { LoaderMain } from "../../component/commonComponent";
 
 const HeadTail = ({ navbar }) => {
   const [error, setError] = useState({});
@@ -147,28 +148,30 @@ const HeadTail = ({ navbar }) => {
     };
 
     if (coin === "win") {
-      let pl = (parseInt(form.amount) * (setting?.odd) / 100);
+      let pl = (parseInt(form.amount) * setting?.odd) / 100;
       payload = {
         ...payload,
         amount: parseInt(pl),
         result: RESULT?.WIN,
+        invest: parseInt(form.amount),
       };
     } else {
       payload = {
         ...payload,
         amount: -parseInt(form.amount),
         result: RESULT?.LOSE,
+        invest: parseInt(form.amount)
       };
     }
-    // dispatch(
-    //   bet({
-    //     payload,
-    //     callback: async (data) => {
-    //       if (data) {
-    //       }
-    //     },
-    //   })
-    // );
+    dispatch(
+      bet({
+        payload,
+        callback: async (data) => {
+          if (data) {
+          }
+        },
+      })
+    );
   };
 
   const resetHandler = (e) => {
@@ -235,85 +238,89 @@ const HeadTail = ({ navbar }) => {
 
   return (
     <>
-      <section
-        className="relative flex-grow p-4 md:p-8 lg:p-12"
-        style={{
-          backgroundImage: `url(${HeaderBackground})`,
-          backgroundSize: "cover",
-          backgroundRepeat: "no-repeat",
-          backgroundPosition: "center",
-          height: "400px",
-          display: "flex", // Add these styles
-          justifyContent: "center", // to center horizontally
-          alignItems: "center", // and vertically
-        }}
-      >
-        {/* Mobile Header with Hamburger Icon */}
-        {hideHeader ? (
-          <HumburgerHeader setLoading={setLoading} />
-        ) : (
-          <Header
-            isVerifyMail={false}
-            loading={loading}
-            setLoading={setLoading}
-            navbar={navbar}
-          />
-        )}
-        <GameTitle title="Play Head & Tail" route="head_tail" />
-      </section>
-
-      <section
-        className={`bg-black relative flex-grow p-12 md:p-8 lg:p-12 overflow-hidden`}
-      >
-        <div
-          className={`grid justify-items-stretch grid-cols-1 gap-8 ${
-            windowWidth === 320
-              ? "grid-cols-1"
-              : windowWidth === 1440
-              ? "grid-cols-2"
-              : "grid-cols-2"
-          }`}
-        >
-          {/* Card 1 */}
-          <div
-            className="relative group mx-auto border border-gray-400 p-4"
+      {loading ? (
+        <LoaderMain />
+      ) : (
+        <>
+          <section
+            className="relative flex-grow p-4 md:p-8 lg:p-12"
             style={{
-              height:
-                windowWidth === 320
-                  ? "250px"
-                  : windowWidth === 375
-                  ? "300px"
-                  : windowWidth === 425
-                  ? "300px"
-                  : windowWidth === 768
-                  ? "650px"
-                  : windowWidth === 1024
-                  ? "650px"
-                  : windowWidth === 1440
-                  ? "700px"
-                  : "700px",
-              width:
-                windowWidth === 320
-                  ? "250px"
-                  : windowWidth === 375
-                  ? "300px"
-                  : windowWidth === 425
-                  ? "300px"
-                  : windowWidth === 768
-                  ? "650px"
-                  : windowWidth === 1024
-                  ? "850px"
-                  : windowWidth === 1440
-                  ? "640px"
-                  : "700px",
-              overflow: "hidden",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              perspective: "1000px",
+              backgroundImage: `url(${HeaderBackground})`,
+              backgroundSize: "cover",
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "center",
+              height: "400px",
+              display: "flex", // Add these styles
+              justifyContent: "center", // to center horizontally
+              alignItems: "center", // and vertically
             }}
           >
-            {/* <div
+            {/* Mobile Header with Hamburger Icon */}
+            {hideHeader ? (
+              <HumburgerHeader setLoading={setLoading} />
+            ) : (
+              <Header
+                isVerifyMail={false}
+                loading={loading}
+                setLoading={setLoading}
+                navbar={navbar}
+              />
+            )}
+            <GameTitle title="Play Head & Tail" route="head_tail" />
+          </section>
+
+          <section
+            className={`bg-black relative flex-grow p-12 md:p-8 lg:p-12 overflow-hidden`}
+          >
+            <div
+              className={`grid justify-items-stretch grid-cols-1 gap-8 ${
+                windowWidth === 320
+                  ? "grid-cols-1"
+                  : windowWidth === 1440
+                  ? "grid-cols-2"
+                  : "grid-cols-2"
+              }`}
+            >
+              {/* Card 1 */}
+              <div
+                className="relative group mx-auto border border-gray-400 p-4"
+                style={{
+                  height:
+                    windowWidth === 320
+                      ? "250px"
+                      : windowWidth === 375
+                      ? "300px"
+                      : windowWidth === 425
+                      ? "300px"
+                      : windowWidth === 768
+                      ? "650px"
+                      : windowWidth === 1024
+                      ? "650px"
+                      : windowWidth === 1440
+                      ? "700px"
+                      : "700px",
+                  width:
+                    windowWidth === 320
+                      ? "250px"
+                      : windowWidth === 375
+                      ? "300px"
+                      : windowWidth === 425
+                      ? "300px"
+                      : windowWidth === 768
+                      ? "650px"
+                      : windowWidth === 1024
+                      ? "850px"
+                      : windowWidth === 1440
+                      ? "640px"
+                      : "700px",
+                  overflow: "hidden",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  perspective: "1000px",
+                }}
+              >
+                {/* <div
               className="coin"
               style={{
                 width: "300px",
@@ -347,293 +354,295 @@ const HeadTail = ({ navbar }) => {
               ></div>
             </div> */}
 
-            <div
-              id="coin"
-              className={flipResult}
-              // onClick={handleCoinClick}
-              style={{
-                width:
-                  windowWidth === 320
-                    ? "200px"
-                    : windowWidth === 375
-                    ? "220px"
-                    : windowWidth === 425
-                    ? "220px"
-                    : windowWidth === 768
-                    ? "420px"
-                    : windowWidth === 1024
-                    ? "520px"
-                    : windowWidth === 1440
-                    ? "560px"
-                    : "300px",
-                height:
-                  windowWidth === 320
-                    ? "200px"
-                    : windowWidth === 375
-                    ? "220px"
-                    : windowWidth === 425
-                    ? "220px"
-                    : windowWidth === 768
-                    ? "420px"
-                    : windowWidth === 1024
-                    ? "520px"
-                    : windowWidth === 1440
-                    ? "560px"
-                    : "300px",
-              }}
-            >
-              <div
-                style={{
-                  position: "absolute",
-                  width: "100%",
-                  height: "100%",
-                  backgroundImage: `url(${Head})`,
-                  backgroundSize: "cover",
-                  backgroundRepeat: "no-repeat",
-                  backgroundPosition: "center",
-                  backfaceVisibility: "hidden",
-                }}
-                className="side-a"
-              ></div>
-              <div
-                style={{
-                  position: "absolute",
-                  width: "100%",
-                  height: "100%",
-                  backgroundImage: `url(${Tail})`,
-                  backgroundSize: "cover",
-                  backgroundRepeat: "no-repeat",
-                  backgroundPosition: "center",
-                  backfaceVisibility: "hidden",
-                  transform: "rotateY(180deg)",
-                }}
-                className="side-b"
-              ></div>
-            </div>
-          </div>
-
-          {/* Card 2 */}
-          <div
-            className="relative group mx-auto border border-gray-400 p-4"
-            style={{
-              height: "700px",
-              width:
-                windowWidth === 320
-                  ? "250px"
-                  : windowWidth === 375
-                  ? "300px"
-                  : windowWidth === 425
-                  ? "300px"
-                  : windowWidth === 768
-                  ? "650px"
-                  : windowWidth === 1024
-                  ? "850px"
-                  : windowWidth === 1440
-                  ? "650px"
-                  : "700px",
-              overflow: "hidden",
-              display: "flex",
-              flexDirection: "column", // Display children in a column
-              justifyContent: "center",
-              alignItems: "center",
-              perspective: "1000px",
-            }}
-          >
-            <div className="flex flex-col items-center justify-center p-3">
-              <span className="flex items-center justify-center">
-                <p
-                  className={`${
-                    windowWidth === 320
-                      ? "text-xs"
-                      : windowWidth === 375
-                      ? "text-sm"
-                      : windowWidth === 425
-                      ? "text-base"
-                      : windowWidth === 768
-                      ? "text-3xl"
-                      : windowWidth === 1024
-                      ? "text-5xl"
-                      : windowWidth === 1440
-                      ? "text-3xl"
-                      : "text-4xl"
-                  }  text-white`}
+                <div
+                  id="coin"
+                  className={flipResult}
+                  // onClick={handleCoinClick}
+                  style={{
+                    width:
+                      windowWidth === 320
+                        ? "200px"
+                        : windowWidth === 375
+                        ? "220px"
+                        : windowWidth === 425
+                        ? "220px"
+                        : windowWidth === 768
+                        ? "420px"
+                        : windowWidth === 1024
+                        ? "520px"
+                        : windowWidth === 1440
+                        ? "560px"
+                        : "300px",
+                    height:
+                      windowWidth === 320
+                        ? "200px"
+                        : windowWidth === 375
+                        ? "220px"
+                        : windowWidth === 425
+                        ? "220px"
+                        : windowWidth === 768
+                        ? "420px"
+                        : windowWidth === 1024
+                        ? "520px"
+                        : windowWidth === 1440
+                        ? "560px"
+                        : "300px",
+                  }}
                 >
-                  Current Balance :
-                </p>
-                <p
-                  className={`${
-                    windowWidth === 320
-                      ? "text-xs"
-                      : windowWidth === 375
-                      ? "text-sm"
-                      : windowWidth === 425
-                      ? "text-base"
-                      : windowWidth === 768
-                      ? "text-3xl"
-                      : windowWidth === 1024
-                      ? "text-5xl"
-                      : windowWidth === 1440
-                      ? "text-3xl"
-                      : "text-4xl"
-                  }  text-[#E3BC3F]`}
-                >
-                  {" "}
-                  {form?.balance?.toFixed(2)} USD
-                </p>
-              </span>
-              <div className="flex flex-col items-center w-11/12 mt-3">
-                <div className="flex w-9/12">
-                  <input
-                    type="text"
-                    placeholder="Amount"
-                    name="amount"
-                    value={form?.amount}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      const { name } = e.target;
-                      let finalAmount = user_detail?.data?.balance - value;
-
-                      if (value <= user_detail?.data?.balance) {
-                        setForm((prevState) => ({
-                          ...prevState,
-                          [name]: value,
-                        }));
-
-                        setForm((prevState) => ({
-                          ...prevState,
-                          ["balance"]: finalAmount,
-                        }));
-                      }
-
-                      setError((prevState) => ({
-                        ...prevState,
-                        [name]: "",
-                      }));
+                  <div
+                    style={{
+                      position: "absolute",
+                      width: "100%",
+                      height: "100%",
+                      backgroundImage: `url(${Head})`,
+                      backgroundSize: "cover",
+                      backgroundRepeat: "no-repeat",
+                      backgroundPosition: "center",
+                      backfaceVisibility: "hidden",
                     }}
-                    className="border p-2 focus:outline-none focus:border-blue-500 bg-[#020C25] text-white w-full"
-                    style={{ height: "2rem" }}
-                  />
-                  <span
-                    className="bg-[#E3BC3F] text-black flex items-center px-2 rounded-r-sm outline-none"
-                    style={{ height: "2rem" }}
-                  >
-                    USD
-                  </span>
-                </div>
-                <div className="text-rose-600 font-serif mt-1">
-                  {error?.amount}
+                    className="side-a"
+                  ></div>
+                  <div
+                    style={{
+                      position: "absolute",
+                      width: "100%",
+                      height: "100%",
+                      backgroundImage: `url(${Tail})`,
+                      backgroundSize: "cover",
+                      backgroundRepeat: "no-repeat",
+                      backgroundPosition: "center",
+                      backfaceVisibility: "hidden",
+                      transform: "rotateY(180deg)",
+                    }}
+                    className="side-b"
+                  ></div>
                 </div>
               </div>
-              <span className="text-[#adb5bd] mt-3">
-                Minimum : {setting?.min?.toFixed(2)} USD | Maximum :{" "}
-                {setting?.max?.toFixed(2)} USD | Win Amount{" "}
-                {setting?.odd?.toFixed(2)} %
-              </span>
-            </div>
-            <div></div>
-            <div
-              className={`flex items-center justify-center relative ${
-                windowWidth === 320
-                  ? "p-2"
-                  : windowWidth === 375
-                  ? "p-4"
-                  : windowWidth === 425
-                  ? "p-8"
-                  : windowWidth === 1024
-                  ? "p-16"
-                  : windowWidth === 1440
-                  ? "p-16"
-                  : "p-20"
-              }`}
-            >
-              <span
-                onClick={(e) => {
-                  tabSwitch(e, "heads");
-                  setError((prevState) => ({
-                    ...prevState,
-                    ["coin"]: "",
-                  }));
+
+              {/* Card 2 */}
+              <div
+                className="relative group mx-auto border border-gray-400 p-4"
+                style={{
+                  height: "700px",
+                  width:
+                    windowWidth === 320
+                      ? "250px"
+                      : windowWidth === 375
+                      ? "300px"
+                      : windowWidth === 425
+                      ? "300px"
+                      : windowWidth === 768
+                      ? "650px"
+                      : windowWidth === 1024
+                      ? "850px"
+                      : windowWidth === 1440
+                      ? "650px"
+                      : "700px",
+                  overflow: "hidden",
+                  display: "flex",
+                  flexDirection: "column", // Display children in a column
+                  justifyContent: "center",
+                  alignItems: "center",
+                  perspective: "1000px",
                 }}
-                className={`${tabViews[0].isActive && "border p-2"}`}
               >
-                <img
-                  src={Head}
-                  width={
-                    windowWidth === 1024
-                      ? 200
+                <div className="flex flex-col items-center justify-center p-3">
+                  <span className="flex items-center justify-center">
+                    <p
+                      className={`${
+                        windowWidth === 320
+                          ? "text-xs"
+                          : windowWidth === 375
+                          ? "text-sm"
+                          : windowWidth === 425
+                          ? "text-base"
+                          : windowWidth === 768
+                          ? "text-3xl"
+                          : windowWidth === 1024
+                          ? "text-5xl"
+                          : windowWidth === 1440
+                          ? "text-3xl"
+                          : "text-4xl"
+                      }  text-white`}
+                    >
+                      Current Balance :
+                    </p>
+                    <p
+                      className={`${
+                        windowWidth === 320
+                          ? "text-xs"
+                          : windowWidth === 375
+                          ? "text-sm"
+                          : windowWidth === 425
+                          ? "text-base"
+                          : windowWidth === 768
+                          ? "text-3xl"
+                          : windowWidth === 1024
+                          ? "text-5xl"
+                          : windowWidth === 1440
+                          ? "text-3xl"
+                          : "text-4xl"
+                      }  text-[#E3BC3F]`}
+                    >
+                      {" "}
+                      {form?.balance?.toFixed(2)} USD
+                    </p>
+                  </span>
+                  <div className="flex flex-col items-center w-11/12 mt-3">
+                    <div className="flex w-9/12">
+                      <input
+                        type="text"
+                        placeholder="Amount"
+                        name="amount"
+                        value={form?.amount}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          const { name } = e.target;
+                          let finalAmount = user_detail?.data?.balance - value;
+
+                          if (value <= user_detail?.data?.balance) {
+                            setForm((prevState) => ({
+                              ...prevState,
+                              [name]: value,
+                            }));
+
+                            setForm((prevState) => ({
+                              ...prevState,
+                              ["balance"]: finalAmount,
+                            }));
+                          }
+
+                          setError((prevState) => ({
+                            ...prevState,
+                            [name]: "",
+                          }));
+                        }}
+                        className="border p-2 focus:outline-none focus:border-blue-500 bg-[#020C25] text-white w-full"
+                        style={{ height: "2rem" }}
+                      />
+                      <span
+                        className="bg-[#E3BC3F] text-black flex items-center px-2 rounded-r-sm outline-none"
+                        style={{ height: "2rem" }}
+                      >
+                        USD
+                      </span>
+                    </div>
+                    <div className="text-rose-600 font-serif mt-1">
+                      {error?.amount}
+                    </div>
+                  </div>
+                  <span className="text-[#adb5bd] mt-3">
+                    Minimum : {setting?.min?.toFixed(2)} USD | Maximum :{" "}
+                    {setting?.max?.toFixed(2)} USD | Win Amount{" "}
+                    {setting?.odd?.toFixed(2)} %
+                  </span>
+                </div>
+                <div></div>
+                <div
+                  className={`flex items-center justify-center relative ${
+                    windowWidth === 320
+                      ? "p-2"
+                      : windowWidth === 375
+                      ? "p-4"
+                      : windowWidth === 425
+                      ? "p-8"
+                      : windowWidth === 1024
+                      ? "p-16"
                       : windowWidth === 1440
-                      ? 300
-                      : 100
-                  }
-                  height={
-                    windowWidth === 1024
-                      ? 200
-                      : windowWidth === 1440
-                      ? 300
-                      : 100
-                  }
-                  alt="heads"
-                />
-              </span>
-              <span
-                onClick={(e) => {
-                  tabSwitch(e, "tails");
-                  setError((prevState) => ({
-                    ...prevState,
-                    ["coin"]: "",
-                  }));
-                }}
-                className={`${tabViews[1].isActive && "border p-2"}`}
-              >
-                <img
-                  src={Tail}
-                  width={
-                    windowWidth === 1024
-                      ? 200
-                      : windowWidth === 1440
-                      ? 300
-                      : 100
-                  }
-                  height={
-                    windowWidth === 1024
-                      ? 200
-                      : windowWidth === 1440
-                      ? 300
-                      : 100
-                  }
-                  alt="tails"
-                />
-              </span>
+                      ? "p-16"
+                      : "p-20"
+                  }`}
+                >
+                  <span
+                    onClick={(e) => {
+                      tabSwitch(e, "heads");
+                      setError((prevState) => ({
+                        ...prevState,
+                        ["coin"]: "",
+                      }));
+                    }}
+                    className={`${tabViews[0].isActive && "border p-2"}`}
+                  >
+                    <img
+                      src={Head}
+                      width={
+                        windowWidth === 1024
+                          ? 200
+                          : windowWidth === 1440
+                          ? 300
+                          : 100
+                      }
+                      height={
+                        windowWidth === 1024
+                          ? 200
+                          : windowWidth === 1440
+                          ? 300
+                          : 100
+                      }
+                      alt="heads"
+                    />
+                  </span>
+                  <span
+                    onClick={(e) => {
+                      tabSwitch(e, "tails");
+                      setError((prevState) => ({
+                        ...prevState,
+                        ["coin"]: "",
+                      }));
+                    }}
+                    className={`${tabViews[1].isActive && "border p-2"}`}
+                  >
+                    <img
+                      src={Tail}
+                      width={
+                        windowWidth === 1024
+                          ? 200
+                          : windowWidth === 1440
+                          ? 300
+                          : 100
+                      }
+                      height={
+                        windowWidth === 1024
+                          ? 200
+                          : windowWidth === 1440
+                          ? 300
+                          : 100
+                      }
+                      alt="tails"
+                    />
+                  </span>
+                </div>
+                <div className="flex flex-col items-center justify-center text-rose-600 font-serif mt-1">
+                  {error?.coin}
+                </div>
+                <div className="flex flex-col items-center justify-center w-11/12 p-2">
+                  <button
+                    onClick={() => handleClick()}
+                    className="bg-[#E3BC3F] p-4 w-9/12"
+                  >
+                    Play Now
+                  </button>
+                  <span className="text-white">Game Instruction</span>
+                </div>
+              </div>
             </div>
-            <div className="flex flex-col items-center justify-center text-rose-600 font-serif mt-1">
-              {error?.coin}
-            </div>
-            <div className="flex flex-col items-center justify-center w-11/12 p-2">
-              <button
-                onClick={() => handleClick()}
-                className="bg-[#E3BC3F] p-4 w-9/12"
-              >
-                Play Now
-              </button>
-              <span className="text-white">Game Instruction</span>
-            </div>
-          </div>
-        </div>
-      </section>
-      <Footer />
-      {winOpenModal && (
-        <Win
-          winOpenModal={winOpenModal}
-          setWinOpenModal={setWinOpenModal}
-          flipResult={flipResult}
-        />
-      )}
-      {loseOpenModal && (
-        <Lose
-          loseOpenModal={loseOpenModal}
-          setLoseOpenModal={setLoseOpenModal}
-          flipResult={flipResult}
-        />
+          </section>
+          <Footer />
+          {winOpenModal && (
+            <Win
+              winOpenModal={winOpenModal}
+              setWinOpenModal={setWinOpenModal}
+              flipResult={flipResult}
+            />
+          )}
+          {loseOpenModal && (
+            <Lose
+              loseOpenModal={loseOpenModal}
+              setLoseOpenModal={setLoseOpenModal}
+              flipResult={flipResult}
+            />
+          )}
+        </>
       )}
     </>
   );
