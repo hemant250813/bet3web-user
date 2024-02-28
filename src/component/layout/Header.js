@@ -5,7 +5,7 @@ import { BsArrowRightCircle } from "react-icons/bs";
 import { CgLogOut } from "react-icons/cg";
 import { BsPersonAdd } from "react-icons/bs";
 import Logo from "../../assets/images/logo.png";
-import { logoutUser,userDetail } from "../../redux/action";
+import { logoutUser, userDetail } from "../../redux/action";
 import {
   removeLocalStorageItem,
   getLocalStorageItem,
@@ -18,7 +18,7 @@ const Header = ({ isVerifyMail, setLoading, navbar }) => {
   const [loginTimeOut, setLoginTimeOut] = useState(0);
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [activeTabSubIndex, setActiveTabSubIndex] = useState(0);
-
+  console.log("navbar", navbar);
   const isAuth = getLocalStorageItem("token");
   const userData = JSON.parse(getLocalStorageItem("user"));
   const user_detail = useSelector((state) => state?.UserDetail?.userDetails);
@@ -26,14 +26,15 @@ const Header = ({ isVerifyMail, setLoading, navbar }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  useEffect(()=>{
+  useEffect(() => {
     if (!isAuth && !userData) {
       navigate("/");
       clearLocalStorage();
       removeLocalStorageItem("user");
+      removeLocalStorageItem("userData");
       removeLocalStorageItem("token");
     }
-  },[]);
+  }, []);
 
   useEffect(() => {
     // Function to update the window dimensions
@@ -87,7 +88,8 @@ const Header = ({ isVerifyMail, setLoading, navbar }) => {
   };
 
   const redirectSubTab = (route) => {
-    navigate(`/${route}`);
+    console.log("route", route);
+    navigate(`${route}`);
   };
 
   return (
@@ -114,8 +116,11 @@ const Header = ({ isVerifyMail, setLoading, navbar }) => {
               onMouseEnter={() => activeTab(index)}
             >
               <span
-                onClick={() => navigate(`/${nav?.route}`)}
-                className="hover:text-[#E3BC3F] cursor-pointer p-3"
+                onClick={() => {
+                  console.log("hello", nav?.route);
+                  navigate(`${nav?.route}`);
+                }}
+                className="hover:text-[#3F93F9] cursor-pointer p-3 text-2xl"
               >
                 {nav?.name}
               </span>
@@ -123,7 +128,7 @@ const Header = ({ isVerifyMail, setLoading, navbar }) => {
               {nav?.child && index === activeTabIndex && (
                 <div
                   onMouseLeave={() => setActiveTabIndex(999)}
-                  className="grid grid-cols-1 w-40 h-40 absolute top-12  border-2 border-[#E3BC3F]  shadow-md bg-black"
+                  className="grid grid-cols-1 w-40 h-40 absolute top-12  border-2 border-[#3F93F9]  shadow-md bg-black"
                 >
                   {nav?.children?.map((sub, subIndex) => (
                     <Fragment key={subIndex}>
@@ -134,15 +139,15 @@ const Header = ({ isVerifyMail, setLoading, navbar }) => {
                         onClick={() => redirectSubTab(sub?.route)}
                         className={`p-2 ${
                           subIndex === 0
-                            ? "border-b-2 border-[#E3BC3F]"
+                            ? "border-b-2 border-[#3F93F9] text-[#fff]"
                             : subIndex === 1
-                            ? "border-b-2 border-[#E3BC3F]"
+                            ? "border-b-2 border-[#3F93F9 text-[#fff]"
                             : nav?.children?.length === 3
-                            ? "border-b-2 border-[#E3BC3F]"
+                            ? "border-b-2 border-[#3F93F9] text-[#fff]"
                             : ""
                         } ${
                           activeTabSubIndex === subIndex
-                            ? "border-[gray] bg-[#E3BC3F] text-black"
+                            ? "border-[gray] bg-[#3F93F9] text-[#fff]"
                             : ""
                         } cursor-pointer`}
                       >
@@ -193,14 +198,14 @@ const Header = ({ isVerifyMail, setLoading, navbar }) => {
           {isAuth && (
             <button
               onClick={() => onClickLogout()}
-              className="flex items-center space-x-2 border border-[gray] text-[#E3BC3F] px-4 py-2 rounded-md focus:outline-none focus:border-yellow-700 focus:ring focus:ring-[#E3BC3F] z-10"
+              className="flex items-center space-x-2 border border-[gray] text-[#3F93F9] hover:bg-[#3F93F9] hover:text-[#fff] px-4 py-2 rounded-md focus:outline-none focus:border-yellow-700 focus:ring focus:ring-[#E3BC3F] z-50"
             >
               <CgLogOut />
               <p>Logout</p>
             </button>
           )}
           {/* Dropdown Example (replace with your dropdown component) */}
-          {isVerifyMail && (
+          {/* {isVerifyMail && (
             <div className="relative inline-block text-left z-30">
               <select
                 name="language"
@@ -213,7 +218,7 @@ const Header = ({ isVerifyMail, setLoading, navbar }) => {
                 <option value="java">Java</option>
               </select>
             </div>
-          )}
+          )} */}
         </div>
       </header>
     </Fragment>

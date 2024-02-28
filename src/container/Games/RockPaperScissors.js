@@ -24,6 +24,7 @@ const RockPaperScissors = ({ navbar }) => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [loading, setLoading] = useState(false);
+  const [isSubmit, setIsSubmit] = useState(false);
   const [hideHeader, setHideHeader] = useState(false);
   const [winOpenModal, setWinOpenModal] = useState(false);
   const [loseOpenModal, setLoseOpenModal] = useState(false);
@@ -187,6 +188,7 @@ const RockPaperScissors = ({ navbar }) => {
         payload,
         callback: async (data) => {
           if (data) {
+            setIsSubmit(false);
           }
         },
       })
@@ -202,6 +204,7 @@ const RockPaperScissors = ({ navbar }) => {
       setting
     );
     if (isValid) {
+      setIsSubmit(true);
       setIsPaused(false);
       setTimeout(generateRandomBoolean, 6000); // 40 seconds delay
     } else {
@@ -373,7 +376,7 @@ const RockPaperScissors = ({ navbar }) => {
                           : windowWidth === 1440
                           ? "text-3xl"
                           : "text-4xl"
-                      } text-[#E3BC3F]`}
+                      } text-[#3F93F9]`}
                     >
                       {" "}
                       {form?.balance?.toFixed(2)} USD
@@ -402,7 +405,7 @@ const RockPaperScissors = ({ navbar }) => {
                               ["balance"]: finalAmount,
                             }));
                           }
-
+                          setIsSubmit(false);
                           setError((prevState) => ({
                             ...prevState,
                             [name]: "",
@@ -412,7 +415,7 @@ const RockPaperScissors = ({ navbar }) => {
                         style={{ height: "2rem" }}
                       />
                       <span
-                        className="bg-[#E3BC3F] text-black flex items-center px-2 rounded-r-sm outline-none"
+                        className="bg-[#3F93F9] text-[#fff] flex items-center px-2 rounded-r-sm outline-none"
                         style={{ height: "2rem" }}
                       >
                         USD
@@ -451,6 +454,7 @@ const RockPaperScissors = ({ navbar }) => {
                         ...prevState,
                         ["hand"]: "",
                       }));
+                      setIsSubmit(false);
                     }}
                     className={`${tabViews[0].isActive && "border p-2"}`}
                   >
@@ -463,6 +467,7 @@ const RockPaperScissors = ({ navbar }) => {
                         ...prevState,
                         ["hand"]: "",
                       }));
+                      setIsSubmit(false);
                     }}
                     className={`${tabViews[1].isActive && "border p-2"}`}
                   >
@@ -475,6 +480,7 @@ const RockPaperScissors = ({ navbar }) => {
                         ...prevState,
                         ["hand"]: "",
                       }));
+                      setIsSubmit(false);
                     }}
                     className={`${tabViews[2].isActive && "border p-2"}`}
                   >
@@ -487,7 +493,10 @@ const RockPaperScissors = ({ navbar }) => {
                 <div className="flex flex-col items-center justify-center w-11/12 p-2">
                   <button
                     onClick={() => handleClick()}
-                    className="bg-[#E3BC3F] p-4 w-9/12"
+                    disabled={isSubmit}
+                    className={`${
+                      isSubmit ? "bg-[#716e60]" : "bg-[#3F93F9]"
+                    }  p-4 w-9/12 text-[#fff]`}
                   >
                     Play Now
                   </button>

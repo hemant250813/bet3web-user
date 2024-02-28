@@ -11,6 +11,7 @@ const Home = ({ navbar }) => {
         <LoaderMain />
       ) : (
         <div className="flex flex-col min-h-screen">
+          
           {/* Main Content */}
           <Section1 loading={loading} setLoading={setLoading} navbar={navbar} />
           <Section3

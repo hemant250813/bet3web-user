@@ -3,7 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { Header, HumburgerHeader } from "../../component/layout";
 import HeaderBackground from "../../assets/images/headerBackground.jpg";
 import { getLocalStorageItem } from "../../utils/helper";
-import { LoaderMain } from "../../component/commonComponent";
+import {
+  Loader,
+  LoaderMain,
+  SlidingMessages,
+} from "../../component/commonComponent";
 
 const Section1 = ({ loading, setLoading, navbar }) => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -48,7 +52,7 @@ const Section1 = ({ loading, setLoading, navbar }) => {
   return (
     <>
       <section
-        className="relative flex-grow p-4 md:p-8 lg:p-12"
+        className="flex-grow p-4 md:p-8 lg:p-12"
         style={{
           backgroundImage: `url(${HeaderBackground})`,
           backgroundSize: "cover",
@@ -58,7 +62,7 @@ const Section1 = ({ loading, setLoading, navbar }) => {
         }}
       >
         {/* Mobile Header with Hamburger Icon */}
-
+       
         {hideHeader ? (
           <HumburgerHeader loading={loading} setLoading={setLoading} />
         ) : (
@@ -73,7 +77,7 @@ const Section1 = ({ loading, setLoading, navbar }) => {
         {/* Your main content goes here */}
         {/* Your main content goes here */}
         <div
-          className={`${
+          className={`relative ${
             windowWidth <= 425
               ? "section1-title"
               : windowWidth <= 768
@@ -87,7 +91,8 @@ const Section1 = ({ loading, setLoading, navbar }) => {
               : ""
           } flex flex-col ml-4 md:ml-8 lg:ml-12`}
         >
-          <h2 className="text-[#E3BC3F] text-3xl md:text-4xl lg:text-5xl font-semibold mb-4 leading-tight whitespace-pre-line">
+           <SlidingMessages />
+          {/* <h2 className="text-[#E3BC3F] text-3xl md:text-4xl lg:text-5xl font-semibold mb-4 leading-tight whitespace-pre-line">
             Play online games
             <br />
             and win a lot of <br />
@@ -97,7 +102,7 @@ const Section1 = ({ loading, setLoading, navbar }) => {
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos error
             quo cum illum, <br />
             alias similique, suscipit nihil tempore.
-          </p>
+          </p> */}
           {!isAuth && (
             <div className="flex flex-col md:flex-row gap-4">
               <button

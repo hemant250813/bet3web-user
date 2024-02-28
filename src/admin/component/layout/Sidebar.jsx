@@ -8,6 +8,8 @@ import { FaUsers } from "react-icons/fa";
 import { FaGlobe } from "react-icons/fa";
 import { TbReportSearch } from "react-icons/tb";
 import { IoSettings } from "react-icons/io5";
+import { MdQuestionAnswer } from "react-icons/md";
+import { VscOutput } from "react-icons/vsc";
 import { NAVBAR } from "../../utils/constants";
 
 const Sidebar = () => {
@@ -39,7 +41,7 @@ const Sidebar = () => {
   };
 
   const redirectRoute = (index, route) => {
-    navigate(`/${route}`);
+    navigate(`${route}`);
     setActive(index);
   };
 
@@ -115,6 +117,20 @@ const Sidebar = () => {
                 />
               ) : nav?.name === "report" ? (
                 <TbReportSearch
+                  size={32}
+                  className={`${
+                    active === index ? "text-[#4fd1c5]" : "text-[#E3BC3F]"
+                  } hover:text-[#4fd1c5]`}
+                />
+              ) : nav?.route === "/qbetting" ? (
+                <MdQuestionAnswer
+                  size={32}
+                  className={`${
+                    active === index ? "text-[#4fd1c5]" : "text-[#E3BC3F]"
+                  } hover:text-[#4fd1c5]`}
+                />
+              ) : nav?.route === "/result" ? (
+                <VscOutput
                   size={32}
                   className={`${
                     active === index ? "text-[#4fd1c5]" : "text-[#E3BC3F]"

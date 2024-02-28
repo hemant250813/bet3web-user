@@ -23,6 +23,7 @@ import QuestionResult from "./question/questionResultSaga";
 import QuestionDropdown from "./question/getQuestionDropdownSaga";
 import Result from "./result/resultSaga";
 import GetResult from "./result/getResultSaga";
+import UpdateProfile from "./user/updateProfileSaga";
 
 export default function* rootSaga() {
   yield all([
@@ -49,6 +50,7 @@ export default function* rootSaga() {
     QuestionResult(),
     QuestionDropdown(),
     Result(),
-    GetResult()
+    GetResult(),
+    UpdateProfile()
   ]);
 }

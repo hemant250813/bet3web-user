@@ -13,11 +13,12 @@ import {
   getSetting,
   questionResult,
 } from "../../redux/action";
-import { LoaderMain } from "../../component/commonComponent";
+import { LoaderMain, LoaderButton } from "../../component/commonComponent";
 
 const Question = ({ navbar }) => {
   const [error, setError] = useState({});
   const [loading, setLoading] = useState(false);
+  const [isSubmit, setIsSubmit] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [hideHeader, setHideHeader] = useState(false);
@@ -113,6 +114,7 @@ const Question = ({ navbar }) => {
     const { errors, isValid } = validateQuestion(form, setting);
 
     if (isValid) {
+      setIsSubmit(true);
       let formData = selectedOptions
         ?.map((data) => {
           if (data?.optionIndex !== null) {
@@ -136,6 +138,7 @@ const Question = ({ navbar }) => {
           formData,
           callback: (data) => {
             if (data) {
+              setIsSubmit(false);
               setSelectedOptions(
                 Array(question?.length).fill({ option: null, question: null })
               );
@@ -214,7 +217,7 @@ const Question = ({ navbar }) => {
               <div className="flex flex-col items-center justify-center p-3">
                 <span className="flex items-center justify-center">
                   <p
-                    className={`${
+                    className={`mr-2 ${
                       windowWidth === 320
                         ? "text-xs"
                         : windowWidth === 375
@@ -247,7 +250,7 @@ const Question = ({ navbar }) => {
                         : windowWidth === 1440
                         ? "text-3xl"
                         : "text-4xl"
-                    }  text-[#E3BC3F]`}
+                    }  text-[#3F93F9]`}
                   >
                     {" "}
                     {form?.balance?.toFixed(2)} USD
@@ -286,7 +289,7 @@ const Question = ({ navbar }) => {
                       style={{ height: "2rem" }}
                     />
                     <span
-                      className="bg-[#E3BC3F] text-black flex items-center px-2 rounded-r-sm outline-none"
+                      className="bg-[#3F93F9] text-[#fff] flex items-center px-2 rounded-r-sm outline-none"
                       style={{ height: "2rem" }}
                     >
                       USD
@@ -310,8 +313,8 @@ const Question = ({ navbar }) => {
                 >
                   {/* header */}
                   <div className="grid grid-cols-2 justify-around p-2">
-                    <button className="mx-3">{que.question}</button>
-                    <button className="mx-3">odd {index}</button>
+                    <button className="mx-3 text-2xl">{que.question}</button>
+                    <button className="mx-3 text-2xl">odd {index}</button>
                   </div>
                   {/* option */}
                   <div className="grid grid-cols-3 justify-around p-2 ">
@@ -319,10 +322,10 @@ const Question = ({ navbar }) => {
                       (option, optionIndex) => (
                         <button
                           key={optionIndex}
-                          className={`mx-3 p-2 rounded-md ${
+                          className={`mx-3 p-4 text-xl rounded-md hover:opacity-80 ${
                             selectedOptions[index]?.optionIndex === optionIndex
                               ? "bg-gray-800 text-white"
-                              : "bg-[#E3BC3F] text-black"
+                              : "bg-[#3F93F9] text-[#fff]"
                           }`}
                           onClick={(e) => {
                             e.preventDefault();
@@ -342,12 +345,19 @@ const Question = ({ navbar }) => {
                   </div>
                 </div>
               ))}
-              <div className="relative group mx-auto p-4 text-white">
+              <div className="relative group mx-auto p-4 text-white w-96">
                 <button
                   type="submit"
-                  className="w-full bg-gray-900 hover:bg-[#4fd1c5] hover:text-black py-2 px-4 rounded-md h-16 text-[#E3BC3F] text-3xl font-bold border-4 border-[#4fd1c5]"
+                  disabled={isSubmit}
+                  className="w-96 bg-[#3F93F9] hover:opacity-80 py-2 px-4 rounded-md h-16 text-[#fff] text-2xl font-bold flex justify-center"
                 >
-                  Submit
+                  {isSubmit ? (
+                    <LoaderButton />
+                  ) : (
+                    <>
+                      <span className="mt-2 font-bold text-2xl">Submit</span>
+                    </>
+                  )}
                 </button>
               </div>
             </form>
