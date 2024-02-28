@@ -4,11 +4,11 @@ export const ACCOUNT_TYPE = [
 ];
 
 export const HOME_NAVBAR = [
-  { name: "Home", route: "home", type: "home", child: false },
-  { name: "About Us", route: "aboutus", type: "home", child: false },
-  { name: "Game", route: "game", type: "home", child: false },
-  { name: "Blog", route: "blog", type: "home", child: false },
-  { name: "Contact", route: "contact", type: "home", child: false },
+  { name: "Dashboard", route: "/dashboard", type: "dashboard", child: false },
+  { name: "About Us", route: "/aboutus", type: "home", child: false },
+  { name: "Game", route: "/game", type: "home", child: false },
+  { name: "Blog", route: "/blog", type: "home", child: false },
+  { name: "Contact", route: "/contact", type: "home", child: false },
 ];
 
 export const GAME = {
@@ -28,57 +28,57 @@ export const RESULT = {
 };
 
 export const DASHBOARD_NAVBAR = [
-  { name: "Dashboard", route: "dashboard", type: "dashboard", child: false },
+  { name: "Home", route: "/", type: "home", child: false },
   {
     name: "Deposit",
-    route: "deposit",
+    route: "/deposit",
     type: "dashboard",
     child: true,
     children: [
-      { name: "Deposit", route: "deposit" },
-      { name: "Deposit Log", route: "deposit/log" },
+      { name: "Deposit", route: "/deposit" },
+      { name: "Deposit Log", route: "/deposit/log" },
     ],
   },
   {
     name: "Withdraw",
-    route: "withdraw",
+    route: "/withdraw",
     type: "dashboard",
     child: true,
     children: [
-      { name: "Withdraw", route: "withdraw" },
-      { name: "Withdraw Log", route: "withdraw/log" },
+      { name: "Withdraw", route: "/withdraw" },
+      { name: "Withdraw Log", route: "/withdraw/log" },
     ],
   },
-  { name: "Referals", route: "referals", type: "dashboard", child: false },
+  { name: "Referals", route: "/referals", type: "dashboard", child: false },
   {
     name: "Reports",
-    route: "reports",
+    route: "/reports",
     type: "dashboard",
     child: true,
     children: [
-      { name: "Game Log", route: "game/log" },
-      { name: "Commission Log", route: "commission/log" },
-      { name: "Transactions", route: "transactions" },
+      { name: "Game Log", route: "/game/log" },
+      { name: "Commission Log", route: "/commission/log" },
+      { name: "Transactions", route: "/transactions" },
     ],
   },
   {
     name: "Support",
-    route: "support",
+    route: "/support",
     type: "dashboard",
     child: true,
     children: [
-      { name: "Open New Ticket", route: "ticket/new" },
-      { name: "My Tickets", route: "ticket" },
+      { name: "Open New Ticket", route: "/ticket/new" },
+      { name: "My Tickets", route: "/ticket" },
     ],
   },
   {
     name: "Account",
-    route: "account",
+    route: "/account",
     type: "dashboard",
     child: true,
     children: [
-      { name: "Profile Setting", route: "profile_setting" },
-      { name: "Change Password", route: "change_password" },
+      { name: "Profile Setting", route: "/profile_setting" },
+      { name: "Change Password", route: "/change_password" },
       // { name: "2fa Security", route: "security" },
     ],
   },

@@ -22,7 +22,7 @@ const LoaderMain = () => {
   }, [windowWidth, windowHeight]);
 
   return (
-    <div className="flex justify-center items-center bg-[#E3BC3F] h-screen">
+    <div className="flex justify-center items-center bg-[#3F93F9] h-screen">
       <ClimbingBoxLoader color="#000000" />
     </div>
   );

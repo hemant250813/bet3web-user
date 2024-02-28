@@ -23,3 +23,4 @@ export * from "./question/questionResultAction";
 export * from "./question/getQuestionDropdownAction";
 export * from "./result/resultAction";
 export * from "./result/getResultAction";
+export * from "./user/updateProfileAction";

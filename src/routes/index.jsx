@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import Home from "../container/Home";
 import Games from "../container/Games/Games";
 import HeadTail from "../container/Games/HeadTail";
@@ -38,6 +38,7 @@ import Qbetting from "../admin/container/Qbetting/Qbetting.jsx";
 import Result from "../admin/container/Result/Result.jsx";
 //admin
 import { HOME_NAVBAR, DASHBOARD_NAVBAR } from "../utils/constants";
+import { NoPageFound } from "../component/layout";
 
 const RouteFile = () => {
   return (
@@ -163,6 +164,7 @@ const RouteFile = () => {
       <Route path={`/setting`} element={<Setting />} />
       <Route path={`/qbetting`} element={<Qbetting />} />
       <Route path={`/result`} element={<Result />} />
+      <Route path="*" element={<NoPageFound />} />
     </Routes>
   );
 };

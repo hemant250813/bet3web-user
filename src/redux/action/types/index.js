@@ -117,3 +117,8 @@ export const RESULT_FAILURE = "RESULT_FAILURE";
 export const GET_RESULT = "GET_RESULT";
 export const GET_RESULT_SUCCESS = "GET_RESULT_SUCCESS";
 export const GET_RESULT_FAILURE = "GET_RESULT_FAILURE";
+
+// =====================GET RESULT ACTION==============================
+export const UPDATE_PROFILE = "UPDATE_PROFILE";
+export const UPDATE_PROFILE_SUCCESS = "UPDATE_PROFILE_SUCCESS";
+export const UPDATE_PROFILE_FAILURE = "UPDATE_PROFILE_FAILURE";

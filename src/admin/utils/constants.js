@@ -35,31 +35,31 @@ export const NAVBAR = [
   {
     key: 0,
     name: "dashboard",
-    route: "admin-dashboard",
+    route: "/admin-dashboard",
   },
   {
     key: 1,
     name: "user",
-    route: "user",
+    route: "/user",
   },
   {
     key: 2,
     name: "report",
-    route: "report",
+    route: "/report",
   },
   {
     key: 3,
     name: "setting",
-    route: "setting",
+    route: "/setting",
   },
   {
     key: 4,
     name: "Q Betting",
-    route: "qbetting",
+    route: "/qbetting",
   },
   {
     key: 5,
     name: "Result",
-    route: "result",
+    route: "/result",
   },
 ];
