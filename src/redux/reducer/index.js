@@ -25,6 +25,7 @@ import QuestionResult from "./question/questionResultReducer";
 import QuestionDropdown from "./question/getQuestionDropdownReducer";
 import Result from "./result/resultReducer";
 import GetResult from "./result/getResultReducer";
+import UpdateProfile from "./user/updateProfileReducer";
 
 const appReducer = combineReducers({
   Registration,
@@ -50,7 +51,8 @@ const appReducer = combineReducers({
   QuestionResult,
   QuestionDropdown,
   Result,
-  GetResult
+  GetResult,
+  UpdateProfile
 });
 const reducers = (state, action) => {
   return appReducer(state, action);

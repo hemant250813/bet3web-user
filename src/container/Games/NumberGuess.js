@@ -355,7 +355,7 @@ const NumberGuess = ({ navbar }) => {
                           : windowWidth === 1440
                           ? "text-3xl"
                           : "text-4xl"
-                      }  text-[#E3BC3F]`}
+                      }  text-[#3F93F9]`}
                     >
                       {" "}
                       {form?.balance?.toFixed(2)} USD
@@ -394,7 +394,7 @@ const NumberGuess = ({ navbar }) => {
                         style={{ height: "2rem" }}
                       />
                       <span
-                        className="bg-[#E3BC3F] text-black flex items-center px-2 rounded-r-sm outline-none"
+                        className="bg-[#3F93F9] text-[#fff] flex items-center px-2 rounded-r-sm outline-none"
                         style={{ height: "2rem" }}
                       >
                         USD
@@ -448,7 +448,7 @@ const NumberGuess = ({ navbar }) => {
                   ) : (
                     <button
                       onClick={() => handleClick()}
-                      className="bg-[#E3BC3F] p-4 w-9/12"
+                      className="bg-[#3F93F9] p-4 w-9/12 text-[#fff]"
                     >
                       Play Now
                     </button>

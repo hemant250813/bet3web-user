@@ -21,6 +21,7 @@ const SpinWheel = ({ navbar }) => {
   const [error, setError] = useState({});
   const [hideHeader, setHideHeader] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isSubmit, setIsSubmit] = useState(false);
   const [winOpenModal, setWinOpenModal] = useState(false);
   const [loseOpenModal, setLoseOpenModal] = useState(false);
   const [selectedColor, setSelectedColor] = useState("");
@@ -414,6 +415,7 @@ const SpinWheel = ({ navbar }) => {
         payload,
         callback: async (data) => {
           if (data) {
+            setIsSubmit(false);
           }
         },
       })
@@ -447,6 +449,7 @@ const SpinWheel = ({ navbar }) => {
     if (isValid) {
       spin();
       setIsPaused(false);
+      setIsSubmit(true);
     } else {
       setError(errors);
     }
@@ -657,6 +660,7 @@ const SpinWheel = ({ navbar }) => {
                             }));
                           }
 
+                          setIsSubmit(false);
                           setError((prevState) => ({
                             ...prevState,
                             [name]: "",
@@ -666,7 +670,7 @@ const SpinWheel = ({ navbar }) => {
                         style={{ height: "2rem" }}
                       />
                       <span
-                        className="bg-[#E3BC3F] text-black flex items-center px-2 rounded-r-sm outline-none"
+                        className="bg-[#3F93F9] text-[#fff] flex items-center px-2 rounded-r-sm outline-none"
                         style={{ height: "2rem" }}
                       >
                         USD
@@ -706,6 +710,7 @@ const SpinWheel = ({ navbar }) => {
                         ...prevState,
                         ["color"]: "",
                       }));
+                      setIsSubmit(false);
                     }}
                     className={`${tabViews[0].isActive && "border p-2"}`}
                   >
@@ -719,6 +724,7 @@ const SpinWheel = ({ navbar }) => {
                         ...prevState,
                         ["color"]: "",
                       }));
+                      setIsSubmit(false);
                     }}
                     className={`${tabViews[1].isActive && "border p-2"}`}
                   >
@@ -731,7 +737,10 @@ const SpinWheel = ({ navbar }) => {
                 <div className="flex flex-col items-center justify-center w-11/12 p-2">
                   <button
                     onClick={() => handleClick()}
-                    className="bg-[#E3BC3F] p-4 w-9/12"
+                    disabled={isSubmit}
+                    className={`${
+                      isSubmit ? "bg-[#716e60]" : "bg-[#3F93F9]"
+                    }  p-4 w-9/12 text-[#fff]`}
                   >
                     Play Now
                   </button>

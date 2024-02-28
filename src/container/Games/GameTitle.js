@@ -36,8 +36,8 @@ const GameTitle = ({ title, route }) => {
           <span
             onClick={(e) => tabSwitch(e, "home")}
             className={`${
-              tabViews[0].isActive ? "text-[#E3BC3F]" : "text-white"
-            } mr-2 cursor-pointer`}
+              tabViews[0].isActive ? "text-[#3F93F9]" : "text-white"
+            } mr-2 cursor-pointer text-2xl`}
           >
             Home
           </span>
@@ -45,8 +45,8 @@ const GameTitle = ({ title, route }) => {
           <span
             onClick={(e) => tabSwitch(e, "games")}
             className={`${
-              tabViews[1].isActive ? "text-[#E3BC3F]" : "text-white"
-            } mr-2 cursor-pointer`}
+              tabViews[1].isActive ? "text-[#3F93F9]" : "text-white"
+            } mr-2 cursor-pointer text-2xl`}
           >
             {title}
           </span>
