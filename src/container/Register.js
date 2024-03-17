@@ -12,7 +12,7 @@ import Logo from "../assets/images/logo.png";
 import validateRegistraion from "../validation/user/registration";
 import { notifyWarning } from "../utils/helper";
 import { registration } from "../redux/action";
-import { Loader } from "../component/commonComponent";
+import { Loader, LoaderMain } from "../component/commonComponent";
 
 const Register = () => {
   const [form, setForm] = useState({
@@ -108,7 +108,7 @@ const Register = () => {
   return (
     <>
       {loading ? (
-        <Loader />
+        <LoaderMain />
       ) : (
         <div
           className="min-h-screen flex items-center justify-center bg-cover relative"
