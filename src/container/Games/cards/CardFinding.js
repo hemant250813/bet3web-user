@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { Header, HumburgerHeader, Footer } from "../../../component/layout";
 import GameTitle from "../GameTitle";
 import CardShuffledGrid from "./CardShuffledGrid";
@@ -10,6 +11,9 @@ import aClubs from "../../../assets/images/games/card/aClubs.png";
 import aHeart from "../../../assets/images/games/card/aHeart.png";
 import HeaderBackground from "../../../assets/images/headerBackground.jpg";
 import { getLocalStorageItem } from "../../../utils/helper";
+import { bet, userDetail, getSetting } from "../../../redux/action";
+import { GAME, RESULT } from "../../../utils/constants";
+import { Win, Lose } from "../../../container/Modal/index";
 
 const CardFinding = ({ navbar }) => {
   const [form, setForm] = useState({
@@ -22,9 +26,12 @@ const CardFinding = ({ navbar }) => {
   const [hideHeader, setHideHeader] = useState(false);
   const [error, setError] = useState({});
   const [loading, setLoading] = useState(false);
+  const [isSubmit, setIsSubmit] = useState(false);
   const [cardGrid, setCardGrid] = useState("");
   const [cardGap, setCardGap] = useState("");
   const [cardPadding, setCardPadding] = useState("");
+  const [winOpenModal, setWinOpenModal] = useState(false);
+  const [loseOpenModal, setLoseOpenModal] = useState(false);
 
   const [tabViews, setTabViews] = useState([
     { route: "card1", isActive: false },
@@ -32,7 +39,24 @@ const CardFinding = ({ navbar }) => {
   ]);
   const isAuth = getLocalStorageItem("token");
   const userData = JSON.parse(getLocalStorageItem("user"));
+
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const user_detail = useSelector((state) => state?.UserDetail?.userDetails);
+  const setting = useSelector((state) => state?.GetSetting?.setting);
+
+  useEffect(() => {
+    dispatch(getSetting({ game: "card_finding" }));
+    dispatch(userDetail());
+  }, []);
+
+  useEffect(() => {
+    setForm((prevState) => ({
+      ...prevState,
+      ["balance"]: user_detail?.data?.balance,
+    }));
+  }, [user_detail]);
 
   useEffect(() => {
     if (windowWidth <= 768) {
@@ -50,6 +74,11 @@ const CardFinding = ({ navbar }) => {
       setCardGrid("grid-cols-7");
       setCardGap("gap-4");
       setCardPadding("p-0");
+    }
+    if (windowWidth >= 1920 && windowWidth >= 1850) {
+      setCardGrid("grid-cols-7");
+      setCardGap("gap-1");
+      setCardPadding("p-12");
     } else if (windowWidth === 1440) {
       setCardGrid("grid-cols-7");
       setCardGap("gap-1");
@@ -131,11 +160,54 @@ const CardFinding = ({ navbar }) => {
     }
   };
 
-  const callbackCardShuffledPicked = () => {
+  const callbackCardShuffledPicked = (result) => {
+    console.log("result", result);
     setForm((prevState) => ({
       ...prevState,
       ["amount"]: "",
     }));
+
+    if (result === "win") {
+      setWinOpenModal(true);
+      onSubmit("win");
+    } else {
+      setLoseOpenModal(true);
+      onSubmit("lose");
+    }
+  };
+
+  const onSubmit = (coin) => {
+    let payload = {
+      game: GAME?.DICE_ROLLING,
+    };
+
+    if (coin === "win") {
+      let pl = (parseInt(form.amount) * setting?.odd[0]) / 100;
+      payload = {
+        ...payload,
+        amount: parseInt(pl),
+        result: RESULT?.WIN,
+        invest: parseInt(form.amount),
+      };
+    } else {
+      payload = {
+        ...payload,
+        amount: -parseInt(form.amount),
+        result: RESULT?.LOSE,
+        invest: parseInt(form.amount),
+      };
+    }
+    dispatch(
+      bet({
+        payload,
+        callback: async (data) => {
+          if (data) {
+            setIsSubmit(false);
+            dispatch(userDetail());
+          }
+        },
+      })
+    );
   };
 
   return (
@@ -170,7 +242,7 @@ const CardFinding = ({ navbar }) => {
         className={`bg-black relative flex-grow p-12 md:p-8 lg:p-12 overflow-hidden`}
       >
         <div
-          className={`grid justify-items-stretch gap-8 ${
+          className={`grid justify-items-stretch gap-14 ${
             windowWidth === 320
               ? "grid-cols-1"
               : windowWidth === 1440
@@ -188,7 +260,9 @@ const CardFinding = ({ navbar }) => {
         >
           {/* Card 1 */}
           <div
-            className="relative group mx-auto border border-gray-400 p-2"
+            className={`relative group mx-auto border border-gray-400 p-2 ${
+              windowWidth === 1850 ? "border-r-0" : ""
+            } `}
             style={{
               height: windowWidth === 1024 ? "700px" : "700px",
               width:
@@ -220,13 +294,15 @@ const CardFinding = ({ navbar }) => {
             ) : isCardShuffled ? (
               <CardShuffled />
             ) : (
-              <CardShuffledPicked onClick={callbackCardShuffledPicked} />
+              <CardShuffledPicked
+                callbackCardShuffledPicked={callbackCardShuffledPicked}
+              />
             )}
           </div>
 
           {/* Card 2 */}
           <div
-            className="relative group mx-auto border border-gray-400 p-2"
+            className="relative group mx-auto border border-gray-400 p-24"
             style={{
               height: "700px",
               width:
@@ -267,7 +343,9 @@ const CardFinding = ({ navbar }) => {
                       ? "text-5xl"
                       : windowWidth === 1440
                       ? "text-3xl"
-                      : "text-5xl"
+                      : windowWidth === 1850
+                      ? "text-3xl"
+                      : "text-4xl"
                   }  text-white`}
                 >
                   Current Balance :
@@ -286,11 +364,13 @@ const CardFinding = ({ navbar }) => {
                       ? "text-5xl"
                       : windowWidth === 1440
                       ? "text-3xl"
-                      : "text-5xl"
+                      : windowWidth === 1850
+                      ? "text-3xl"
+                      : "text-4xl"
                   }  text-[#E3BC3F]`}
                 >
-                  {" "}
-                  10.50 USD
+                  {/* {" "} */}
+                  {form?.balance?.toFixed(2)} USD
                 </p>
               </span>
               <div className="flex flex-col items-center w-11/12 mt-3">
@@ -301,7 +381,28 @@ const CardFinding = ({ navbar }) => {
                     name="amount"
                     value={form?.amount}
                     onChange={(e) => {
-                      changeHandler(e);
+                      setCardShuffledGrid(true);
+                      setCardShuffled(true);
+                      const value = e.target.value;
+                      const { name } = e.target;
+                      let finalAmount = user_detail?.data?.balance - value;
+                      if (value <= user_detail?.data?.balance) {
+                        setForm((prevState) => ({
+                          ...prevState,
+                          [name]: value,
+                        }));
+
+                        setForm((prevState) => ({
+                          ...prevState,
+                          ["balance"]: finalAmount,
+                        }));
+                      }
+
+                      setIsSubmit(false);
+                      setError((prevState) => ({
+                        ...prevState,
+                        [name]: "",
+                      }));
                     }}
                     className="border p-2 focus:outline-none focus:border-blue-500 bg-[#020C25] text-white w-full"
                     style={{ height: "2rem" }}
@@ -318,7 +419,9 @@ const CardFinding = ({ navbar }) => {
                 </div>
               </div>
               <span className="text-[#adb5bd] mt-3">
-                Minimum : 1.00 USD | Maximum : 100.00 USD | Win Amount 150.00 %
+                Minimum : {setting?.min?.toFixed(2)} USD | Maximum :{" "}
+                {setting?.max?.toFixed(2)} USD | Win Amount{" "}
+                {setting?.odd[0]?.toFixed(2)} %
               </span>
             </div>
             <div
@@ -360,7 +463,10 @@ const CardFinding = ({ navbar }) => {
             <div className="flex flex-col items-center justify-center w-11/12 p-2">
               <button
                 onClick={() => handleClick()}
-                className="bg-[#E3BC3F] p-4 w-9/12"
+                disabled={isSubmit}
+                className={`${
+                  isSubmit ? "bg-[#716e60]" : "bg-[#3F93F9]"
+                }  p-4 w-9/12 text-[#fff]`}
               >
                 Play Now
               </button>
@@ -370,6 +476,16 @@ const CardFinding = ({ navbar }) => {
         </div>
       </section>
       <Footer />
+      {winOpenModal && (
+        <Win winOpenModal={winOpenModal} setWinOpenModal={setWinOpenModal}  keno={false}/>
+      )}
+      {loseOpenModal && (
+        <Lose
+          loseOpenModal={loseOpenModal}
+          setLoseOpenModal={setLoseOpenModal}
+          keno={false}
+        />
+      )}
     </>
   );
 };

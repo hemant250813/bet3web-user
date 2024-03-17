@@ -19,7 +19,7 @@ import {
   removeLocalStorageItem,
   getLocalStorageItem,
   clearLocalStorage,
-  WarningToast
+  WarningToast,
 } from "../../utils/helper";
 const Section3 = ({ games, isDashboard, loading, setLoading, userDetails }) => {
   const [loginTimeOut, setLoginTimeOut] = useState(0);
@@ -38,17 +38,29 @@ const Section3 = ({ games, isDashboard, loading, setLoading, userDetails }) => {
     { card: `card12`, isActive: false },
     { card: `card13`, isActive: false },
   ]);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [windowHeight, setWindowHeight] = useState(window.innerHeight);
 
   const navigate = useNavigate();
   const isAuth = getLocalStorageItem("token");
   const userData = JSON.parse(getLocalStorageItem("user"));
 
   useEffect(() => {
+    // Function to update the window dimensions
+    const updateWindowDimensions = () => {
+      setWindowWidth(window.innerWidth);
+      setWindowHeight(window.innerHeight);
+    };
+
+    // Add an event listener to update dimensions when the window is resized
+    window.addEventListener("resize", updateWindowDimensions);
+
     // Clean up the event listener when the component unmounts
     return () => {
+      window.removeEventListener("resize", updateWindowDimensions);
       clearTimeout(loginTimeOut);
     };
-  }, []);
+  }, [windowWidth, windowHeight]);
 
   const afterLoadingDispatch = (route) => {
     console.log("afterLoadingDispatch", route);
@@ -71,7 +83,7 @@ const Section3 = ({ games, isDashboard, loading, setLoading, userDetails }) => {
       setTabViews(filterTabList);
     }
   };
- 
+
   const playGame = (route) => {
     clearTimeout(loginTimeOut);
     if (isAuth && userData) {
@@ -103,11 +115,11 @@ const Section3 = ({ games, isDashboard, loading, setLoading, userDetails }) => {
               <p>Our Awesome Games</p>
             </div>
           )}
-      
+
           {isDashboard && <Account userDetails={userDetails} />}
           <div
             className={`${
-              games ? "" : "p-28"
+              games ? "" : windowWidth <= 320 ? "" : "p-28"
             } grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8`}
           >
             {/* Card 1 */}
@@ -351,6 +363,7 @@ const Section3 = ({ games, isDashboard, loading, setLoading, userDetails }) => {
 
             {/* Card 11 */}
             <div
+              onClick={() => playGame("ludo")}
               className={`relative group ${
                 tabViews[10]?.isActive ? "" : "hover:opacity-60"
               } hover:bg-[#3F93F9] w-full rounded-b-3xl rounded-t-3xl transition-transform duration-700 transform hover:-translate-y-4`}
@@ -374,6 +387,7 @@ const Section3 = ({ games, isDashboard, loading, setLoading, userDetails }) => {
 
             {/* Card 12 */}
             <div
+              onClick={() => playGame("keno")}
               className={`relative group ${
                 tabViews[11]?.isActive ? "" : "hover:opacity-60"
               } hover:bg-[#3F93F9] w-full rounded-b-3xl rounded-t-3xl transition-transform duration-700 transform hover:-translate-y-4`}
@@ -397,6 +411,7 @@ const Section3 = ({ games, isDashboard, loading, setLoading, userDetails }) => {
 
             {/* Card 13 */}
             <div
+              onClick={() => playGame("black_jack")}
               className={`relative group ${
                 tabViews[12]?.isActive ? "" : "hover:opacity-60"
               } hover:bg-[#3F93F9] w-full rounded-b-3xl rounded-t-3xl transition-transform duration-700 transform hover:-translate-y-4`}

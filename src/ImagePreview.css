@@ -1,0 +1,5 @@
+.zoom-in {
+    transform: scale(2); /* Adjust the scale value for desired zoom level */
+    transition: transform 0.3s ease; /* Add transition effect for smooth animation */
+  }
+  

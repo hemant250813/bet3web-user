@@ -122,3 +122,68 @@ export const GET_RESULT_FAILURE = "GET_RESULT_FAILURE";
 export const UPDATE_PROFILE = "UPDATE_PROFILE";
 export const UPDATE_PROFILE_SUCCESS = "UPDATE_PROFILE_SUCCESS";
 export const UPDATE_PROFILE_FAILURE = "UPDATE_PROFILE_FAILURE";
+
+// =====================GET QUESTION DISPLAY ACTION==============================
+export const GET_QUESTION_DISPLAY = "GET_QUESTION_DISPLAY";
+export const GET_QUESTION_DISPLAY_SUCCESS = "GET_QUESTION_DISPLAY_SUCCESS";
+export const GET_QUESTION_DISPLAY_FAILURE = "GET_QUESTION_DISPLAY_FAILURE";
+
+// =====================BANK DEPOSIT ACTION==============================
+export const BANK_TRANSACTION = "BANK_TRANSACTION";
+export const BANK_TRANSACTION_SUCCESS = "BANK_TRANSACTION_SUCCESS";
+export const BANK_TRANSACTION_FAILURE = "BANK_TRANSACTION_FAILURE";
+
+// =====================GET DEPOSIT ACTION==============================
+export const GET_DEPOSIT = "GET_DEPOSIT";
+export const GET_DEPOSIT_SUCCESS = "GET_DEPOSIT_SUCCESS";
+export const GET_DEPOSIT_FAILURE = "GET_DEPOSIT_FAILURE";
+
+// =====================ADD BANK ACTION==============================
+export const ADD_BANK = "ADD_BANK";
+export const ADD_BANK_SUCCESS = "ADD_BANK_SUCCESS";
+export const ADD_BANK_FAILURE = "ADD_BANK_FAILURE";
+
+// =====================ADD BANK ACTION==============================
+export const GET_BANK = "GET_BANK";
+export const GET_BANK_SUCCESS = "GET_BANK_SUCCESS";
+export const GET_BANK_FAILURE = "GET_BANK_FAILURE";
+
+// =====================EDIT BANK ACTION==============================
+export const EDIT_BANK = "EDIT_BANK";
+export const EDIT_BANK_SUCCESS = "EDIT_BANK_SUCCESS";
+export const EDIT_BANK_FAILURE = "EDIT_BANK_FAILURE";
+
+// =====================DELETE BANK ACTION==============================
+export const DELETE_BANK = "DELETE_BANK";
+export const DELETE_BANK_SUCCESS = "DELETE_BANK_SUCCESS";
+export const DELETE_BANK_FAILURE = "DELETE_BANK_FAILURE";
+
+// =====================GET WITHDRAWAL ACTION==============================
+export const GET_WITHDRAWAL = "GET_WITHDRAWAL";
+export const GET_WITHDRAWAL_SUCCESS = "GET_WITHDRAWAL_SUCCESS";
+export const GET_WITHDRAWAL_FAILURE = "GET_WITHDRAWAL_FAILURE";
+
+// =====================ADD BANK SLIDER ACTION==============================
+export const ADD_BAN_SLIDER = "ADD_BAN_SLIDER";
+export const ADD_BAN_SLIDER_SUCCESS = "ADD_BAN_SLIDER_SUCCESS";
+export const ADD_BAN_SLIDER_FAILURE = "ADD_BAN_SLIDER_FAILURE";
+
+// =====================GET BANK SLIDER ACTION==============================
+export const GET_BANK_SLIDER = "GET_BANK_SLIDER";
+export const GET_BANK_SLIDER_SUCCESS = "GET_BANK_SLIDER_SUCCESS";
+export const GET_BANK_SLIDER_FAILURE = "GET_BANK_SLIDER_FAILURE";
+
+// =====================DELETE BANK SLIDER ACTION==============================
+export const DELETE_BANK_SLIDER = "DELETE_BANK_SLIDER";
+export const DELETE_BANK_SLIDER_SUCCESS = "DELETE_BANK_SLIDER_SUCCESS";
+export const DELETE_BANK_SLIDER_FAILURE = "DELETE_BANK_SLIDER_FAILURE";
+
+// =====================GET BANK TRANSACTION ACTION==============================
+export const GET_BANK_TRANSACTION = "GET_BANK_TRANSACTION";
+export const GET_BANK_TRANSACTION_SUCCESS = "GET_BANK_TRANSACTION_SUCCESS";
+export const GET_BANK_TRANSACTION_FAILURE = "GET_BANK_TRANSACTION_FAILURE";
+
+// =====================UPDATE ACCEPT/REJECT TRANSACTION ACTION==============================
+export const ACCEPT_REJECT_REQUEST = "ACCEPT_REJECT_REQUEST";
+export const ACCEPT_REJECT_REQUEST_SUCCESS = "ACCEPT_REJECT_REQUEST_SUCCESS";
+export const ACCEPT_REJECT_REQUEST_FAILURE = "ACCEPT_REJECT_REQUEST_FAILURE";

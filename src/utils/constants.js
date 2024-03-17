@@ -20,6 +20,7 @@ export const GAME = {
   CARD_FINDING: "card_finding",
   NUMBER_SLOT: "number_slot",
   NUMBER_POOL: "number_pool",
+  KENO: "keno",
 };
 
 export const RESULT = {
@@ -83,3 +84,9 @@ export const DASHBOARD_NAVBAR = [
     ],
   },
 ];
+
+export const TRANSACTION_TYPE = {
+  DEPOSIT: "deposit",
+  WITHDRAWL: "withdrawl",
+};
+

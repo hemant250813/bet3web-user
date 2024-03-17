@@ -19,6 +19,7 @@ const NumberGuess = ({ navbar }) => {
   const [guessNumber, setGuessNumber] = useState(null);
   const [inputNumber, setInputNumber] = useState(0);
   const [numberOfAttempt, setNumberOfAttempt] = useState(0);
+  const [numberOfAttemptLeft, setNumberOfAttemptLeft] = useState(3);
   const [loading, setLoading] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
@@ -109,6 +110,8 @@ const NumberGuess = ({ navbar }) => {
     e.preventDefault();
     setGuessNumber(inputNumber);
 
+    setNumberOfAttemptLeft(numberOfAttemptLeft -1);
+
     if (numberOfAttempt === 2) {
       setIsPlay(false);
       if (guessNumber === randomNumber) {
@@ -134,9 +137,9 @@ const NumberGuess = ({ navbar }) => {
     let payload = {
       game: GAME?.ROCK_PAPER_SCISSORS,
     };
-
+    setNumberOfAttemptLeft(3);
     if (hand === "win") {
-      let pl = (parseInt(form.amount) * setting?.odd) / 100;
+      let pl = (parseInt(form.amount) * setting?.odd[0]) / 100;
       payload = {
         ...payload,
         amount: parseInt(pl),
@@ -156,6 +159,7 @@ const NumberGuess = ({ navbar }) => {
         payload,
         callback: async (data) => {
           if (data) {
+            dispatch(userDetail());
           }
         },
       })
@@ -320,6 +324,12 @@ const NumberGuess = ({ navbar }) => {
                 }}
               >
                 <div className="flex flex-col items-center justify-center p-3">
+                  {isPlay && numberOfAttempt > 1 && (
+                    <span className="flex items-center justify-center">
+                      <p className="text-white">{numberOfAttemptLeft} attempt left</p>
+                    </span>
+                  )}
+
                   <span className="flex items-center justify-center">
                     <p
                       className={`${
@@ -407,7 +417,7 @@ const NumberGuess = ({ navbar }) => {
                   <span className="text-[#adb5bd] mt-3">
                     Minimum : {setting?.min?.toFixed(2)} USD | Maximum :{" "}
                     {setting?.max?.toFixed(2)} USD | Win Amount{" "}
-                    {setting?.odd?.toFixed(2)} %
+                    {setting?.odd[0]?.toFixed(2)} %
                   </span>
                 </div>
                 <div></div>
@@ -464,12 +474,14 @@ const NumberGuess = ({ navbar }) => {
             <Win
               winOpenModal={winOpenModal}
               setWinOpenModal={setWinOpenModal}
+              keno={false}
             />
           )}
           {loseOpenModal && (
             <Lose
               loseOpenModal={loseOpenModal}
               setLoseOpenModal={setLoseOpenModal}
+              keno={false}
             />
           )}
         </>

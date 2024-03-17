@@ -126,15 +126,14 @@ const Deposit = ({
   return (
     <Fragment>
       {isDepositModal && (
-        <div
-          id="authentication-modal"
-          tabIndex="-1"
-          aria-hidden="true"
-          className="fixed inset-0 z-50 overflow-y-auto overflow-x-hidden flex items-center justify-center mt-4"
-        >
+        <div className="fixed inset-0 z-50 overflow-y-auto overflow-x-hidden flex items-center justify-center mt-4">
+          {/* Background backdrop */}
+          <div className="fixed inset-0 bg-black opacity-90"></div>
+
+          {/* Modal */}
           <div className="relative p-4 w-full max-w-md">
             {/* Modal content */}
-            <div className="relative bg-gray-900  rounded-lg shadow dark:bg-gray-700">
+            <div className="relative bg-gray-900 rounded-lg shadow dark:bg-gray-700 border-4 border-gray-600">
               {/* Modal header */}
               <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                 <h3 className="text-xl font-semibold text-[#E3BC3F] dark:text-white">

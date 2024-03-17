@@ -24,6 +24,19 @@ import QuestionDropdown from "./question/getQuestionDropdownSaga";
 import Result from "./result/resultSaga";
 import GetResult from "./result/getResultSaga";
 import UpdateProfile from "./user/updateProfileSaga";
+import GetQuestionDisplay from "./question/getQuestionDisplaySaga";
+import BankTransaction from "./bank/bankTransactionSaga";
+import GetDeposit from "./bank/getDepositSaga";
+import AddBank from "./bank/addBankSaga";
+import GetBank from "./bank/getBankSaga";
+import EditBank from "./bank/editBankSaga ";
+import DeleteBank from "./bank/deleteBankSaga";
+import GetWithdrawal from "./bank/getWithdrawalSaga";
+import AddBankSlider from "./bank/addBankSliderSaga";
+import GetBankSlider from "./bank/getBankSliderSaga";
+import DeleteBankSlider from "./bank/deleteBankSliderSaga";
+import GetBankTransaction from "./transaction/getBankTransactionSaga";
+import AcceptRejectRequest from "./transaction/acceptRejectRequestSaga";
 
 export default function* rootSaga() {
   yield all([
@@ -51,6 +64,19 @@ export default function* rootSaga() {
     QuestionDropdown(),
     Result(),
     GetResult(),
-    UpdateProfile()
+    UpdateProfile(),
+    GetQuestionDisplay(),
+    BankTransaction(),
+    GetDeposit(),
+    AddBank(),
+    GetBank(),
+    EditBank(),
+    DeleteBank(),
+    GetWithdrawal(),
+    AddBankSlider(),
+    GetBankSlider(),
+    DeleteBankSlider(),
+    GetBankTransaction(),
+    AcceptRejectRequest()
   ]);
 }

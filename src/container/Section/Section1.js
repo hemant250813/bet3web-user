@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { Header, HumburgerHeader } from "../../component/layout";
 import HeaderBackground from "../../assets/images/headerBackground.jpg";
 import { getLocalStorageItem } from "../../utils/helper";
@@ -8,20 +9,34 @@ import {
   LoaderMain,
   SlidingMessages,
 } from "../../component/commonComponent";
+import { getQuestion } from "../../redux/action";
 
 const Section1 = ({ loading, setLoading, navbar }) => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [hideHeader, setHideHeader] = useState(false);
   const [isNavVisible, setIsNavVisible] = useState(false);
+  const [questionArray, setQuestionArray] = useState([]);
+
   const isAuth = getLocalStorageItem("token");
   const userData = JSON.parse(getLocalStorageItem("user"));
+  const question = useSelector((state) => state?.GetQuestion?.question);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const toggleNav = () => {
     setIsNavVisible(!isNavVisible);
   };
+
+  useEffect(() => {
+    dispatch(getQuestion());
+  }, []);
+
+  useEffect(() => {
+    let questionModified = question?.map((ques) => ques?.question);
+    setQuestionArray(questionModified);
+  }, [question]);
 
   useEffect(() => {
     if (windowWidth <= 768) {
@@ -54,7 +69,8 @@ const Section1 = ({ loading, setLoading, navbar }) => {
       <section
         className="flex-grow p-4 md:p-8 lg:p-12"
         style={{
-          backgroundImage: `url(${HeaderBackground})`,
+          // backgroundImage: `url(${HeaderBackground})`,
+          backgroundColor: "#AEB5BD",
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
           backgroundPosition: "center",
@@ -62,7 +78,7 @@ const Section1 = ({ loading, setLoading, navbar }) => {
         }}
       >
         {/* Mobile Header with Hamburger Icon */}
-       
+
         {hideHeader ? (
           <HumburgerHeader loading={loading} setLoading={setLoading} />
         ) : (
@@ -91,7 +107,7 @@ const Section1 = ({ loading, setLoading, navbar }) => {
               : ""
           } flex flex-col ml-4 md:ml-8 lg:ml-12`}
         >
-           <SlidingMessages />
+          <SlidingMessages question={questionArray} />
           {/* <h2 className="text-[#E3BC3F] text-3xl md:text-4xl lg:text-5xl font-semibold mb-4 leading-tight whitespace-pre-line">
             Play online games
             <br />

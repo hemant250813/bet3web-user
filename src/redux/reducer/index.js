@@ -26,6 +26,19 @@ import QuestionDropdown from "./question/getQuestionDropdownReducer";
 import Result from "./result/resultReducer";
 import GetResult from "./result/getResultReducer";
 import UpdateProfile from "./user/updateProfileReducer";
+import GetQuestionDisplay from "./question/getQuestionDisplayReducer";
+import BankTransaction from "./bank/bankTransactionReducer";
+import GetDeposit from "./bank/getDepositReducer";
+import AddBank from "./bank/addBankReducer";
+import GetBank from "./bank/getBankReducer";
+import EditBank from "./bank/getBankReducer";
+import DeleteBank from "./bank/deleteBankReducer";
+import GetWithdrawal from "./bank/getWithdrawalReducer";
+import AddBankSlider from "./bank/addBankSliderReducer";
+import GetBankSlider from "./bank/getBankSliderReducer";
+import DeleteBankSlider from "./bank/getBankSliderReducer";
+import GetBankTransaction from "./transaction/getBankTransactionReducer";
+import AcceptRejectRequest from "./transaction/acceptRejectRequestReducer";
 
 const appReducer = combineReducers({
   Registration,
@@ -52,7 +65,20 @@ const appReducer = combineReducers({
   QuestionDropdown,
   Result,
   GetResult,
-  UpdateProfile
+  UpdateProfile,
+  GetQuestionDisplay,
+  BankTransaction,
+  GetDeposit,
+  AddBank,
+  GetBank,
+  EditBank,
+  DeleteBank,
+  GetWithdrawal,
+  AddBankSlider,
+  GetBankSlider,
+  DeleteBankSlider,
+  GetBankTransaction,
+  AcceptRejectRequest
 });
 const reducers = (state, action) => {
   return appReducer(state, action);

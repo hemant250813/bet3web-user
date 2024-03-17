@@ -10,130 +10,295 @@ import { userDetail } from "../redux/action";
 
 const Account = ({ userDetails }) => {
   const dispatch = useDispatch();
-  const user_detail = useSelector((state) => state?.UserDetail?.userDetails);
+  // const user_detail = useSelector((state) => state?.UserDetail?.userDetails);
+  const [count, setCount] = useState(0);
+  const [clearIntervalCount, setClearIntervalCount] = useState(0);
+  const [tabViews, setTabViews] = useState([
+    { card: "balance", isActive: false },
+    { card: `deposit`, isActive: false },
+    { card: `withdraw`, isActive: false },
+    { card: "invest", isActive: false },
+    { card: `win`, isActive: false },
+    { card: `loss`, isActive: false },
+  ]);
 
-  const [balance, setBalance] = useState(user_detail?.data?.balance);
-  const [displayedBalance, setDisplayedBalance] = useState(balance);
+  console.log("tabViews", tabViews);
+  const handleMouseEnter = (number, card, number_controll) => {
+    const filterTabList = tabViews.map((el) =>
+      el.card === card ? { ...el, isActive: true } : { ...el, isActive: false }
+    );
+    setTabViews(filterTabList);
 
-  useEffect(() => {
-    dispatch(userDetail());
-  }, []);
-  console.log("user_detail", user_detail);
-  console.log("balance", balance);
-  console.log("displayedBalance", displayedBalance);
-  const handleMouseEnter = () => {
-    let count = 0;
+    let countIncrement = 0;
+    let countDecrement = -1;
     const interval = setInterval(() => {
-      console.log({
-        count: count,
-        balance: balance,
-      });
-      if (count <= balance) {
-        setDisplayedBalance(count);
-        count += 100; // Change this increment value based on your preference
+      // negative number
+      if (number < 0) {
+        if (countDecrement >= number) {
+          setCount(countDecrement);
+          if (number <= -100) {
+            let data = number + number_controll;
+            if (countDecrement > data) {
+              countDecrement -= number_controll;
+            } else {
+              countDecrement -= 1;
+            }
+          } else {
+            countDecrement -= 1;
+          }
+        } else {
+          clearInterval(interval);
+        }
       } else {
-        clearInterval(interval);
+        // positive number
+        if (countIncrement <= number) {
+          setCount(countIncrement);
+          if (number <= 100) {
+            countIncrement += 1;
+          } else {
+            let data = number - number_controll;
+            if (countIncrement < data) {
+              countIncrement += number_controll;
+            } else {
+              countIncrement += 1;
+            }
+          }
+        } else {
+          clearInterval(interval);
+        }
       }
     }, 10); // Change the interval duration as needed
+    setClearIntervalCount(interval);
   };
 
-  const handleMouseLeave = () => {
-    if (balance !== undefined) {
-      setDisplayedBalance(balance);
-    }
+  const handleMouseLeave = (card) => {
+    const filterTabList = tabViews.map((el) =>
+      el.card === card ? { ...el, isActive: false } : { ...el, isActive: false }
+    );
+    setTabViews(filterTabList);
+    setCount(0);
+    clearInterval(clearIntervalCount);
   };
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {/* <!-- Card 1 --> */}
       <div
-        // onMouseEnter={handleMouseEnter}
-        // onMouseLeave={handleMouseLeave}
-        className="flex bg-black  p-4 border border-gray-400 gap-6 hover:bg-[#3F93F9] text-2xl"
+        onMouseEnter={() =>
+          handleMouseEnter(
+            userDetails?.balance,
+            "balance",
+            userDetails?.balance > 6000 ? 500 : 100
+          )
+        }
+        onMouseLeave={() => handleMouseLeave("balance")}
+        className={`flex bg-black border border-gray-400 gap-6 hover:bg-[#3F93F9] ${
+          tabViews[0].isActive ? "p-8 transition-transform duration-500 transform hover:-translate-x-4" : "p-4"
+        } text-2xl rounded-md`}
       >
         {/* <!-- Card content goes here --> */}
-        <span className="bg-[#E3BC3F] p-3 rounded-md">
+        <span
+          className={`bg-[#E3BC3F] rounded-md ${
+            tabViews[0].isActive ? "p-6" : "p-3"
+          }`}
+        >
           <FaMoneyBillWave backgr color="white" size={50} />
         </span>
-        <span>
-          <p className="text-white">Total Balance</p>
-          <p className="text-white">{user_detail?.data?.balance}.00 USD</p>
+        <span
+          className={`${tabViews[0].isActive ? "font-bold" : ""} text-white`}
+        >
+          {tabViews[0].isActive}
+          <p className={`${tabViews[0].isActive ? "text-4xl" : ""} `}>
+            Total Balance
+          </p>
+          <p className={`${tabViews[0].isActive ? "text-6xl" : ""} `}>
+            {tabViews[0].isActive ? count : userDetails?.balance}.00 USD
+          </p>
         </span>
       </div>
 
       {/* <!-- Card 2 --> */}
-      <div className="flex bg-black  p-4 border border-gray-400 gap-6 hover:bg-[#3F93F9] text-2xl">
+      <div
+        onMouseEnter={() =>
+          handleMouseEnter(
+            userDetails?.totalDeposit,
+            "deposit",
+            userDetails?.totalDeposit > 6000 ? 500 : 100
+          )
+        }
+        onMouseLeave={() => handleMouseLeave("deposit")}
+        className={`flex bg-black border border-gray-400 gap-6 hover:bg-[#3F93F9] ${
+          tabViews[1].isActive ? "p-8 transition-transform duration-500 transform hover:-translate-y-4" : "p-4"
+        } text-2xl rounded-md`}
+      >
         {/* <!-- Card content goes here --> */}
-        <span className="bg-[#76CD20] p-3 rounded-md">
+        <span
+          className={`bg-[#76CD20] rounded-md ${
+            tabViews[1].isActive ? "p-6" : "p-3"
+          }`}
+        >
           {" "}
           <IoWalletOutline color="white" size={40} />
         </span>
-        <span>
+        <span
+          className={`${tabViews[1].isActive ? "font-bold" : ""} text-white`}
+        >
           {" "}
-          <p className="text-white">Total Deposit</p>
-          <p className="text-white">
-            {userDetails?.totalDeposit.toFixed(2)} USD
+          {tabViews[1].isActive}
+          <p className={`${tabViews[1].isActive ? "text-4xl" : ""}`}>
+            Total Deposit
+          </p>
+          <p className={`${tabViews[1].isActive ? "text-6xl" : ""}`}>
+            {tabViews[1].isActive ? count : userDetails?.totalDeposit}.00 USD
           </p>
         </span>
       </div>
 
       {/* <!-- Card 3 --> */}
-      <div className="flex bg-black  p-4 border border-gray-400 gap-6 hover:bg-[#3F93F9] text-2xl">
+      <div
+        onMouseEnter={() =>
+          handleMouseEnter(
+            userDetails?.totalWithdrawl,
+            "withdraw",
+            userDetails?.totalWithdrawl > 6000 ? 500 : 100
+          )
+        }
+        onMouseLeave={() => handleMouseLeave("withdraw")}
+        className={`flex bg-black border border-gray-400 gap-6 hover:bg-[#3F93F9] text-2xl ${
+          tabViews[2].isActive ? "p-8 transition-transform duration-500 transform hover:translate-x-4	" : "p-4"
+        } rounded-md`}
+      >
         {/* <!-- Card content goes here --> */}
-        <span className="bg-[#CF4B1A] p-3 rounded-md">
+        <span
+          className={`bg-[#CF4B1A] rounded-md ${
+            tabViews[2].isActive ? "p-6" : "p-3"
+          }`}
+        >
           {" "}
           <GiTakeMyMoney color="white" size={40} />
         </span>
-        <span>
+        <span
+          className={`${tabViews[2].isActive ? "font-bold" : ""} text-white`}
+        >
           {" "}
-          <p className="text-white">Total Withdraw</p>
-          <p className="text-white">
-            {userDetails?.totalWithdrawl.toFixed(2)} USD
+          { tabViews[2].isActive}
+          <p className={`${tabViews[2].isActive ? "text-4xl" : ""}`}>
+            Total Withdraw
+          </p>
+          <p className={`${tabViews[2].isActive ? "text-6xl" : ""}`}>
+            {tabViews[2].isActive ? count : userDetails?.totalWithdrawl}.00 USD
           </p>
         </span>
       </div>
 
       {/* <!-- Card 4 --> */}
-      <div className="flex bg-[#RRGGBB]  p-4 border border-gray-400 gap-6 hover:bg-[#3F93F9] text-2xl">
+      <div
+        onMouseEnter={() =>
+          handleMouseEnter(
+            userDetails?.total_invest,
+            "invest",
+            userDetails?.total_invest > 6000 ? 500 : 100
+          )
+        }
+        onMouseLeave={() => handleMouseLeave("invest")}
+        className={`flex bg-[#RRGGBB] border border-gray-400 gap-6 hover:bg-[#3F93F9] text-2xl ${
+          tabViews[3].isActive ? "p-8 transition-transform duration-500 transform hover:-translate-x-4" : "p-4"
+        } rounded-md`}
+      >
         {/* <!-- Card content goes here --> */}
-        <span className="bg-[#2FADDF] p-3 rounded-md">
+        <span
+          className={`bg-[#2FADDF] rounded-md ${
+            tabViews[3].isActive ? "p-6" : "p-3"
+          }`}
+        >
           {" "}
           <TbChartHistogram color="white" size={40} />
         </span>
-        <span>
+        <span
+          className={`${tabViews[3].isActive ? "font-bold" : ""} text-white`}
+        >
           {" "}
-          <p className="text-white">Total Invest</p>
-          <p className="text-white">
-            {userDetails?.total_invest.toFixed(2)} USD
+          {tabViews[3].isActive}
+          <p className={`${tabViews[3].isActive ? "text-4xl" : ""}`}>
+            Total Invest
+          </p>
+          <p className={`${tabViews[3].isActive ? "text-6xl" : ""}`}>
+            {tabViews[3].isActive ? count : userDetails?.total_invest}.00 USD
           </p>
         </span>
       </div>
 
       {/* <!-- Card 5 --> */}
-      <div className="flex bg-black  p-4 border border-gray-400 gap-6 hover:bg-[#3F93F9] text-2xl">
+      <div
+        onMouseEnter={() =>
+          handleMouseEnter(
+            userDetails?.total_win,
+            "win",
+            userDetails?.total_win > 6000 ? 500 : 100
+          )
+        }
+        onMouseLeave={() => handleMouseLeave("win")}
+        className={`flex bg-black border border-gray-400 gap-6 hover:bg-[#3F93F9] text-2xl ${
+          tabViews[4].isActive ? "p-8 transition-transform duration-500 transform hover:translate-y-4" : "p-4"
+        } rounded-md`}
+      >
         {/* <!-- Card content goes here --> */}
-        <span className="bg-[#76CD20] p-3 rounded-md">
+        <span
+          className={`bg-[#76CD20] rounded-md ${
+            tabViews[4].isActive ? "p-6" : "p-3"
+          }`}
+        >
           {" "}
           <GiTrophyCup color="white" size={40} />
         </span>
-        <span>
+        <span
+          className={`${tabViews[4].isActive ? "font-bold" : ""} text-white`}
+        >
           {" "}
-          <p className="text-white">Total Win</p>
-          <p className="text-white">{userDetails?.total_win.toFixed(2)} USD</p>
+          {tabViews[4].isActive}
+          <p className={`${tabViews[4].isActive ? "text-4xl" : ""} `}>
+            Total Win
+          </p>
+          <p className={`${tabViews[4].isActive ? "text-6xl" : ""}`}>
+            {tabViews[4].isActive ? count : userDetails?.total_win}.00 USD
+          </p>
         </span>
       </div>
 
       {/* <!-- Card 6 --> */}
-      <div className="flex bg-black  p-4 border border-gray-400 gap-6 hover:bg-[#3F93F9] text-2xl">
+      <div
+        onMouseEnter={() =>
+          handleMouseEnter(
+            userDetails?.total_loss,
+            "loss",
+            userDetails?.total_loss > -6000 ? 500 : 100
+          )
+        }
+        onMouseLeave={() => handleMouseLeave("loss")}
+        className={`flex bg-black border border-gray-400 gap-6 hover:bg-[#3F93F9] text-2xl ${
+          tabViews[5].isActive ? "p-8 transition-transform duration-500 transform hover:translate-x-4" : "p-4"
+        } rounded-md`}
+      >
         {/* <!-- Card content goes here --> */}
-        <span className="bg-[#F0AA20] p-3 rounded-md">
+        <span
+          className={`bg-[#F0AA20] rounded-md ${
+            tabViews[5].isActive ? "p-6" : "p-3"
+          }`}
+        >
           {" "}
           <GiPayMoney color="white" size={40} />
         </span>
-        <span>
+        <span
+          className={`${tabViews[5].isActive ? "font-bold" : ""} text-white`}
+        >
           {" "}
-          <p className="text-white">Total Loss</p>
-          <p className="text-white">{userDetails?.total_loss.toFixed(2)} USD</p>
+          <p>{tabViews[5].isActive}</p>
+          <p className={`${tabViews[5].isActive ? "text-4xl" : ""}`}>
+            Total Loss
+          </p>
+          <p className={`${tabViews[5].isActive ? "text-6xl" : ""}`}>
+            {tabViews[5].isActive ? count : userDetails?.total_loss}.00 USD
+          </p>
         </span>
       </div>
     </div>

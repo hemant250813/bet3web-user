@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { Header, HumburgerHeader, Footer } from "../../../component/layout";
 import GameTitle from "../GameTitle";
 import Slot from "../NumberSlots/Slot";
-import validateAmount from "../../../validation/user/amount";
+import validateNumberSlot from "../../../validation/game/numberSlot";
 import HeaderBackground from "../../../assets/images/headerBackground.jpg";
 import { getLocalStorageItem } from "../../../utils/helper";
+import { bet, userDetail, getSetting } from "../../../redux/action";
+import { GAME, RESULT } from "../../../utils/constants";
+import { Win, Lose } from "../../../container/Modal/index";
 
-const PlayNumberSlots = ({navbar}) => {
+const PlayNumberSlots = ({ navbar }) => {
   const [form, setForm] = useState({
     amount: "",
   });
@@ -28,6 +32,7 @@ const PlayNumberSlots = ({navbar}) => {
     { route: `paper`, isActive: false },
     { route: `scissor`, isActive: false },
   ]);
+  const [threeDigitNumber, setThreeDigitNumber] = useState("");
   const [widthSlot, setWidthSlot] = useState("");
   const [heightSlot, setHeightSlot] = useState("");
   const [paddingSlot, setPaddingSlot] = useState("");
@@ -35,10 +40,30 @@ const PlayNumberSlots = ({navbar}) => {
   const [fontSizeTitle, setFontSizeTitle] = useState("");
   const [letterSpacingTitle, setLetterSpacingTitle] = useState("");
   const [marginTitle, setMarginTitle] = useState("");
+  const [isSubmit, setIsSubmit] = useState(false);
+  const [winOpenModal, setWinOpenModal] = useState(false);
+  const [loseOpenModal, setLoseOpenModal] = useState(false);
 
   const isAuth = getLocalStorageItem("token");
   const userData = JSON.parse(getLocalStorageItem("user"));
+
+  const user_detail = useSelector((state) => state?.UserDetail?.userDetails);
+  const setting = useSelector((state) => state?.GetSetting?.setting);
+
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getSetting({ game: "number_slot" }));
+    dispatch(userDetail());
+  }, []);
+
+  useEffect(() => {
+    setForm((prevState) => ({
+      ...prevState,
+      ["balance"]: user_detail?.data?.balance,
+    }));
+  }, [user_detail]);
 
   useEffect(() => {
     if (windowWidth <= 768) {
@@ -46,7 +71,7 @@ const PlayNumberSlots = ({navbar}) => {
     } else {
       setHideHeader(false);
     }
-    
+
     if (isAuth && userData) {
       navigate("/number_slot");
     } else {
@@ -70,7 +95,7 @@ const PlayNumberSlots = ({navbar}) => {
       setFontSizeTitle("3rem");
       setLetterSpacingTitle("1px");
       setMarginTitle("10px");
-    }else if (windowWidth === 425) {
+    } else if (windowWidth === 425) {
       setWidthSlot("50px");
       setHeightSlot("100px");
       setPaddingSlot("10px 30px 15px");
@@ -78,7 +103,7 @@ const PlayNumberSlots = ({navbar}) => {
       setFontSizeTitle("3rem");
       setLetterSpacingTitle("1px");
       setMarginTitle("10px");
-    }else if (windowWidth === 320) {
+    } else if (windowWidth === 320) {
       setWidthSlot("50px");
       setHeightSlot("100px");
       setPaddingSlot("10px 30px 15px");
@@ -86,7 +111,7 @@ const PlayNumberSlots = ({navbar}) => {
       setFontSizeTitle("2rem");
       setLetterSpacingTitle("0px");
       setMarginTitle("15px");
-    }else if (windowWidth === 1440) {
+    } else if (windowWidth === 1440) {
       setWidthSlot("110px");
       setHeightSlot("180px");
       setPaddingSlot("20px 60px 25px");
@@ -149,7 +174,11 @@ const PlayNumberSlots = ({navbar}) => {
   // asdas
 
   const handleClick = () => {
-    const { errors, isValid } = validateAmount(form);
+    const { errors, isValid } = validateNumberSlot(
+      form,
+      threeDigitNumber,
+      setting
+    );
     if (isValid) {
       setIsPaused(true);
       const thisAmount = Math.floor(Math.random() * 36) + 20;
@@ -157,6 +186,94 @@ const PlayNumberSlots = ({navbar}) => {
     } else {
       setError(errors);
     }
+  };
+
+  const handleInputChange = (e) => {
+    const { name } = e.target;
+    setError((prevState) => ({
+      ...prevState,
+      [name]: "",
+    }));
+    // Allow only digits and certain control keys (backspace, delete, arrow keys)
+    if (
+      !(
+        (e.key >= "0" && e.key <= "9") ||
+        e.key === "Backspace" ||
+        e.key === "Delete" ||
+        e.key === "ArrowLeft" ||
+        e.key === "ArrowRight"
+      )
+    ) {
+      e.preventDefault();
+    }
+
+    // Limit the input length to 3 digits
+    if (
+      e.target.value.length >= 3 &&
+      e.key !== "Backspace" &&
+      e.key !== "Delete"
+    ) {
+      e.preventDefault();
+    }
+
+    // Update state only when input is a valid three-digit number
+    if (/^\d{0,3}$/.test(e.target.value)) {
+      setThreeDigitNumber(e.target.value);
+    }
+  };
+
+  const callbackCardShuffledPicked = (result, jackpot, percentage) => {
+    console.log({ result: result, jackpot: jackpot, percentage: percentage });
+    if (result === "win") {
+      if (jackpot) {
+        let pl = parseInt(form.amount) * percentage;
+        onSubmit("win", pl);
+      } else {
+        let pl = (parseInt(form.amount) * percentage) / 100;
+        onSubmit("win", pl);
+      }
+      setWinOpenModal(true);
+    } else {
+      let pl = -parseInt(form.amount);
+      onSubmit("lose", pl);
+      setLoseOpenModal(true);
+    }
+
+    setForm((prevState) => ({
+      ...prevState,
+      ["amount"]: "",
+    }));
+  };
+
+  const onSubmit = (slot, pl) => {
+    let payload = {
+      game: GAME?.NUMBER_SLOT,
+    };
+    if (slot === "win") {
+      payload = {
+        ...payload,
+        amount: parseInt(pl),
+        result: RESULT?.WIN,
+        invest: parseInt(form.amount),
+      };
+    } else {
+      payload = {
+        ...payload,
+        amount: pl,
+        result: RESULT?.LOSE,
+        invest: parseInt(form.amount),
+      };
+    }
+    dispatch(
+      bet({
+        payload,
+        callback: async (data) => {
+          if (data) {
+            dispatch(userDetail());
+          }
+        },
+      })
+    );
   };
 
   return (
@@ -175,7 +292,15 @@ const PlayNumberSlots = ({navbar}) => {
         }}
       >
         {/* Mobile Header with Hamburger Icon */}
-        {hideHeader ? <HumburgerHeader setLoading={setLoading}/> : <Header isVerifyMail={false} setLoading={setLoading} navbar={navbar}/>}
+        {hideHeader ? (
+          <HumburgerHeader setLoading={setLoading} />
+        ) : (
+          <Header
+            isVerifyMail={false}
+            setLoading={setLoading}
+            navbar={navbar}
+          />
+        )}
         <GameTitle title="Play Number Slot" route="number_slot" />
       </section>
 
@@ -249,6 +374,8 @@ const PlayNumberSlots = ({navbar}) => {
               fontSizeTitle={fontSizeTitle}
               letterSpacingTitle={letterSpacingTitle}
               marginTitle={marginTitle}
+              callbackCardShuffledPicked={callbackCardShuffledPicked}
+              threeDigitNumber={threeDigitNumber}
             />
           </div>
 
@@ -295,7 +422,7 @@ const PlayNumberSlots = ({navbar}) => {
                       ? "text-5xl"
                       : windowWidth === 1440
                       ? "text-3xl"
-                      : "text-5xl"
+                      : "text-4xl"
                   }  text-white`}
                 >
                   Current Balance :
@@ -314,11 +441,11 @@ const PlayNumberSlots = ({navbar}) => {
                       ? "text-5xl"
                       : windowWidth === 1440
                       ? "text-3xl"
-                      : "text-5xl"
+                      : "text-4xl"
                   }  text-[#E3BC3F]`}
                 >
                   {" "}
-                  10.50 USD
+                  {form?.balance?.toFixed(2)} USD
                 </p>
               </span>
               <div className="flex flex-col items-center w-11/12 mt-3">
@@ -329,7 +456,26 @@ const PlayNumberSlots = ({navbar}) => {
                     name="amount"
                     value={form?.amount}
                     onChange={(e) => {
-                      changeHandler(e);
+                      const value = e.target.value;
+                      const { name } = e.target;
+                      let finalAmount = user_detail?.data?.balance - value;
+                      if (value <= user_detail?.data?.balance) {
+                        setForm((prevState) => ({
+                          ...prevState,
+                          [name]: value,
+                        }));
+
+                        setForm((prevState) => ({
+                          ...prevState,
+                          ["balance"]: finalAmount,
+                        }));
+                      }
+
+                      setIsSubmit(false);
+                      setError((prevState) => ({
+                        ...prevState,
+                        [name]: "",
+                      }));
                     }}
                     className="border p-2 focus:outline-none focus:border-blue-500 bg-[#020C25] text-white w-full"
                     style={{ height: "2rem" }}
@@ -346,21 +492,30 @@ const PlayNumberSlots = ({navbar}) => {
                 </div>
               </div>
               <span className="text-[#adb5bd] mt-3">
-                Minimum : 1.00 USD | Maximum : 100.00 USD | Win Amount 150.00 %
+                Minimum : 1.00 USD | Maximum : 100.00 USD | Win Amount 150.00 (3
+                digit match) % | Win Amount 100.00 (1 digit match) % | Win
+                Amount 25.00 (2 digit match) % | Win Amount x 2 (jackpot -777)
               </span>
             </div>
             <div></div>
             <div className="flex items-center justify-center relative p-20">
               <input
                 type="text"
-                placeholder="Number"
+                name="number"
+                onKeyDown={handleInputChange}
+                onChange={handleInputChange}
+                placeholder="Enter 3 digit number"
                 className="border p-2 focus:outline-none focus:border-blue-500 h-full bg-[#020C25] text-white w-9/12"
               />
             </div>
+            <div className="text-rose-600 font-serif mt-1">{error?.number}</div>
             <div className="flex flex-col items-center justify-center w-11/12 p-2">
               <button
                 onClick={() => handleClick()}
-                className="bg-[#E3BC3F] p-4 w-9/12"
+                disabled={isSubmit}
+                className={`${
+                  isSubmit ? "bg-[#716e60]" : "bg-[#3F93F9]"
+                }  p-4 w-9/12 text-[#fff]`}
               >
                 Play Now
               </button>
@@ -370,6 +525,16 @@ const PlayNumberSlots = ({navbar}) => {
         </div>
       </section>
       <Footer />
+      {winOpenModal && (
+        <Win winOpenModal={winOpenModal} setWinOpenModal={setWinOpenModal}  keno={false}/>
+      )}
+      {loseOpenModal && (
+        <Lose
+          loseOpenModal={loseOpenModal}
+          setLoseOpenModal={setLoseOpenModal}
+          keno={false}
+        />
+      )}
     </>
   );
 };

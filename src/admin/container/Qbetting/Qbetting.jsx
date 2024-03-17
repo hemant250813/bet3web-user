@@ -9,7 +9,7 @@ import {
   BottomNavbar,
   Footer,
 } from "../../component/layout/index";
-import { getLocalStorageItem, notifyWarning } from "../../utils/helper";
+import { getLocalStorageItem, notifyWarning, notifySuccess } from "../../utils/helper";
 import { GAME } from "../../utils/constants";
 import { question, authDetail } from "../../../redux/action";
 import { Loader, LoaderMain } from "../../../component/commonComponent";
@@ -18,20 +18,35 @@ const Qbetting = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [loading, setLoading] = useState(false);
+  const [loadingQuestion, setLoadingQuestion] = useState(false);
   const [innerLoading, setInnerLoading] = useState(false);
+  const [questionTimeOut, setQuestionTimeOut] = useState(0);
   const [groups, setGroups] = useState([
     {
       id: 1,
-      inputValues: ["", "", "", "", ""],
+      inputValues: ["", "", "", "", "", "", ""],
       placeholders: [
         "enter the question",
         "option 1",
         "option 2",
         "option 3",
-        "odds",
+        "odds1",
+        "odds2",
+        "odds3",
       ],
-      name: ["question", "option1", "option2", "option3", "odd"],
-      types: ["text", "text", "text", "text", "number"],
+      name: [
+        "question",
+        "option1",
+        "option2",
+        "option3",
+        "odds1",
+        "odds2",
+        "odds3",
+      ],
+      types: ["text", "text", "text", "text", "number", "number", "number"],
+      image1: null,
+      image2: null,
+      image3: null, // Initialize image property for each group
     },
   ]);
 
@@ -41,18 +56,16 @@ const Qbetting = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // Function to update the window dimensions
     const updateWindowDimensions = () => {
       setWindowWidth(window.innerWidth);
       setWindowHeight(window.innerHeight);
     };
 
-    // Add an event listener to update dimensions when the window is resized
     window.addEventListener("resize", updateWindowDimensions);
 
-    // Clean up the event listener when the component unmounts
     return () => {
       window.removeEventListener("resize", updateWindowDimensions);
+      clearTimeout(questionTimeOut);
     };
   }, [windowWidth, windowHeight]);
 
@@ -68,16 +81,29 @@ const Qbetting = () => {
   const handleAddGroup = () => {
     const newGroup = {
       id: groups.length + 1,
-      inputValues: ["", "", "", "", ""],
+      inputValues: ["", "", "", "", "", "", ""],
       placeholders: [
         "enter the question",
         "option 1",
         "option 2",
         "option 3",
-        "odds",
+        "odds1",
+        "odds2",
+        "odds3",
       ],
-      name: ["question", "option1", "option2", "option3", "odd"],
-      types: ["text", "text", "text", "text", "number"],
+      name: [
+        "question",
+        "option1",
+        "option2",
+        "option3",
+        "odds1",
+        "odds2",
+        "odds3",
+      ],
+      types: ["text", "text", "text", "text", "number", "number", "number"],
+      image1: null,
+      image2: null,
+      image3: null,
     };
     setGroups([...groups, newGroup]);
   };
@@ -90,6 +116,22 @@ const Qbetting = () => {
     const updatedGroups = groups.map((group) => {
       if (group.id === groupId) {
         group.inputValues[fieldIndex] = value;
+      }
+      return group;
+    });
+    setGroups(updatedGroups);
+  };
+
+  const handleImageChange = (groupId, imageIndex, image) => {
+    const updatedGroups = groups.map((group) => {
+      if (group.id === groupId) {
+        if (imageIndex === 1) {
+          group.image1 = image;
+        } else if (imageIndex === 2) {
+          group.image2 = image;
+        } else if (imageIndex === 3) {
+          group.image3 = image;
+        }
       }
       return group;
     });
@@ -109,56 +151,118 @@ const Qbetting = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Gather data
-    const formData = groups.flatMap((group) => {
+    setLoadingQuestion(true);
+    // Construct data array
+    const requestData = groups.map((group) => {
       const groupData = {};
-      if (Array.isArray(group.name)) {
-        group.name.forEach((name, index) => {
-          if (name === "question" && group.inputValues[index] !== "") {
-            groupData[name] = group.inputValues[index];
-            groupData["questionSlug"] = group.inputValues[index]
-              ?.split(" ")
-              ?.join("");
-          } else if (name === "odd" && group.inputValues[index] !== "") {
-            groupData[name] = parseInt(group.inputValues[index]);
-          } else {
-            groupData[name] = group.inputValues[index];
-          }
-        });
-        groupData["isDeclared"] = false;
+
+      group.name.forEach((name, index) => {
+        if (name === "question" && group.inputValues[index] !== "") {
+          groupData[name] = group.inputValues[index];
+          groupData["questionSlug"] = group.inputValues[index]
+            ?.split(" ")
+            ?.join("");
+        } else if (name.startsWith("odds") && group.inputValues[index] !== "") {
+          groupData[name] = parseInt(group.inputValues[index]);
+        } else {
+          groupData[name] = group.inputValues[index];
+        }
+      });
+
+      groupData["isDeclared"] = false;
+
+      // Add image data if available
+      if (group.image1 && group.image2 && group.image3) {
+        const reader1 = new FileReader();
+        const reader2 = new FileReader();
+        const reader3 = new FileReader();
+
+        reader1.readAsDataURL(group.image1);
+        reader2.readAsDataURL(group.image2);
+        reader3.readAsDataURL(group.image3);
+
+        reader1.onloadend = () => {
+          reader2.onloadend = () => {
+            reader3.onloadend = () => {
+              groupData["image1"] = reader1.result;
+              groupData["image2"] = reader2.result;
+              groupData["image3"] = reader3.result;
+              dispatch(
+                question({
+                  groupData,
+                  callback: (data) => {
+                    if (data) {
+                      if(data?.meta?.code === 200){
+                        notifySuccess(data.meta.message);
+                      }
+                      console.log("question response",data);
+                      setGroups([
+                        {
+                          id: 1,
+                          inputValues: ["", "", "", "", "", "", ""],
+                          placeholders: [
+                            "enter the question",
+                            "option 1",
+                            "option 2",
+                            "option 3",
+                            "odds1",
+                            "odds2",
+                            "odds3",
+                          ],
+                          name: [
+                            "question",
+                            "option1",
+                            "option2",
+                            "option3",
+                            "odds1",
+                            "odds2",
+                            "odds3",
+                          ],
+                          types: [
+                            "text",
+                            "text",
+                            "text",
+                            "text",
+                            "number",
+                            "number",
+                            "number",
+                          ],
+                          image1: null,
+                          image2: null,
+                          image3: null,
+                        },
+                      ]);
+                    }
+                  },
+                })
+              );
+            };
+          };
+        };
       }
+
       return groupData;
     });
 
-    let validate = questionValidation(formData);
+    let validate = questionValidation(requestData);
 
     if (validate) {
       dispatch(
         question({
-          formData,
+          requestData,
           callback: (data) => {
             if (data) {
-              setGroups([
-                {
-                  id: 1,
-                  inputValues: ["", "", "", "", ""],
-                  placeholders: [
-                    "enter the question",
-                    "option 1",
-                    "option 2",
-                    "option 3",
-                    "odds",
-                  ],
-                  name: ["question", "option1", "option2", "option3", "odds"],
-                  types: ["text", "text", "text", "text", "number"],
-                },
-              ]);
+              // Handle success
+              let timeout = setTimeout(() => {
+                setLoadingQuestion(false);
+              }, 3000);
+              setQuestionTimeOut(timeout);
             }
           },
         })
       );
     } else {
-      notifyWarning("All field are required.", {
+      notifyWarning("All fields are required.", {
         position: toast.POSITION.BOTTOM_CENTER,
       });
     }
@@ -166,7 +270,6 @@ const Qbetting = () => {
 
   return (
     <>
-      {" "}
       {loading ? (
         <LoaderMain />
       ) : (
@@ -201,9 +304,33 @@ const Qbetting = () => {
                             e.target.value
                           )
                         }
-                        className="ml-2 border-4 border-[#4fd1c5]"
+                        className="ml-2 border-4 border-[#4fd1c5] mb-4"
                       />
                     ))}
+                    <input
+                      className="ml-4"
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) =>
+                        handleImageChange(group.id, 1, e.target.files[0])
+                      }
+                    />
+                    <input
+                      className="ml-4"
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) =>
+                        handleImageChange(group.id, 2, e.target.files[0])
+                      }
+                    />
+                    <input
+                      className="ml-4"
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) =>
+                        handleImageChange(group.id, 3, e.target.files[0])
+                      }
+                    />
                     <button
                       className=" p-2 mt-4 ml-2 rounded-md font-bold"
                       type="button"
@@ -226,12 +353,17 @@ const Qbetting = () => {
                     className="bg-gray-900 hover:bg-[#4fd1c5] hover:text-black py-2  rounded-md h-16 text-[#E3BC3F] text-3xl font-bold border-4 border-[#4fd1c5] mt-3"
                     type="submit"
                   >
-                    Submit
+                    {loadingQuestion ? (
+                      <div className="flex justify-center items-center">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-[#3F93F9]"></div>
+                      </div>
+                    ) : (
+                      "Submit"
+                    )}
                   </button>
                 </div>
               </form>
             )}
-            {/* Bottom navbar */}
             {windowWidth <= 768 ? <BottomNavbar /> : <Footer />}
           </div>
         </div>

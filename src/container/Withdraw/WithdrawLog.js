@@ -1,30 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import moment from "moment";
+import { useDispatch, useSelector } from "react-redux";
 import { Header, HumburgerHeader } from "../../component/layout";
 import GameTitle from "../Games/GameTitle";
-import { resetPassword } from "../../redux/action";
+import { getWithdrawal } from "../../redux/action";
 import HeaderBackground from "../../assets/images/headerBackground.jpg";
-import validateResetPassword from "../../validation/user/resetPassword";
 import { Loader } from "../../component/commonComponent";
-import { notifyWarning } from "../../utils/helper";
 
 const WithdrawLog = ({ navbar }) => {
-  const [form, setForm] = useState({
-    password: "",
-    confirm_password: "",
-  });
-  const [error, setError] = useState({});
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [hideHeader, setHideHeader] = useState(false);
-  const [isSubmit, setIsSubmit] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [loginTimeOut, setLoginTimeOut] = useState(0);
 
-  const navigate = useNavigate();
+  const withdrawal = useSelector((state) => state?.GetWithdrawal?.withdrawal);
+  const loading = useSelector((state) => state?.GetWithdrawal?.loading);
+
   const dispatch = useDispatch();
-  const location = useLocation();
 
   useEffect(() => {
     // Function to update the window dimensions
@@ -42,64 +33,9 @@ const WithdrawLog = ({ navbar }) => {
     };
   }, [windowWidth, windowHeight]);
 
-  const changeHandler = (e) => {
-    if (e.target) {
-      const value = e.target.value;
-      const { name } = e.target;
-      setError((prevState) => ({
-        ...prevState,
-        [name]: "",
-      }));
-      setForm((prevState) => ({
-        ...prevState,
-        [name]: value,
-      }));
-    }
-  };
-
-  const afterLoadingDispatch = () => {
-    if (form.password === form.confirm_password) {
-      let payload = {
-        email: location.state?.email,
-        password: form.password,
-        otp: location.state?.otp,
-      };
-
-      dispatch(
-        resetPassword({
-          payload,
-          callback: async (data) => {
-            if (data) {
-              if (data?.meta?.code !== 400) {
-                navigate("/login");
-              }
-
-              setIsSubmit(false);
-              setLoading(false);
-            }
-          },
-        })
-      );
-    } else {
-      setIsSubmit(false);
-      setLoading(false);
-      notifyWarning("Password and confirm password do not match.");
-    }
-  };
-
-  const handleClick = () => {
-    const { errors, isValid } = validateResetPassword(form);
-    if (isValid) {
-      setIsSubmit(true);
-      setLoading(true);
-      let timeout = setTimeout(() => {
-        afterLoadingDispatch();
-      }, 2000);
-      setLoginTimeOut(timeout);
-    } else {
-      setError(errors);
-    }
-  };
+  useEffect(() => {
+    dispatch(getWithdrawal());
+  }, []);
 
   return (
     <>
@@ -142,26 +78,70 @@ const WithdrawLog = ({ navbar }) => {
                     {/* <!-- Your table content here --> */}
                     <thead className={`bg-[#E3BC3F] text-black`}>
                       <tr>
+                        <th className={`py-4 lg:px-16 sm:px-4`}>SL</th>
                         <th className={`py-4 lg:px-16 sm:px-4`}>
-                          Gateway <p>|</p>Transaction
+                          Account Number
                         </th>
-                        <th className={`py-4 lg:px-16 sm:px-4`}>Initiated</th>
+                        <th className={`py-4 lg:px-16 sm:px-4`}>
+                          Account Name
+                        </th>
                         <th className={`py-4 lg:px-16 sm:px-4`}>Amount</th>
-                        <th className={`py-4 lg:px-16 sm:px-4`}>Conversion</th>
+                        <th className={`py-4 lg:px-16 sm:px-4`}>Bank Name</th>
+                        <th className={`py-4 lg:px-16 sm:px-4`}>IFSC Code</th>
+                        <th className={`py-4 lg:px-16 sm:px-4`}>
+                          Account Type
+                        </th>
+                        <th className={`py-4 lg:px-16 sm:px-4`}>Date</th>
                         <th className={`py-4 lg:px-16 sm:px-4`}>Status</th>
-                        <th className={`py-4 lg:px-16 sm:px-4`}>Details</th>
                       </tr>
                     </thead>
                     <tbody className="bg-cyan-950 text-[#BFC9CA]">
-                      <tr>
-                        <td className={`py-4 lg:px-16 sm:px-4`}>Data 1</td>
-                        <td className={`py-4 lg:px-16 sm:px-4`}>Data 2</td>
-                        <td className={`py-4 lg:px-16 sm:px-4`}>Data 3</td>
-                        <td className={`py-4 lg:px-16 sm:px-4`}>Data 1</td>
-                        <td className={`py-4 lg:px-16 sm:px-4`}>Data 2</td>
-                        <td className={`py-4 lg:px-16 sm:px-4`}>Data 3</td>
-                      </tr>
-                      {/* <!-- More rows --> */}
+                      {}
+
+                      {withdrawal && withdrawal?.length > 0 ? (
+                        withdrawal?.map((withdral, index) => {
+                          return (
+                            <tr key={index}>
+                              <td className={`py-4 lg:px-16 sm:px-4`}>
+                                {index + 1}
+                              </td>
+                              <td className={`py-4 lg:px-16 sm:px-4`}>
+                                {withdral?.bankId?.accountNumber}
+                              </td>
+                              <td className={`py-4 lg:px-16 sm:px-4`}>
+                                {withdral?.bankId?.accountName}
+                              </td>
+
+                              <td className={`py-4 lg:px-16 sm:px-4`}>
+                                {withdral?.amount}
+                              </td>
+                              <td className={`py-4 lg:px-16 sm:px-4`}>
+                                {withdral?.bankId?.bankName}
+                              </td>
+                              <td className={`py-4 lg:px-16 sm:px-4`}>
+                                {withdral?.bankId?.ifscCode}
+                              </td>
+                              <td className={`py-4 lg:px-16 sm:px-4`}>
+                                {withdral?.bankId?.accountType}
+                              </td>
+                              <td className={`py-4 lg:px-16 sm:px-4`}>
+                                {moment(withdral?.createdAt).format(
+                                  "YYYY-MM-DD HH:mm:ss"
+                                )}
+                              </td>
+                              <td className={`py-4 lg:px-16 sm:px-4`}>
+                                {withdral?.status}
+                              </td>
+                            </tr>
+                          );
+                        })
+                      ) : (
+                        <tr>
+                          <td colSpan="9" className="text-center py-4">
+                            No data available
+                          </td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>

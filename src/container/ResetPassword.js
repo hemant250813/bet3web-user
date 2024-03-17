@@ -127,13 +127,13 @@ const ResetPassword = () => {
 
           <section className="justify-center items-center h-screen bg-black relative flex-grow p-6 md:p-8 lg:p-12 overflow-hidden">
             <form className="bg-[#01162f] p-6 rounded shadow-md text-center max-w-md mx-auto border border-gray-400">
-              <h2 className="mb-4 text-[#F2F3F4]">Reset Password</h2>
+              <h2 className="mb-4 text-white">Reset Password</h2>
 
               <div className="mb-4 text-left">
                 <div className="mt-4 flex relative items-center gap-1">
                   <label
                     htmlFor="password"
-                    className="block text-[#BFC9CA] mb-2"
+                    className="block text-white mb-2"
                   >
                     New Password
                   </label>
@@ -161,7 +161,7 @@ const ResetPassword = () => {
                 <div className="mt-4 flex relative items-center gap-1">
                   <label
                     htmlFor="confirm_password"
-                    className="block text-[#BFC9CA] mb-2"
+                    className="block text-white mb-2"
                   >
                     Confirm Password
                   </label>
@@ -186,7 +186,7 @@ const ResetPassword = () => {
               )}
               <button
                 type="button"
-                className="w-full bg-[#E3BC3F] text-black py-2 px-4 rounded-md"
+                className="w-full bg-[#3F93F9] text-white text-2xl font-bold py-2 px-4 rounded-md"
                 onClick={() => handleClick()}
               >
                 Submit

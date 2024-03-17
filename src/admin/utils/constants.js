@@ -62,4 +62,14 @@ export const NAVBAR = [
     name: "Result",
     route: "/result",
   },
+  {
+    key: 6,
+    name: "Bank",
+    route: "/bank",
+  },
+  {
+    key: 7,
+    name: "Transaction",
+    route: "/bank-transaction",
+  },
 ];

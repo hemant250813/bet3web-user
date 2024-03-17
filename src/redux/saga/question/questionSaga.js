@@ -12,9 +12,10 @@ function* questionRequest(action) {
   try {
     const { data } = yield API.post(
       "admin/question",
-      action?.payload
-    );
+      action?.payload?.groupData
 
+    );
+console.log("questionRequest",data);
     if (data.meta.code === 200) {
       yield put(questionSuccess(data));
       yield call(action.payload.callback, data);

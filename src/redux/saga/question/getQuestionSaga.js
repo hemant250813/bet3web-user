@@ -6,7 +6,7 @@ import { notifyWarning } from "../../../utils/helper";
 
 function* getQuestionRequest() {
   try {
-    const { data } = yield API.get(`/api/v1/question`);
+    const { data } = yield API.get(`/api/v1/questions`);
     if (data.meta.code === 200) {
       yield put(getQuestionSuccess(data?.data));
     } else if (data.meta.code !== 200) {

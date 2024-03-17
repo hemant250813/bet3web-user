@@ -11,6 +11,9 @@ import CardFinding from "../container/Games/cards/CardFinding";
 import NumberSlot from "../container/Games/NumberSlots/PlayNumberSlots";
 import NumberPool from "../container/Games/NumberPool/PoolNumber";
 import Question from "../container/Games/Question.js";
+import Blackjack from "../container/Games/blackAndJack/Blackjack.js";
+import Keno from "../container/Games/keno/Keno.js";
+import Ludo from "../container/Games/ludo/Ludo.js";
 import Login from "../container/Login";
 import Register from "../container/Register";
 import ForgotPassword from "../container/ForgotPassword";
@@ -19,8 +22,8 @@ import ResetPassword from "../container/ResetPassword";
 import Dashboard from "../container/Dashboard";
 import Deposit from "../container/Deposit/Deposit";
 import DepositLog from "../container/Deposit/DepositLog";
-import Withdraw from "../container/Withdraw/Withdraw";
-import WithdrawLog from "../container/Withdraw/WithdrawLog";
+import Withdraw from "../container/Withdraw/Withdraw.jsx";
+import WithdrawLog from "../container/Withdraw/WithdrawLog.js";
 import GameLog from "../container/Reports/GameLog";
 import CommissionLog from "../container/Reports/CommissionLog";
 import Transactions from "../container/Reports/Transactions";
@@ -36,6 +39,8 @@ import Report from "../admin/container/Report/Report.jsx";
 import Setting from "../admin/container/Setting/Setting.jsx";
 import Qbetting from "../admin/container/Qbetting/Qbetting.jsx";
 import Result from "../admin/container/Result/Result.jsx";
+import Bank from "../admin/container/Bank/bank.jsx";
+import BankTransaction from "../admin/container/Transaction/Transaction.jsx";
 //admin
 import { HOME_NAVBAR, DASHBOARD_NAVBAR } from "../utils/constants";
 import { NoPageFound } from "../component/layout";
@@ -102,6 +107,13 @@ const RouteFile = () => {
       />
       <Route
         exact
+        path="/black_jack"
+        element={<Blackjack navbar={DASHBOARD_NAVBAR} />}
+      />
+      <Route exact path="/keno" element={<Keno navbar={DASHBOARD_NAVBAR} />} />
+      <Route exact path="/ludo" element={<Ludo navbar={DASHBOARD_NAVBAR} />} />
+      <Route
+        exact
         path="/deposit"
         element={<Deposit navbar={DASHBOARD_NAVBAR} />}
       />
@@ -164,6 +176,8 @@ const RouteFile = () => {
       <Route path={`/setting`} element={<Setting />} />
       <Route path={`/qbetting`} element={<Qbetting />} />
       <Route path={`/result`} element={<Result />} />
+      <Route path={`/bank`} element={<Bank />} />
+      <Route exact path="/bank-transaction" element={<BankTransaction />} />
       <Route path="*" element={<NoPageFound />} />
     </Routes>
   );

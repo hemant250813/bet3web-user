@@ -18,17 +18,26 @@ const Header = ({ isVerifyMail, setLoading, navbar }) => {
   const [loginTimeOut, setLoginTimeOut] = useState(0);
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const [activeTabSubIndex, setActiveTabSubIndex] = useState(0);
-  console.log("navbar", navbar);
+  const [navbarModified, setNavbarModified] = useState(navbar);
+
   const isAuth = getLocalStorageItem("token");
   const userData = JSON.parse(getLocalStorageItem("user"));
   const user_detail = useSelector((state) => state?.UserDetail?.userDetails);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  
   useEffect(() => {
     if (!isAuth && !userData) {
-      navigate("/");
+      let data =navbar?.filter(nav =>{
+        if(nav?.type !== "dashboard"){
+          return({
+            ...nav
+          })
+        }
+      });
+      setNavbarModified(data);
+      // navigate("/");
       clearLocalStorage();
       removeLocalStorageItem("user");
       removeLocalStorageItem("userData");
@@ -94,9 +103,9 @@ const Header = ({ isVerifyMail, setLoading, navbar }) => {
 
   return (
     <Fragment>
-      <header className="md:flex absolute top-0 left-0 right-0 bg-black bg-opacity-80 text-[#e7e7f4] p-4 flex items-center justify-around ">
+      <header className="fixed top-0 left-0 right-0 bg-black bg-opacity-80 text-[#e7e7f4] p-4 flex items-center justify-around z-50 ">
         {/* Left Side: Icon */}
-        <div className="flex items-center relative">
+        <div className="flex items-center">
           <img
             src={Logo}
             alt="site-logo"
@@ -109,7 +118,7 @@ const Header = ({ isVerifyMail, setLoading, navbar }) => {
 
         {/* Middle: Home, Contact, and Game Tabs */}
         <nav className="flex items-center space-x-4 z-50">
-          {navbar?.map((nav, index) => (
+          {navbarModified?.map((nav, index) => (
             <div
               className="relative"
               key={index}

@@ -145,7 +145,7 @@ const Login = () => {
               <span className="text-red-700">*</span>
             </div>
             <div className="flex relative items-center">
-              <div className="bg-[#E3BC3F] rounded-l-sm p-3 h-full flex items-center">
+              <div className="bg-[#3F93F9] rounded-l-sm p-3 h-full flex items-center">
                 <AiOutlineUser
                   className=""
                   style={{ height: "1.6rem", width: "1.5rem" }}
@@ -177,7 +177,7 @@ const Login = () => {
               <span className="text-red-700">*</span>
             </div>
             <div className="flex relative items-center pb-4">
-              <div className="bg-[#E3BC3F] rounded-l-sm p-3 h-full flex items-center">
+              <div className="bg-[#3F93F9] rounded-l-sm p-3 h-full flex items-center">
                 <AiOutlineLock
                   className=""
                   style={{ height: "1.6rem", width: "1.5rem" }}
@@ -204,7 +204,7 @@ const Login = () => {
             <button
               type="submit"
               onClick={() => onSubmit()}
-              className={`mt-4 p-2 bg-[#E3BC3F] text-black rounded-md w-full uppercase ${
+              className={`mt-4 p-2 bg-[#3F93F9] text-white font-bold rounded-md w-full uppercase text-2xl ${
                 isSubmit ? "register-button" : ""
               }`}
               disabled={isSubmit}
@@ -215,8 +215,12 @@ const Login = () => {
               <span className="flex">
                 <p className="text-white">Haven't an account?</p>
                 <p
-                  onClick={() => navigate("/register")}
-                  className="text-[#E3BC3F] cursor-pointer"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    navigate("/register");
+                  }}
+                  className="text-[#3F93F9] cursor-pointer"
                 >
                   {" "}
                   Create an account
@@ -224,8 +228,12 @@ const Login = () => {
               </span>
 
               <p
-                onClick={() => navigate("/forgot_password")}
-                className="text-[#E3BC3F] cursor-pointer"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  navigate("/forgot_password");
+                }}
+                className="text-[#3F93F9] cursor-pointer"
               >
                 Forget password?
               </p>

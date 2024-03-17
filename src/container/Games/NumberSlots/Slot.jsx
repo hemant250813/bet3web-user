@@ -12,13 +12,16 @@ const NumberSlot = ({
   marginSlot,
   fontSizeTitle,
   letterSpacingTitle,
-  marginTitle
+  marginTitle,
+  callbackCardShuffledPicked,
+  threeDigitNumber,
 }) => {
   const [content, setContent] = useState(slotChoices);
   const [pick1, setPick1] = useState("1");
   const [pick2, setPick2] = useState("6");
   const [pick3, setPick3] = useState("5");
   const [jackpot, setJackpot] = useState(false);
+  const [isResult, setIsResult] = useState(false);
   const [bgColor, setBgColor] = useState("rgb(255, 254, 253)");
 
   const reelSpin = useRef(
@@ -31,6 +34,68 @@ const NumberSlot = ({
       "https://raw.githubusercontent.com/SixStringsCoder/slot_machine/master/src/components/App/audio/winner.mp3"
     )
   );
+
+  console.log("isResult", isResult);
+  useEffect(() => {
+    if (isResult) {
+      let hundred = hundredPercentReturn(
+        pick1 + pick2 + pick3,
+        threeDigitNumber
+      );
+      if (hundred) {
+        callbackCardShuffledPicked("win", jackpot, 100);
+      } else {
+        let twentyFive = twentyFivePercentReturn(
+          pick1 + pick2 + pick3,
+          threeDigitNumber
+        );
+        if (twentyFive) {
+          callbackCardShuffledPicked("win", jackpot, 25);
+        } else {
+          if ("777" === pick1 + pick2 + pick3) {
+            callbackCardShuffledPicked("win", jackpot, 2);
+          } else if (threeDigitNumber === pick1 + pick2 + pick3) {
+            callbackCardShuffledPicked("win", jackpot, 150);
+          } else {
+            callbackCardShuffledPicked("lose", jackpot, 0);
+          }
+        }
+      }
+      // console.log("result", pick1 + pick2 + pick3);
+      // console.log("threeDigitNumber", threeDigitNumber);
+
+      setIsResult(false);
+      console.log({ pick1: pick1, pick2: pick2, pick3: pick3 });
+    }
+  }, [isResult]);
+
+  const hundredPercentReturn = (randomNumber, pickedNumber) => {
+    let splitNumber = pickedNumber?.split("");
+    if (randomNumber.indexOf(splitNumber[0]) !== -1) {
+      return true;
+    } else if (randomNumber.indexOf(splitNumber[1]) !== -1) {
+      return true;
+    } else if (randomNumber.indexOf(splitNumber[2]) !== -1) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const twentyFivePercentReturn = (randomNumber, pickedNumber) => {
+    let splitNumber = pickedNumber?.split("");
+
+    let twoDigit1 = splitNumber[0] + splitNumber[1];
+    let twoDigit2 = splitNumber[1] + splitNumber[2];
+
+    if (randomNumber.indexOf(twoDigit1) !== -1) {
+      return true;
+    } else if (randomNumber.indexOf(twoDigit2) !== -1) {
+      return true;
+    } else {
+      return false;
+    }
+  };
 
   useEffect(() => {
     reelSpin.current.volume = 0.15;
@@ -124,7 +189,7 @@ const NumberSlot = ({
         clearInterval(reelspin);
         stopSFX();
         reelSpin.current.pause();
-
+        setIsResult(true);
         // if (pick1 === pick2 && pick2 === pick3) {
         //   setJackpot(true);
         //   winSFX();

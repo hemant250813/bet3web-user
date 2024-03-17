@@ -20,6 +20,7 @@ const RockPaperScissors = ({ navbar }) => {
   const [error, setError] = useState({});
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [clearIntervalImage, setClearIntervalImage] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
@@ -28,6 +29,7 @@ const RockPaperScissors = ({ navbar }) => {
   const [hideHeader, setHideHeader] = useState(false);
   const [winOpenModal, setWinOpenModal] = useState(false);
   const [loseOpenModal, setLoseOpenModal] = useState(false);
+  const [isStop, setIsStop] = useState(false);
 
   const [tabViews, setTabViews] = useState([
     { route: "rock", isActive: false },
@@ -90,6 +92,8 @@ const RockPaperScissors = ({ navbar }) => {
 
   const tabSwitch = (e, tab) => {
     e.preventDefault();
+    setIsStop(false);
+
     const filterTabList = tabViews.map((el) =>
       el.route === tab ? { ...el, isActive: true } : { ...el, isActive: false }
     );
@@ -143,23 +147,38 @@ const RockPaperScissors = ({ navbar }) => {
         setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
       }
     };
-
     intervalId = setInterval(handleAnimation, 500); // Change the duration as needed (2000ms = 2 seconds)
-
+    setClearIntervalImage(intervalId);
     return () => clearInterval(intervalId);
   }, [isPaused, images.length]);
 
-  const generateRandomBoolean = () => {
-    setIsPaused(true);
-    if (selectedImageIndex === currentImageIndex) {
-      onSubmit("win");
-      setWinOpenModal(true);
-      resetHandler();
-    } else {
-      onSubmit("lose");
-      setLoseOpenModal(true);
-      resetHandler();
+  useEffect(() => {
+    if (isStop) {
+      if (selectedImageIndex === currentImageIndex) {
+        onSubmit("win");
+        setWinOpenModal(true);
+        resetHandler();
+      } else {
+        onSubmit("lose");
+        setLoseOpenModal(true);
+        resetHandler();
+      }
     }
+  }, [isStop]);
+
+  const generateRandomBoolean = () => {
+    clearInterval(clearIntervalImage);
+    setIsPaused(true);
+    setIsStop(true);
+    // if (selectedImageIndex === currentImageIndex) {
+    //   // onSubmit("win");
+    //   setWinOpenModal(true);
+    //   resetHandler();
+    // } else {
+    //   // onSubmit("lose");
+    //   setLoseOpenModal(true);
+    //   resetHandler();
+    // }
   };
 
   const onSubmit = (hand) => {
@@ -168,7 +187,7 @@ const RockPaperScissors = ({ navbar }) => {
     };
 
     if (hand === "win") {
-      let pl = (parseInt(form.amount) * setting?.odd) / 100;
+      let pl = (parseInt(form.amount) * setting?.odd[0]) / 100;
       payload = {
         ...payload,
         amount: parseInt(pl),
@@ -189,6 +208,7 @@ const RockPaperScissors = ({ navbar }) => {
         callback: async (data) => {
           if (data) {
             setIsSubmit(false);
+            dispatch(userDetail());
           }
         },
       })
@@ -198,6 +218,7 @@ const RockPaperScissors = ({ navbar }) => {
   const handleClick = () => {
     setWinOpenModal(false);
     setLoseOpenModal(false);
+    setIsStop(false);
     const { errors, isValid } = validateRockPaperScissors(
       form,
       tabViews,
@@ -428,7 +449,7 @@ const RockPaperScissors = ({ navbar }) => {
                   <span className="text-[#adb5bd] mt-3">
                     Minimum : {setting?.min?.toFixed(2)} USD | Maximum :{" "}
                     {setting?.max?.toFixed(2)} USD | Win Amount{" "}
-                    {setting?.odd?.toFixed(2)} %
+                    {setting?.odd[0]?.toFixed(2)} %
                   </span>
                 </div>
                 <div></div>
@@ -510,12 +531,14 @@ const RockPaperScissors = ({ navbar }) => {
             <Win
               winOpenModal={winOpenModal}
               setWinOpenModal={setWinOpenModal}
+              keno={false}
             />
           )}
           {loseOpenModal && (
             <Lose
               loseOpenModal={loseOpenModal}
               setLoseOpenModal={setLoseOpenModal}
+              keno={false}
             />
           )}
         </>

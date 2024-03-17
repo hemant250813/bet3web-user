@@ -81,7 +81,7 @@ const SpinWheel = ({ navbar }) => {
   let isOnlyOnce = false;
   let size = 190;
   let upDuration = 10;
-  let downDuration = 500;
+  let downDuration = 800;
   let fontFamily = "proxima-nova";
   let width = 100;
   let height = 100;
@@ -395,7 +395,7 @@ const SpinWheel = ({ navbar }) => {
     };
 
     if (color === "win") {
-      let pl = (parseInt(form.amount) * setting?.odd) / 100;
+      let pl = (parseInt(form.amount) * setting?.odd[0]) / 100;
       payload = {
         ...payload,
         amount: parseInt(pl),
@@ -416,6 +416,7 @@ const SpinWheel = ({ navbar }) => {
         callback: async (data) => {
           if (data) {
             setIsSubmit(false);
+            dispatch(userDetail());
           }
         },
       })
@@ -683,7 +684,7 @@ const SpinWheel = ({ navbar }) => {
                   <span className="text-[#adb5bd] mt-3">
                     Minimum : {setting?.min?.toFixed(2)} USD | Maximum :{" "}
                     {setting?.max?.toFixed(2)} USD | Win Amount{" "}
-                    {setting?.odd?.toFixed(2)} %
+                    {setting?.odd[0]?.toFixed(2)} %
                   </span>
                 </div>
                 <div></div>
@@ -754,12 +755,14 @@ const SpinWheel = ({ navbar }) => {
             <Win
               winOpenModal={winOpenModal}
               setWinOpenModal={setWinOpenModal}
+              keno={false}
             />
           )}
           {loseOpenModal && (
             <Lose
               loseOpenModal={loseOpenModal}
               setLoseOpenModal={setLoseOpenModal}
+              keno={false}
             />
           )}
         </>

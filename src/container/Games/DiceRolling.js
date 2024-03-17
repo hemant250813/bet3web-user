@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { Header, HumburgerHeader, Footer } from "../../component/layout";
 import GameTitle from "./GameTitle";
 import Dice1 from "../../assets/images/games/dice/dice1.png";
@@ -8,11 +9,14 @@ import Dice3 from "../../assets/images/games/dice/dice3.png";
 import Dice4 from "../../assets/images/games/dice/dice4.png";
 import Dice5 from "../../assets/images/games/dice/dice5.png";
 import Dice6 from "../../assets/images/games/dice/dice6.png";
-import validateAmount from "../../validation/user/amount";
+import validateDiceRolling from "../../validation/game/diceRolling";
+import { Win, Lose } from "../../container/Modal/index";
 import HeaderBackground from "../../assets/images/headerBackground.jpg";
 import { getLocalStorageItem } from "../../utils/helper";
+import { bet, userDetail, getSetting } from "../../redux/action";
+import { GAME, RESULT } from "../../utils/constants";
 
-const DiceRolling = ({navbar}) => {
+const DiceRolling = ({ navbar }) => {
   const [form, setForm] = useState({
     amount: "",
   });
@@ -21,6 +25,15 @@ const DiceRolling = ({navbar}) => {
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
   const [hideHeader, setHideHeader] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isSubmit, setIsSubmit] = useState(false);
+  const [initDiceTimeout, setInitDiceTimeout] = useState(0);
+  const [stopRollTimeout, setStopRollTimeout] = useState(0);
+  const [selectedRoll, setSelectedRoll] = useState(0);
+  const [winOpenModal, setWinOpenModal] = useState(false);
+  const [loseOpenModal, setLoseOpenModal] = useState(false);
+
+  const user_detail = useSelector((state) => state?.UserDetail?.userDetails);
+  const setting = useSelector((state) => state?.GetSetting?.setting);
 
   var paused = true;
   var initialRolling = false;
@@ -35,7 +48,21 @@ const DiceRolling = ({navbar}) => {
   ]);
   const isAuth = getLocalStorageItem("token");
   const userData = JSON.parse(getLocalStorageItem("user"));
+
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getSetting({ game: "dice_rolling" }));
+    dispatch(userDetail());
+  }, []);
+
+  useEffect(() => {
+    setForm((prevState) => ({
+      ...prevState,
+      ["balance"]: user_detail?.data?.balance,
+    }));
+  }, [user_detail]);
 
   useEffect(() => {
     if (windowWidth <= 768) {
@@ -43,7 +70,7 @@ const DiceRolling = ({navbar}) => {
     } else {
       setHideHeader(false);
     }
-    
+
     if (isAuth && userData) {
       navigate("/dice_rolling");
     } else {
@@ -94,7 +121,8 @@ const DiceRolling = ({navbar}) => {
     }
 
     if (!initialRolling) {
-      setTimeout(initDice, 1000); // Continue the animation if not paused
+      let initDiceTimeouts = setTimeout(initDice, 1000); // Continue the animation if not paused
+      setInitDiceTimeout(initDiceTimeouts);
     }
   };
 
@@ -104,13 +132,14 @@ const DiceRolling = ({navbar}) => {
       el.dice === tab ? { ...el, isActive: true } : { ...el, isActive: false }
     );
     setTabViews(filterTabList);
-
+    clearTimeout(initDiceTimeout);
     initialRolling = true;
   };
 
   const handleClick = () => {
-    const { errors, isValid } = validateAmount(form);
+    const { errors, isValid } = validateDiceRolling(form, tabViews, setting);
     if (isValid) {
+       setIsSubmit(true);
       paused = !paused;
       if (!paused) {
         rollDice(); // Resume the animation if unpaused
@@ -120,6 +149,7 @@ const DiceRolling = ({navbar}) => {
         paused = true;
       }, 5000);
     } else {
+      console.log("errors", errors);
       setError(errors);
     }
   };
@@ -134,7 +164,7 @@ const DiceRolling = ({navbar}) => {
         elDiceOne.classList.add("show-" + i);
       }
     }
-
+    console.log("diceOne", diceOne);
     // right side dice number
     // left side "diceOne" number
     // 5->4
@@ -143,9 +173,67 @@ const DiceRolling = ({navbar}) => {
     // 3->6
     // 6->2
     // 4->3
+
     if (!paused) {
-      setTimeout(rollDice, 1000); // Continue the animation if not paused
+      let initDiceTimeouts = setTimeout(rollDice, 500); // Continue the animation if not paused
+      setInitDiceTimeout(initDiceTimeouts);
+    } else {
+      stopRoll(diceOne);
     }
+  };
+
+  const stopRoll = (dice) => {
+    clearTimeout(initDiceTimeout);
+    let initDiceTimeouts = setTimeout(function () {
+      result(dice);
+    }, 1000);
+    setStopRollTimeout(initDiceTimeouts);
+  };
+
+  const result = (dice) => {
+    if (dice === selectedRoll) {
+      setWinOpenModal(true);
+      onSubmit("win");
+    } else {
+      setLoseOpenModal(true);
+      onSubmit("lose");
+    }
+    clearTimeout(initDiceTimeout);
+    clearTimeout(stopRollTimeout);
+  };
+
+  const onSubmit = (coin) => {
+    let payload = {
+      game: GAME?.DICE_ROLLING,
+    };
+
+    if (coin === "win") {
+      let pl = (parseInt(form.amount) * setting?.odd[0]) / 100;
+      payload = {
+        ...payload,
+        amount: parseInt(pl),
+        result: RESULT?.WIN,
+        invest: parseInt(form.amount),
+      };
+    } else {
+      payload = {
+        ...payload,
+        amount: -parseInt(form.amount),
+        result: RESULT?.LOSE,
+        invest: parseInt(form.amount),
+      };
+    }
+    dispatch(
+      bet({
+        payload,
+        callback: async (data) => {
+          if (data) {
+            setIsSubmit(false);
+            dispatch(userDetail());
+          }
+        },
+      })
+    );
   };
 
   return (
@@ -164,7 +252,15 @@ const DiceRolling = ({navbar}) => {
         }}
       >
         {/* Mobile Header with Hamburger Icon */}
-        {hideHeader ? <HumburgerHeader setLoading={setLoading}/> : <Header isVerifyMail={false}  setLoading={setLoading} navbar={navbar}/>}
+        {hideHeader ? (
+          <HumburgerHeader setLoading={setLoading} />
+        ) : (
+          <Header
+            isVerifyMail={false}
+            setLoading={setLoading}
+            navbar={navbar}
+          />
+        )}
         <GameTitle title="Play Dice Rolling" route="dice_rolling" />
       </section>
 
@@ -231,8 +327,26 @@ const DiceRolling = ({navbar}) => {
               style={{
                 position: "absolute",
                 display: "inline-block",
-                top: windowWidth === 425 ? "110px":windowWidth === 375 ? "110px":windowWidth === 320 ? "70px":windowWidth === 1024 ? "260px":"260px",
-                left: windowWidth === 425 ? "-40px":windowWidth === 375 ? "-40px":windowWidth === 320 ? "-70px":windowWidth === 1024 ? "205px":"155px",
+                top:
+                  windowWidth === 425
+                    ? "110px"
+                    : windowWidth === 375
+                    ? "110px"
+                    : windowWidth === 320
+                    ? "70px"
+                    : windowWidth === 1024
+                    ? "260px"
+                    : "260px",
+                left:
+                  windowWidth === 425
+                    ? "-40px"
+                    : windowWidth === 375
+                    ? "-40px"
+                    : windowWidth === 320
+                    ? "-70px"
+                    : windowWidth === 1024
+                    ? "205px"
+                    : "155px",
                 // If the 'left' property is important, you can include it like this:
                 // left: '155px !important',
               }}
@@ -305,7 +419,8 @@ const DiceRolling = ({navbar}) => {
           >
             <div className="flex flex-col items-center justify-center p-3">
               <span className="flex items-center justify-center">
-                <p className={`${
+                <p
+                  className={`${
                     windowWidth === 320
                       ? "text-xs"
                       : windowWidth === 375
@@ -318,9 +433,13 @@ const DiceRolling = ({navbar}) => {
                       ? "text-5xl"
                       : windowWidth === 1440
                       ? "text-3xl"
-                      : "text-5xl"
-                  }  text-white`}>Current Balance :</p>
-                <p className={`${
+                      : "text-4xl"
+                  }  text-white`}
+                >
+                  Current Balance :
+                </p>
+                <p
+                  className={`${
                     windowWidth === 320
                       ? "text-xs"
                       : windowWidth === 375
@@ -333,8 +452,12 @@ const DiceRolling = ({navbar}) => {
                       ? "text-5xl"
                       : windowWidth === 1440
                       ? "text-3xl"
-                      : "text-5xl"
-                  }  text-[#E3BC3F]`}> 10.50 USD</p>
+                      : "text-4xl"
+                  }  text-[#E3BC3F]`}
+                >
+                  {" "}
+                  {form?.balance?.toFixed(2)} USD
+                </p>
               </span>
 
               <div className="flex flex-col items-center w-11/12 mt-3">
@@ -345,7 +468,27 @@ const DiceRolling = ({navbar}) => {
                     name="amount"
                     value={form?.amount}
                     onChange={(e) => {
-                      changeHandler(e);
+                      const value = e.target.value;
+                      const { name } = e.target;
+                      let finalAmount = user_detail?.data?.balance - value;
+
+                      if (value <= user_detail?.data?.balance) {
+                        setForm((prevState) => ({
+                          ...prevState,
+                          [name]: value,
+                        }));
+
+                        setForm((prevState) => ({
+                          ...prevState,
+                          ["balance"]: finalAmount,
+                        }));
+                      }
+
+                      setIsSubmit(false);
+                      setError((prevState) => ({
+                        ...prevState,
+                        [name]: "",
+                      }));
                     }}
                     className="border p-2 focus:outline-none focus:border-blue-500 bg-[#020C25] text-white w-full"
                     style={{ height: "2rem" }}
@@ -363,11 +506,14 @@ const DiceRolling = ({navbar}) => {
               </div>
 
               <span className="text-[#adb5bd] mt-3">
-                Minimum : 1.00 USD | Maximum : 100.00 USD | Win Amount 150.00 %
+                Minimum : {setting?.min?.toFixed(2)} USD | Maximum :{" "}
+                {setting?.max?.toFixed(2)} USD | Win Amount{" "}
+                {setting?.odd[0]?.toFixed(2)} %
               </span>
             </div>
             <div></div>
-            <div className={`flex items-center justify-center relative ${
+            <div
+              className={`flex items-center justify-center relative ${
                 windowWidth === 320
                   ? "p-2"
                   : windowWidth === 375
@@ -379,10 +525,12 @@ const DiceRolling = ({navbar}) => {
                   : windowWidth === 1440
                   ? "p-16"
                   : "p-20"
-              }`}>
+              }`}
+            >
               <span
                 onClick={(e) => {
                   tabSwitch(e, "dice1");
+                  setSelectedRoll(1);
                 }}
                 className={`${tabViews[0].isActive && "border p-2"}`}
               >
@@ -391,6 +539,7 @@ const DiceRolling = ({navbar}) => {
               <span
                 onClick={(e) => {
                   tabSwitch(e, "dice2");
+                  setSelectedRoll(6);
                 }}
                 className={`${tabViews[1].isActive && "border p-2"}`}
               >
@@ -399,6 +548,7 @@ const DiceRolling = ({navbar}) => {
               <span
                 onClick={(e) => {
                   tabSwitch(e, "dice3");
+                  setSelectedRoll(4);
                 }}
                 className={`${tabViews[2].isActive && "border p-2"}`}
               >
@@ -407,6 +557,7 @@ const DiceRolling = ({navbar}) => {
               <span
                 onClick={(e) => {
                   tabSwitch(e, "dice4");
+                  setSelectedRoll(5);
                 }}
                 className={`${tabViews[3].isActive && "border p-2"}`}
               >
@@ -415,6 +566,7 @@ const DiceRolling = ({navbar}) => {
               <span
                 onClick={(e) => {
                   tabSwitch(e, "dice5");
+                  setSelectedRoll(2);
                 }}
                 className={`${tabViews[4].isActive && "border p-2"}`}
               >
@@ -423,16 +575,23 @@ const DiceRolling = ({navbar}) => {
               <span
                 onClick={(e) => {
                   tabSwitch(e, "dice6");
+                  setSelectedRoll(3);
                 }}
                 className={`${tabViews[5].isActive && "border p-2"}`}
               >
                 <img src={Dice6} alt="dice6" />
               </span>
             </div>
+            <div className="flex flex-col items-center justify-center text-rose-600 font-serif mt-1">
+              {error?.dice}
+            </div>
             <div className="flex flex-col items-center justify-center w-11/12 p-2">
               <button
                 onClick={() => handleClick()}
-                className="bg-[#E3BC3F] p-4 w-9/12"
+                disabled={isSubmit}
+                className={`${
+                  isSubmit ? "bg-[#716e60]" : "bg-[#3F93F9]"
+                }  p-4 w-9/12 text-[#fff]`}
               >
                 Play Now
               </button>
@@ -442,6 +601,16 @@ const DiceRolling = ({navbar}) => {
         </div>
       </section>
       <Footer />
+      {winOpenModal && (
+        <Win winOpenModal={winOpenModal} setWinOpenModal={setWinOpenModal}  keno={false}/>
+      )}
+      {loseOpenModal && (
+        <Lose
+          loseOpenModal={loseOpenModal}
+          setLoseOpenModal={setLoseOpenModal}
+          keno={false}
+        />
+      )}
     </>
   );
 };

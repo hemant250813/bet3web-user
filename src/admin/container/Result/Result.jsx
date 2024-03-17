@@ -308,7 +308,7 @@ const Result = () => {
 
                 <table className="min-w-full divide-y divide-gray-200">
                   <>
-                    <thead className="bg-gray-900">
+                    <thead className="bg-gray-900 sticky top-0 z-10">
                       <tr>
                         <th className="px-6 py-3 text-left text-xl font-medium text-[#E3BC3F] uppercase tracking-wider">
                           Date
@@ -351,7 +351,7 @@ const Result = () => {
                               (index + 1) % 2 === 0
                                 ? "bg-[#4fd1c5]"
                                 : "bg-[#7E8D8D]"
-                            }  `}
+                            } text-white `}
                           >
                             <td className="px-6 py-4 whitespace-nowrap">
                               <span className="text-xl  p-2">

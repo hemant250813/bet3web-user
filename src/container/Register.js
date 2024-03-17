@@ -147,12 +147,12 @@ const Register = () => {
               >
                 <label
                   htmlFor="username"
-                  className="block text-sm font-medium text-[#b5b5b5] pb-2"
+                  className="block text-sm font-medium text-white pb-2"
                 >
                   Username <span className="text-red-700">*</span>
                 </label>
                 <div className="flex relative items-center">
-                  <div className="bg-[#E3BC3F] rounded-l-sm p-3 h-full flex items-center">
+                  <div className="bg-[#3F93F9] rounded-l-sm p-3 h-full flex items-center">
                     <AiOutlineUser
                       style={{ height: "1.6rem", width: "1.5rem" }}
                     />
@@ -188,12 +188,12 @@ const Register = () => {
               >
                 <label
                   htmlFor="email"
-                  className="block text-sm font-medium text-[#b5b5b5] pb-2"
+                  className="block text-sm font-medium text-white pb-2"
                 >
                   Email <span className="text-red-700">*</span>
                 </label>
                 <div className="flex relative items-center">
-                  <div className="bg-[#E3BC3F] rounded-l-sm p-3 h-full flex items-center">
+                  <div className="bg-[#3F93F9] rounded-l-sm p-3 h-full flex items-center">
                     <AiOutlineMail
                       style={{ height: "1.6rem", width: "1.5rem" }}
                     />
@@ -230,12 +230,12 @@ const Register = () => {
               >
                 <label
                   htmlFor="country"
-                  className="block text-sm font-medium text-[#b5b5b5] pb-2 pt-4"
+                  className="block text-sm font-medium text-white pb-2 pt-4"
                 >
                   Country <span className="text-red-700">*</span>
                 </label>
                 <div className="flex relative items-center">
-                  <div className="bg-[#E3BC3F] rounded-l-sm p-3 h-full flex items-center">
+                  <div className="bg-[#3F93F9] rounded-l-sm p-3 h-full flex items-center">
                     <AiOutlineGlobal
                       style={{ height: "1.6rem", width: "1.5rem" }}
                     />
@@ -271,12 +271,12 @@ const Register = () => {
               >
                 <label
                   htmlFor="mobile"
-                  className="block text-sm font-medium text-[#b5b5b5] pb-2 pt-4"
+                  className="block text-sm font-medium text-white pb-2 pt-4"
                 >
                   Mobile <span className="text-red-700">*</span>
                 </label>
                 <div className="flex relative items-center">
-                  <div className="bg-[#E3BC3F] rounded-l-sm p-3 h-full flex items-center">
+                  <div className="bg-[#3F93F9] rounded-l-sm p-3 h-full flex items-center">
                     <p
                       className="items-center justify-center"
                       style={{ height: "1.6rem", width: "1.5rem" }}
@@ -317,12 +317,12 @@ const Register = () => {
               >
                 <label
                   htmlFor="password"
-                  className="block text-sm font-medium text-[#b5b5b5] pb-2 pt-4"
+                  className="block text-sm font-medium text-white pb-2 pt-4"
                 >
                   Password <span className="text-red-700">*</span>
                 </label>
                 <div className="flex relative items-center">
-                  <div className="bg-[#E3BC3F] rounded-l-sm p-3 h-full flex items-center">
+                  <div className="bg-[#3F93F9] rounded-l-sm p-3 h-full flex items-center">
                     <AiOutlineLock
                       style={{ height: "1.6rem", width: "1.5rem" }}
                     />
@@ -358,12 +358,12 @@ const Register = () => {
               >
                 <label
                   htmlFor="confirmPassword"
-                  className="block text-sm font-medium text-[#b5b5b5] pb-2 pt-4"
+                  className="block text-sm font-medium text-white pb-2 pt-4"
                 >
                   Confirm Password <span className="text-red-700">*</span>
                 </label>
                 <div className="flex relative items-center">
-                  <div className="bg-[#E3BC3F] rounded-l-sm p-3 h-full flex items-center">
+                  <div className="bg-[#3F93F9] rounded-l-sm p-3 h-full flex items-center">
                     <AiOutlineLock
                       style={{ height: "1.6rem", width: "1.5rem" }}
                     />
@@ -391,7 +391,7 @@ const Register = () => {
               <button
                 type="submit"
                 onClick={() => onSubmit()}
-                className={`mt-4 p-2 bg-[#E3BC3F] text-black rounded-md ${
+                className={`mt-4 p-2 bg-[#3F93F9] text-white font-bold rounded-md ${
                   isSubmit ? "register-button" : ""
                 } ${windowWidth === 1024 ? "ml-16 w-80" : "w-full"} uppercase`}
                 disabled={isSubmit}
@@ -403,10 +403,10 @@ const Register = () => {
             {/* Other form elements and button */}
             <div className="flex justify-between pt-4">
               <span className="flex">
-                <p className="text-white">Already have an account?</p>
+                <p className="text-white mr-1">Already have an account?</p>
                 <p
                   onClick={() => navigate("/login")}
-                  className="text-[#E3BC3F] cursor-pointer"
+                  className="text-[#3F93F9] cursor-pointer"
                 >
                   {" "}
                   Login
@@ -414,7 +414,7 @@ const Register = () => {
               </span>
               <p
                 onClick={() => navigate("/forgot_password")}
-                className="text-[#E3BC3F] cursor-pointer"
+                className="text-[#3F93F9] cursor-pointer"
               >
                 Forgot password?
               </p>

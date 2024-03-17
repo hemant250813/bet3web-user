@@ -21,49 +21,63 @@ import qHeart from "../../../assets/images/games/card/qHeart.png";
 import spade5 from "../../../assets/images/games/card/spade5.png";
 import spade7 from "../../../assets/images/games/card/spade7.png";
 
-const CardShuffledPicked = ({ onClick }) => {
+const CardShuffledPicked = ({ callbackCardShuffledPicked }) => {
   const playingCard = [
-    aBlack,
-    aClubs,
-    aHeart,
-    clubs2,
-    clubs3,
-    clubs4,
-    clubs7,
-    diamond2,
-    diamond5,
-    diamond9,
-    diamond10,
-    heart3,
-    heart4,
-    heart8,
-    heart9,
-    jBlack,
-    kHeart,
-    qBlack,
-    qHeart,
-    spade5,
-    spade7,
+    { card1: aBlack },
+    { card2: aClubs },
+    { card3: aHeart },
+    { card4: clubs2 },
+    { card5: clubs3 },
+    { card6: clubs4 },
+    { card7: clubs7 },
+    { card8: diamond2 },
+    { card9: diamond5 },
+    { card10: diamond9 },
+    { card11: diamond10 },
+    { card12: heart3 },
+    { card13: heart4 },
+    { card14: heart8 },
+    { card15: heart9 },
+    { card16: jBlack },
+    { card17: kHeart },
+    { card18: qBlack },
+    { card19: qHeart },
+    { card20: spade5 },
+    { card21: spade7 },
   ];
+
   const [cards, setCards] = useState(playingCard);
 
   useEffect(() => {
     // Shuffle the cards array
     const shuffled = [...playingCard].sort(() => Math.random() - 0.5);
+    let result = Object.keys(shuffled[3])[0];
+    if (result === "card2") {
+      callbackCardShuffledPicked("win");
+    } else if (result === "card3") {
+      callbackCardShuffledPicked("win");
+    } else {
+      callbackCardShuffledPicked("lose");
+    }
+    console.log("result", result);
     setCards(shuffled);
-    onClick();
   }, []);
 
   return (
     <div className="flickity-container-card-picked">
       <div className="hand-card-picked">
-        {cards?.map((card, index) => (
-          <div key={index} className={`card-picked card-picked-${index}`}>
-            <img src={card} alt={`card${index}`} />
-          </div>
-        ))}
+        {cards.map((cardObject, index) => {
+          const cardKey = Object.keys(cardObject)[0]; // Extracting the key
+          const card = cardObject[cardKey]; // Extracting the card image
+          return (
+            <div key={index} className={`card-picked card-picked-${index}`}>
+              <img src={card} alt={`card${index}`} />
+            </div>
+          );
+        })}
       </div>
     </div>
   );
 };
+
 export default CardShuffledPicked;

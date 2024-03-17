@@ -133,7 +133,7 @@ const HeadTail = () => {
             value={digit}
             onChange={(e) => handleChange(index, e.target.value)}
             onKeyDown={(e) => handleKeyDown(index, e)}
-            className="bg-gray-800 border border-[#E3BC3F] text-white rounded-md w-12 h-12 text-center mx-1 mb-2 focus:border-[#E3BC3F] focus:outline-none"
+            className="bg-gray-800 border border-[#3F93F9] text-white rounded-md w-12 h-12 text-center mx-1 mb-2 focus:border-[#E3BC3F] focus:outline-none"
             ref={(ref) => (inputRefs.current[index] = ref)}
           />
         ))}
@@ -186,7 +186,7 @@ const HeadTail = () => {
 
           <div className="mb-4 text-left">
             <div className="mt-4 flex relative items-center gap-1">
-              <label for="email" className="block text-[#BFC9CA] mb-2">
+              <label for="email" className="block text-white mb-2">
                 Verification Code
               </label>
               <span className="text-red-700">*</span>
@@ -210,7 +210,7 @@ const HeadTail = () => {
             Please check including your Junk/Spam Folde, if not found, you can{" "}
             <p
               onClick={() => onClickResendOtp()}
-              className="text-[#E3BC3F] cursor-pointer"
+              className="text-[#E3BC3F] cursor-pointer text-xl"
             >
               Try to send again
             </p>

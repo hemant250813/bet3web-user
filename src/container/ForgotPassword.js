@@ -122,7 +122,7 @@ const ForgotPassword = () => {
 
               <div className={`${error?.email ? "" : "mb-8"} text-left`}>
                 <div className="mt-4 flex relative items-center gap-1">
-                  <label for="email" className="block text-[#BFC9CA] mb-2">
+                  <label for="email" className="block text-white mb-2">
                     Email or Username
                   </label>
                   <span className="text-red-700">*</span>
@@ -136,7 +136,7 @@ const ForgotPassword = () => {
                   onChange={(e) => {
                     changeHandler(e);
                   }}
-                  className="w-full px-3  border rounded-md input-border"
+                  className="w-full px-3  border rounded-md bg-black text-white"
                 />
               </div>
               {error?.email && (
@@ -146,7 +146,7 @@ const ForgotPassword = () => {
               )}
               <button
                 type="button"
-                className="w-full bg-[#E3BC3F] text-black py-2 px-4 rounded-md"
+                className="w-full bg-[#3F93F9] text-white font-bold text-2xl py-2 px-4 rounded-md"
                 onClick={() => handleClick()}
                 disabled={isSubmit}
               >

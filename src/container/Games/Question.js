@@ -31,7 +31,7 @@ const Question = ({ navbar }) => {
   });
   const question = useSelector((state) => state?.GetQuestion?.question);
   const setting = useSelector((state) => state?.GetSetting?.setting);
-
+  console.log("question", question);
   const [selectedOptions, setSelectedOptions] = useState(
     Array(question?.length).fill({ option: null, question: null })
   );
@@ -114,6 +114,7 @@ const Question = ({ navbar }) => {
     const { errors, isValid } = validateQuestion(form, setting);
 
     if (isValid) {
+      console.log("selectedOptions", selectedOptions);
       setIsSubmit(true);
       let formData = selectedOptions
         ?.map((data) => {
@@ -122,16 +123,19 @@ const Question = ({ navbar }) => {
               userId: user_detail?.data?.id,
               question: data?.question,
               answer: data?.option,
-              odd: data?.odd,
+              option1: data?.option1,
+              option2: data?.option2,
+              option3: data?.option3,
+              odd1: data?.odd1,
+              odd2: data?.odd2,
+              odd3: data?.odd3,
               amount: form?.amount,
               questionSlug: data?.question?.split(" ")?.join(""),
               isDeclared: false,
             };
-          } else {
-            return null; // or undefined
           }
         })
-        ?.filter((ele) => ele !== null);
+        ?.filter((ele) => ele?.answer !== null);
 
       dispatch(
         questionResult({
@@ -143,6 +147,7 @@ const Question = ({ navbar }) => {
                 Array(question?.length).fill({ option: null, question: null })
               );
               dispatch(getQuestion());
+              dispatch(userDetail());
             }
           },
         })
@@ -160,7 +165,18 @@ const Question = ({ navbar }) => {
     }
   };
 
-  const handleOptionClick = (index, optionIndex, question, option, odd) => {
+  const handleOptionClick = (
+    index,
+    optionIndex,
+    question,
+    option,
+    option1,
+    option2,
+    option3,
+    odd1,
+    odd2,
+    odd3
+  ) => {
     const updatedSelectedOptions = [...selectedOptions];
     updatedSelectedOptions[index] = {
       optionIndex:
@@ -169,7 +185,12 @@ const Question = ({ navbar }) => {
           : optionIndex,
       question: question,
       option: option,
-      odd: odd,
+      option1: option1,
+      option2: option2,
+      option3: option3,
+      odd1: odd1,
+      odd2: odd2,
+      odd3: odd3,
     };
 
     setSelectedOptions(updatedSelectedOptions);
@@ -208,11 +229,11 @@ const Question = ({ navbar }) => {
           </section>
 
           <section
-            className={`bg-black relative flex-grow p-12 md:p-8 lg:p-12 overflow-hidden h-screen`}
+            className={`bg-black relative flex-grow p-12 md:p-8 lg:p-12`}
           >
             <form
               onSubmit={(e) => onSubmit(e)}
-              className={`grid justify-items-stretch gap-8`}
+              className={`grid justify-items-stretch gap-8 `}
             >
               <div className="flex flex-col items-center justify-center p-3">
                 <span className="flex items-center justify-center">
@@ -306,45 +327,95 @@ const Question = ({ navbar }) => {
               </div>
 
               {/* Card 1 */}
-              {question?.map((que, index) => (
-                <div
-                  key={index}
-                  className="relative group mx-auto p-4 text-white"
-                >
-                  {/* header */}
-                  <div className="grid grid-cols-2 justify-around p-2">
-                    <button className="mx-3 text-2xl">{que.question}</button>
-                    <button className="mx-3 text-2xl">odd {index}</button>
+              <div className="overflow-y-auto">
+                {question?.map((que, index) => (
+                  <div
+                    key={index}
+                    className="relative group mx-auto p-4 text-white "
+                  >
+                    {/* header */}
+                    <div className="grid grid-cols-2 justify-around p-2">
+                      <button className="flex mx-3 text-2xl text-left">
+                        <p className="font-bold px-2 text-5xl text-[#3F93F9]">
+                          *
+                        </p>
+                        {que.question}
+                      </button>
+                      {/* <button className="mx-3 text-2xl text-right">
+                        odd {que?.odd}
+                      </button> */}
+                    </div>
+                    {/* option */}
+                    <div className="grid sm:grid-cols-1 xl:grid-cols-3  justify-around p-2 ">
+                      {["option1", "option2", "option3"].map(
+                        (option, optionIndex) => (
+                          <button
+                            key={optionIndex}
+                            className={`mx-3 p-4 text-xl rounded-md hover:opacity-80 sm:mb-3 ${
+                              selectedOptions[index]?.optionIndex ===
+                              optionIndex
+                                ? "bg-gray-800 text-white"
+                                : "bg-[#3F93F9] text-[#fff]"
+                            }`}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleOptionClick(
+                                index,
+                                optionIndex,
+                                que.question,
+                                que[option],
+                                que.option1,
+                                que.option2,
+                                que.option3,
+                                que.odd1,
+                                que.odd2,
+                                que.odd3
+                              );
+                            }}
+                          >
+                            {que[option]}
+                          </button>
+                        )
+                      )}
+                    </div>
+                    <div className="grid sm:grid-cols-1 xl:grid-cols-3  justify-center items-center p-2 mt-4">
+                      <span className="flex">
+                        <img
+                          src={que?.image1}
+                          alt={`Profile${index}`}
+                          className={`sm:mb-5 sm:ml-72 md:ml-96 xl:ml-56 rounded-full w-28 h-28 transition-transform duration-700 transform hover:-translate-y-4`}
+                        />
+                        <p className={` rounded-full text-xl font-bold`}>
+                          Odd {que?.odd1}
+                        </p>
+                      </span>
+                      <span className="flex">
+                        {" "}
+                        <img
+                          src={que?.image2}
+                          alt={`Profile${index}`}
+                          className={`sm:mb-5 sm:ml-72 md:ml-96 xl:ml-56 rounded-full w-28 h-28 transition-transform duration-700 transform hover:-translate-y-4`}
+                        />
+                        <p className={` rounded-full text-xl font-bold`}>
+                          Odd {que?.odd2}
+                        </p>
+                      </span>
+                      <span className="flex">
+                        {" "}
+                        <img
+                          src={que?.image3}
+                          alt={`Profile${index}`}
+                          className={`sm:mb-5 sm:ml-72 md:ml-96 xl:ml-56 rounded-full w-28 h-28 transition-transform duration-700 transform hover:-translate-y-4`}
+                        />
+                        <p className={` rounded-full text-xl font-bold`}>
+                          Odd {que?.odd3}
+                        </p>
+                      </span>
+                    </div>
                   </div>
-                  {/* option */}
-                  <div className="grid grid-cols-3 justify-around p-2 ">
-                    {["option1", "option2", "option3"].map(
-                      (option, optionIndex) => (
-                        <button
-                          key={optionIndex}
-                          className={`mx-3 p-4 text-xl rounded-md hover:opacity-80 ${
-                            selectedOptions[index]?.optionIndex === optionIndex
-                              ? "bg-gray-800 text-white"
-                              : "bg-[#3F93F9] text-[#fff]"
-                          }`}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            handleOptionClick(
-                              index,
-                              optionIndex,
-                              que.question,
-                              que[option],
-                              que.odd
-                            );
-                          }}
-                        >
-                          {que[option]}
-                        </button>
-                      )
-                    )}
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
+
               <div className="relative group mx-auto p-4 text-white w-96">
                 <button
                   type="submit"

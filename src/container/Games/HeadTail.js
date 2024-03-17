@@ -143,13 +143,24 @@ const HeadTail = ({ navbar }) => {
     }
   };
 
+  const resultDeclared = (result) => {
+    let announce = setTimeout(() => {
+      if (result === "win") {
+        setWinOpenModal(true);
+      } else {
+        setLoseOpenModal(true);
+      }
+      clearTimeout(announce);
+    }, 3000);
+  };
+
   const onSubmit = (coin) => {
     let payload = {
       game: GAME?.HEAD_TAIL,
     };
 
     if (coin === "win") {
-      let pl = (parseInt(form.amount) * setting?.odd) / 100;
+      let pl = (parseInt(form.amount) * setting?.odd[0]) / 100;
       payload = {
         ...payload,
         amount: parseInt(pl),
@@ -170,6 +181,7 @@ const HeadTail = ({ navbar }) => {
         callback: async (data) => {
           if (data) {
             setIsSubmit(false);
+            dispatch(userDetail());
           }
         },
       })
@@ -213,29 +225,31 @@ const HeadTail = ({ navbar }) => {
     }, 500);
 
     setClearCoinRotate(coinRotate);
-    setTimeout(() => {
+    let announce = setTimeout(() => {
       clearInterval(coinRotate);
+      clearInterval(clearCoinRotate);
       if (tabViews[0].isActive) {
         if (tabViews[0].route === result) {
-          setWinOpenModal(true);
+          resultDeclared("win");
           onSubmit("win");
           resetHandler();
         } else {
-          setLoseOpenModal(true);
+          resultDeclared("lose");
           onSubmit("lose");
           resetHandler();
         }
       } else {
         if (tabViews[1].route === result) {
-          setWinOpenModal(true);
+          resultDeclared("win");
           onSubmit("win");
           resetHandler();
         } else {
-          setLoseOpenModal(true);
+          resultDeclared("lose");
           onSubmit("lose");
           resetHandler();
         }
       }
+      clearTimeout(announce);
     }, 7000);
   };
   console.log("isSubmit", isSubmit);
@@ -538,7 +552,7 @@ const HeadTail = ({ navbar }) => {
                   <span className="text-[#adb5bd] mt-3">
                     Minimum : {setting?.min?.toFixed(2)} USD | Maximum :{" "}
                     {setting?.max?.toFixed(2)} USD | Win Amount{" "}
-                    {setting?.odd?.toFixed(2)} %
+                    {setting?.odd[0]?.toFixed(2)} %
                   </span>
                 </div>
                 <div></div>
@@ -642,6 +656,7 @@ const HeadTail = ({ navbar }) => {
               winOpenModal={winOpenModal}
               setWinOpenModal={setWinOpenModal}
               flipResult={flipResult}
+              keno={false}
             />
           )}
           {loseOpenModal && (
@@ -649,6 +664,7 @@ const HeadTail = ({ navbar }) => {
               loseOpenModal={loseOpenModal}
               setLoseOpenModal={setLoseOpenModal}
               flipResult={flipResult}
+              keno={false}
             />
           )}
         </>

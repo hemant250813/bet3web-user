@@ -4,13 +4,16 @@ import { useNavigate } from "react-router-dom";
 import { FiMenu } from "react-icons/fi"; // Import hamburger and close icons
 import { RxDashboard } from "react-icons/rx";
 import { AiOutlineTransaction } from "react-icons/ai";
+import { GrTransaction } from "react-icons/gr";
 import { FaUsers } from "react-icons/fa";
 import { FaGlobe } from "react-icons/fa";
+import { BsBank } from "react-icons/bs";
 import { TbReportSearch } from "react-icons/tb";
 import { IoSettings } from "react-icons/io5";
 import { MdQuestionAnswer } from "react-icons/md";
 import { VscOutput } from "react-icons/vsc";
 import { NAVBAR } from "../../utils/constants";
+import Logo from "../../assets/images/logo.png";
 
 const Sidebar = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -61,7 +64,8 @@ const Sidebar = () => {
         {/* <div className="flex items-center ml-12"> */}
         <div className="flex items-center ">
           {/* Adjusted the margin here */}
-          <FaGlobe size={24} className="text-[#E3BC3F]" />
+          {/* <FaGlobe size={24} className="text-[#E3BC3F]" /> */}
+          <img src={Logo} alt="logo" className="w-24 h-24 rounded-full" />
         </div>
         <button
           onClick={() => toggleSidebar()}
@@ -131,6 +135,20 @@ const Sidebar = () => {
                 />
               ) : nav?.route === "/result" ? (
                 <VscOutput
+                  size={32}
+                  className={`${
+                    active === index ? "text-[#4fd1c5]" : "text-[#E3BC3F]"
+                  } hover:text-[#4fd1c5]`}
+                />
+              ) : nav?.route === "/bank" ? (
+                <BsBank
+                  size={32}
+                  className={`${
+                    active === index ? "text-[#4fd1c5]" : "text-[#E3BC3F]"
+                  } hover:text-[#4fd1c5]`}
+                />
+              ) : nav?.route === "/bank-transaction" ? (
+                <GrTransaction
                   size={32}
                   className={`${
                     active === index ? "text-[#4fd1c5]" : "text-[#E3BC3F]"
